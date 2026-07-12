@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amin Ahmed G | Robotics Software Engineer</title>
+  <meta name="description" content="Portfolio of Amin Ahmed G - Robotics Software Engineer specializing in ROS 2, Controls, Embedded C/C++, and Industrial Automation. Pursuing B.E. Robotics & Automation at Anna University.">
+  
+  <!-- SEO & Open Graph -->
+  <meta property="og:title" content="Amin Ahmed G | Robotics Software Engineer">
+  <meta property="og:description" content="ROS 2, Embedded Systems, Controls, & Industrial Automation. Portfolio featuring a live PID controller simulator and interactive terminal.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://github.com/Amin-Ahmed-G">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="styles.css">
+  
+  <!-- FontAwesome for custom icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="dark-theme">
+  <!-- Interactive Lidar Point Cloud Background Canvas -->
+  <canvas id="lidar-bg-canvas"></canvas>
+
+  <!-- Navigation -->
+  <header class="navbar" id="main-nav">
+    <div class="nav-container">
+      <a href="#home" class="logo">
+        <span class="logo-icon">&lt;/&gt;</span>
+        <span class="logo-text">amin.robotics</span>
+      </a>
+      <button class="nav-toggle" id="nav-toggle-btn" aria-label="Toggle navigation menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+      <nav class="nav-menu" id="nav-menu-list">
+        <a href="#home" class="nav-link active">Home</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#skills" class="nav-link">Skills</a>
+        <a href="#pid-lab" class="nav-link">PID Lab</a>
+        <a href="#projects" class="nav-link">Projects</a>
+        <a href="#experience" class="nav-link">Experience</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+      <div class="hero-container">
+        <div class="hero-content">
+          <div class="badge">
+            <span class="pulse-dot"></span> ROS 2 & Embedded Systems Developer
+          </div>
+          <h1>Amin Ahmed G</h1>
+          <p class="tagline">Building the intelligence and control layers for next-generation autonomous systems.</p>
+          <p class="hero-description">
+            Robotics Software Engineer student specializing in control loops, robot kinematics, SLAM, and real-time firmware development.
+          </p>
+          <div class="hero-ctas">
+            <a href="#pid-lab" class="btn btn-primary"><i class="fa-solid fa-flask"></i> Try PID Lab</a>
+            <a href="#projects" class="btn btn-secondary">Explore Projects</a>
+          </div>
+        </div>
+        
+        <!-- Interactive Terminal -->
+        <div class="hero-terminal">
+          <div class="terminal-window" id="interactive-terminal">
+            <div class="terminal-header">
+              <div class="window-buttons">
+                <span class="win-btn close"></span>
+                <span class="win-btn minimize"></span>
+                <span class="win-btn maximize"></span>
+              </div>
+              <div class="terminal-title">amin@roboshield:~</div>
+              <div class="terminal-status">ROS2 Core: ACTIVE</div>
+            </div>
+            <div class="terminal-body" id="terminal-screen">
+              <!-- Animated terminal text will load here -->
+            </div>
+            <div class="terminal-input-line">
+              <span class="prompt">amin@roboshield:~$</span>
+              <input type="text" id="terminal-input" autocomplete="off" placeholder="Type help..." aria-label="Terminal input command">
+            </div>
+            <div class="terminal-presets">
+              <button class="preset-cmd-btn" data-cmd="diagnostics">diagnostics</button>
+              <button class="preset-cmd-btn" data-cmd="skills">skills</button>
+              <button class="preset-cmd-btn" data-cmd="clear">clear</button>
+              <button class="preset-cmd-btn" data-cmd="help">help</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section scroll-reveal">
+      <div class="section-container">
+        <h2 class="section-title">About Me</h2>
+        <div class="about-grid">
+          <div class="about-image-wrapper">
+            <img src="hero_robot.jpg" alt="A.R.E.S. Autonomous Robotic Exploration System Illustration" class="about-image">
+            <div class="image-overlay-border"></div>
+          </div>
+          <div class="about-text">
+            <h3>Bridging Software & Physical Systems</h3>
+            <p>
+              I am a final-year B.E. Robotics & Automation student at Anna University (Expected 2027) with a deep passion for the mathematics and architectures behind robot locomotion and automation. 
+            </p>
+            <p>
+              My work spans from writing low-overhead firmware running under 1ms on STM32 microcontrollers, to modeling complex SLAM simulations in ROS 2 Jazzy and Gazebo Harmonic. I am especially interested in the security of robotic communication networks (RoboShield project) and tuning controllers for AGV/AMR warehouse deployments.
+            </p>
+            <div class="education-card">
+              <div class="edu-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+              <div class="edu-details">
+                <h4>B.E. Robotics and Automation</h4>
+                <p class="school">Anna University — Chennai, India (Expected 2027)</p>
+                <p class="coursework"><strong>Key Coursework:</strong> Control Systems, Robot Kinematics, Embedded C, Sensors & Instrumentation, Microprocessors</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="skills-section scroll-reveal">
+      <div class="section-container">
+        <h2 class="section-title">Technical Expertise</h2>
+        <p class="section-subtitle">Robotics is multidisciplinary. Here is my stack spanning software, hardware, and design.</p>
+        
+        <div class="skills-grid">
+          <!-- Frameworks Card -->
+          <div class="skill-card">
+            <div class="skill-header">
+              <i class="fa-solid fa-cubes-stacked"></i>
+              <h3>Frameworks & Middleware</h3>
+            </div>
+            <ul class="skill-list">
+              <li><span>ROS 2 (Jazzy, Humble)</span><span class="skill-level">Intermediate</span></li>
+              <li><span>Gazebo (Harmonic, Classic)</span><span class="skill-level">Intermediate</span></li>
+              <li><span>Nav2 & Navigation Stack</span><span class="skill-level">Intermediate</span></li>
+              <li><span>SLAM (Gmapping, Cartographer)</span><span class="skill-level">Intermediate</span></li>
+              <li><span>MoveIt (Motion Planning)</span><span class="skill-level">Familiar</span></li>
+            </ul>
+          </div>
+
+          <!-- Languages Card -->
+          <div class="skill-card">
+            <div class="skill-header">
+              <i class="fa-solid fa-code"></i>
+              <h3>Languages</h3>
+            </div>
+            <ul class="skill-list">
+              <li><span>C / C++ (Embedded Focus)</span><span class="skill-level">Intermediate</span></li>
+              <li><span>Python</span><span class="skill-level">Intermediate</span></li>
+              <li><span>Rust</span><span class="skill-level">Learning</span></li>
+              <li><span>Bash Scripting</span><span class="skill-level">Intermediate</span></li>
+              <li><span>CODESYS Ladder Logic</span><span class="skill-level">Intermediate</span></li>
+            </ul>
+          </div>
+
+          <!-- Hardware & Protocols Card -->
+          <div class="skill-card">
+            <div class="skill-header">
+              <i class="fa-solid fa-microchip"></i>
+              <h3>Hardware & Controls</h3>
+            </div>
+            <ul class="skill-list">
+              <li><span>STM32 & ARM Cortex-M</span><span class="skill-level">Intermediate</span></li>
+              <li><span>ESP32 & Raspberry Pi</span><span class="skill-level">Intermediate</span></li>
+              <li><span>PID Control Tuning</span><span class="skill-level">Intermediate</span></li>
+              <li><span>UART, I2C, SPI, CAN Protocols</span><span class="skill-level">Intermediate</span></li>
+              <li><span>LiDAR & Sensor Integration</span><span class="skill-level">Intermediate</span></li>
+            </ul>
+          </div>
+
+          <!-- Design & Tools Card -->
+          <div class="skill-card">
+            <div class="skill-header">
+              <i class="fa-solid fa-wrench"></i>
+              <h3>Design & Tools</h3>
+            </div>
+            <ul class="skill-list">
+              <li><span>SolidWorks / Fusion 360</span><span class="skill-level">Intermediate</span></li>
+              <li><span>EasyEDA / KiCad (PCB Layout)</span><span class="skill-level">Intermediate</span></li>
+              <li><span>Linux Systems (Ubuntu/Hyprland)</span><span class="skill-level">Intermediate</span></li>
+              <li><span>Docker & Git Workflow</span><span class="skill-level">Intermediate</span></li>
+              <li><span>STM32CubeIDE & CODESYS PLC</span><span class="skill-level">Intermediate</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PID Sandbox Section -->
+    <section id="pid-lab" class="pid-section scroll-reveal">
+      <div class="section-container">
+        <h2 class="section-title">Control Systems Lab</h2>
+        <p class="section-subtitle">A live interactive PID tuning simulator. Drag the sliders to see how gains affect the trajectory of a line follower robot.</p>
+        
+        <div class="pid-grid">
+          <!-- Simulation Canvas Column -->
+          <div class="pid-canvas-container">
+            <div class="pid-canvas-header">
+              <span class="status-indicator live"></span> LIVE TRACKING VISUALIZER
+            </div>
+            <canvas id="pid-canvas" width="600" height="300"></canvas>
+            <div class="pid-graph-container">
+              <div class="graph-label">Steering Error Over Time (e = line center - robot position)</div>
+              <canvas id="pid-graph" width="600" height="120"></canvas>
+            </div>
+          </div>
+          
+          <!-- Controls Column -->
+          <div class="pid-controls-card">
+            <h3>PID Gain Tuning</h3>
+            <p class="controls-desc">Formulate steering: \(u(t) = K_p e(t) + K_i \int e(t)dt + K_d \frac{de(t)}{dt}\)</p>
+            
+            <div class="control-presets">
+              <span class="preset-label">Presets:</span>
+              <button class="btn btn-preset active" id="preset-tuned">Perfect Tune</button>
+              <button class="btn btn-preset" id="preset-oscillating">Oscillating (High Kp)</button>
+              <button class="btn btn-preset" id="preset-sluggish">Sluggish (Low Kp)</button>
+            </div>
+            
+            <div class="slider-group">
+              <div class="slider-header">
+                <label for="pid-kp"><strong>Kp</strong> (Proportional - Reacts to current error)</label>
+                <span id="val-kp">0.05</span>
+              </div>
+              <input type="range" id="pid-kp" min="0" max="0.3" step="0.005" value="0.05">
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-header">
+                <label for="pid-ki"><strong>Ki</strong> (Integral - Eliminates steady-state offset)</label>
+                <span id="val-ki">0.0001</span>
+              </div>
+              <input type="range" id="pid-ki" min="0" max="0.001" step="0.00005" value="0.0001">
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-header">
+                <label for="pid-kd"><strong>Kd</strong> (Derivative - Anticipates future error / dampens)</label>
+                <span id="val-kd">0.35</span>
+              </div>
+              <input type="range" id="pid-kd" min="0" max="1.5" step="0.02" value="0.35">
+            </div>
+            
+            <div class="simulation-stats">
+              <div class="stat-item">
+                <span class="stat-label">Crosstrack Error:</span>
+                <span class="stat-value" id="stat-error">0.00 px</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Control Output:</span>
+                <span class="stat-value" id="stat-control">0.00 rad/s</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Control Loop Tick:</span>
+                <span class="stat-value text-green">&lt; 1.0 ms</span>
+              </div>
+            </div>
+            
+            <div class="pid-actions">
+              <button class="btn btn-primary" id="btn-restart-sim"><i class="fa-solid fa-rotate"></i> Reset Track</button>
+              <button class="btn btn-secondary" id="btn-toggle-sim-track">Change Track</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="projects-section scroll-reveal">
+      <div class="section-container">
+        <h2 class="section-title">Projects</h2>
+        <p class="section-subtitle">Key engineering projects from my academic research and GitHub repositories.</p>
+        
+        <div class="projects-grid">
+          <!-- Mecanum Bot -->
+          <div class="project-card">
+            <div class="project-badge">Simulation</div>
+            <div class="project-info">
+              <h3>Mecanum Bot Simulator</h3>
+              <p class="project-desc">A 4-wheel kinematic mecanum drive robot simulation running in ROS 2 Jazzy and Gazebo Harmonic. Integrates LiDAR, SLAM (Cartographer), Nav2, and custom gz_ros2_control nodes.</p>
+              <div class="project-tech">
+                <span>ROS 2 Jazzy</span>
+                <span>Gazebo Harmonic</span>
+                <span>Python</span>
+                <span>C++</span>
+                <span>Nav2</span>
+              </div>
+              <div class="project-links">
+                <a href="https://github.com/Amin-Ahmed-G/mecanum_bot" class="project-link" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub Repo</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- ROS 2 Topic Watchdog -->
+          <div class="project-card">
+            <div class="project-badge">Security</div>
+            <div class="project-info">
+              <h3>ROS 2 Topic Anomaly Watchdog</h3>
+              <p class="project-desc">A lightweight intrusion detection/anomaly node for ROS 2 networks. Analyzes active publishers, message frequencies, and traffic spikes to block message floods or unauthorized nodes. Part of ongoing RoboShield research.</p>
+              <div class="project-tech">
+                <span>ROS 2 Jazzy</span>
+                <span>Python</span>
+                <span>Cybersecurity</span>
+                <span>Network Analysis</span>
+              </div>
+              <div class="project-links">
+                <a href="https://github.com/Amin-Ahmed-G" class="project-link" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-circle-info"></i> Project Bio</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Line Follower Robot -->
+          <div class="project-card">
+            <div class="project-badge">Hardware</div>
+            <div class="project-info">
+              <h3>STM32 Line Follower Robot</h3>
+              <p class="project-desc">Physical differential robot powered by an STM32 ARM Cortex-M micro-controller. Features high-speed analog sensor fusion, custom PID motor control, and optimized loop timing running under 1ms for stability at speed.</p>
+              <div class="project-tech">
+                <span>STM32</span>
+                <span>Embedded C</span>
+                <span>PID Tuning</span>
+                <span>Sensor Fusion</span>
+              </div>
+              <div class="project-links">
+                <span class="project-link-inactive"><i class="fa-solid fa-hardware-board"></i> Physical Hardware</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Temperature Sensor PCB -->
+          <div class="project-card">
+            <div class="project-badge">Hardware Design</div>
+            <div class="project-info">
+              <h3>Temperature Sensor PCB</h3>
+              <p class="project-desc">A custom 2-layer PCB designed in EasyEDA containing an ESP32 microcontroller, AMS1117 linear regulator, LM35 analog temperature sensor, USB filtering power circuitry, and UART serial programming header.</p>
+              <div class="project-tech">
+                <span>ESP32</span>
+                <span>EasyEDA</span>
+                <span>Hardware Layout</span>
+                <span>JLCPCB</span>
+              </div>
+              <div class="project-links">
+                <a href="https://github.com/Amin-Ahmed-G/temp-sensor-pcb" class="project-link" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub Repo</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Motor Control PLC -->
+          <div class="project-card">
+            <div class="project-badge">Automation</div>
+            <div class="project-info">
+              <h3>CODESYS Motor Control PLC</h3>
+              <p class="project-desc">Industrial motor control program written in PLC Ladder Logic using the CODESYS environment. Features start/stop latching with seal-in logic, normally-closed emergency stop override, and custom TON timers.</p>
+              <div class="project-tech">
+                <span>CODESYS</span>
+                <span>Ladder Logic</span>
+                <span>PLC Simulation</span>
+                <span>Automation</span>
+              </div>
+              <div class="project-links">
+                <a href="https://github.com/Amin-Ahmed-G/motor-control-plc" class="project-link" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub Repo</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Two-Wheel Robot Simulation -->
+          <div class="project-card">
+            <div class="project-badge">Simulation</div>
+            <div class="project-info">
+              <h3>Two-Wheel Differential Bot</h3>
+              <p class="project-desc">URDF model and ROS 2 simulation of a 2-wheel differential drive robot equipped with a 2D LiDAR scanner and monocular camera. Configured for SLAM mapping and reactive obstacle avoidance.</p>
+              <div class="project-tech">
+                <span>ROS 2</span>
+                <span>Gazebo</span>
+                <span>LiDAR</span>
+                <span>URDF</span>
+                <span>Camera Sensor</span>
+              </div>
+              <div class="project-links">
+                <a href="https://github.com/Amin-Ahmed-G/two_wheel_robot" class="project-link" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub Repo</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ubuntu Conky Setup -->
+          <div class="project-card">
+            <div class="project-badge">Utility</div>
+            <div class="project-info">
+              <h3>Ubuntu System Monitor (Conky)</h3>
+              <p class="project-desc">A highly customized, lightweight system monitor widget for Ubuntu 24.04/Hyprland environment optimized to display CPU/GPU temperature, core loading, and memory overhead during heavy ROS 2 Gazebo loads.</p>
+              <div class="project-tech">
+                <span>Shell Scripting</span>
+                <span>Conky</span>
+                <span>Linux Tuning</span>
+                <span>Hyprland</span>
+              </div>
+              <div class="project-links">
+                <a href="https://github.com/Amin-Ahmed-G/Ubuntu-conky-setup" class="project-link" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub Repo</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="experience-section scroll-reveal">
+      <div class="section-container">
+        <h2 class="section-title">Experience & Internships</h2>
+        
+        <div class="timeline">
+          <!-- Internship 1 -->
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-date">2025 (21 Days)</div>
+            <div class="timeline-content">
+              <h3>Robonetics Automation Solutions LLP</h3>
+              <span class="role">Robotics Intern | Chennai, India</span>
+              <p>
+                Gained hands-on experience working with industrial JAKA cobots (collaborative robots) in AGV/AMR deployment. Designed mounting assemblies using SolidWorks and witnessed how autonomous mobile vehicles coordinate workflows inside a live warehouse environment.
+              </p>
+            </div>
+          </div>
+
+          <!-- Internship 2 -->
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-date">2024 (7 Days)</div>
+            <div class="timeline-content">
+              <h3>Drone Technology Internship</h3>
+              <span class="role">Intern | NSIC Technical Services Centre, Chennai</span>
+              <p>
+                Studied UAV construction fundamentals. Assembled and disassembled carbon-fiber agricultural drone frames. Performed basic parts modeling using CATIA and reviewed battery chemistry and payload kinematics.
+              </p>
+            </div>
+          </div>
+
+          <!-- Leadership -->
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-date">2024</div>
+            <div class="timeline-content">
+              <h3>Event Organizer</h3>
+              <span class="role">Line Follower Robot Competition | University</span>
+              <p>
+                Drafted the official competition rulebook, designed the path geometries and checkpoint configurations, and oversaw track construction for the university's annual Line Follower Robot race.
+              </p>
+            </div>
+          </div>
+
+          <!-- Linux Tuning -->
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-date">Ongoing</div>
+            <div class="timeline-content">
+              <h3>Linux System Optimization</h3>
+              <span class="role">Personal Workstation Setup</span>
+              <p>
+                Engineered and customized my own Ubuntu / Hyprland tiling window manager environment. Optimized to achieve minimal RAM overhead (~600MB at idle) and low process latency to maximize computational resources for heavy robotics simulations.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section scroll-reveal">
+      <div class="section-container">
+        <h2 class="section-title">Get In Touch</h2>
+        <p class="section-subtitle">Let's collaborate on robotics software, control system designs, or embedded solutions.</p>
+        
+        <div class="contact-grid">
+          <!-- Info Details -->
+          <div class="contact-info-panel">
+            <h3>Contact Information</h3>
+            <p>Feel free to reach out to me for internship opportunities, research collaborations, or simply to talk about ROS 2!</p>
+            
+            <div class="info-details">
+              <div class="info-item">
+                <i class="fa-solid fa-envelope"></i>
+                <div>
+                  <h4>Email</h4>
+                  <a href="mailto:aminahmedg2005@gmail.com">aminahmedg2005@gmail.com</a>
+                </div>
+              </div>
+              <div class="info-item">
+                <i class="fa-solid fa-phone"></i>
+                <div>
+                  <h4>Phone</h4>
+                  <a href="tel:+918122241705">+91 8122241705</a>
+                </div>
+              </div>
+              <div class="info-item">
+                <i class="fa-solid fa-location-dot"></i>
+                <div>
+                  <h4>Location</h4>
+                  <p>Chennai, Tamil Nadu, India</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="social-links">
+              <a href="https://github.com/Amin-Ahmed-G" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+              <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+            </div>
+          </div>
+
+          <!-- Contact Form -->
+          <div class="contact-form-panel">
+            <h3>Send a Message</h3>
+            <form id="contact-form" action="#" method="POST">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="form-name">Name</label>
+                  <input type="text" id="form-name" required placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                  <label for="form-email">Email</label>
+                  <input type="email" id="form-email" required placeholder="john@example.com">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="form-subject">Subject</label>
+                <input type="text" id="form-subject" required placeholder="Robotics Internship / Project Discussion">
+              </div>
+              <div class="form-group">
+                <label for="form-message">Message</label>
+                <textarea id="form-message" rows="5" required placeholder="Write your message here..."></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary" id="btn-submit-contact">Send Message <i class="fa-solid fa-paper-plane"></i></button>
+            </form>
+            <div id="form-response-msg" class="form-response"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-container">
+      <p>&copy; 2026 Amin Ahmed G. Built with precision, control theory, and passion.</p>
+      <p class="footer-subtext">ROS 2 Jazzy | STM32 Embedded Systems | Anna University</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="pid_sim.js"></script>
+  <script src="terminal.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
