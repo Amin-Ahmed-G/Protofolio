@@ -261,11 +261,14 @@ document.addEventListener('DOMContentLoaded', function() {
   animateLidar();
 
   /* ==========================================================================
-     4. Contact Form Handler (Simulated Network Call)
+     4. Contact Form Handler (Web3Forms API Integration)
      ========================================================================== */
   const contactForm = document.getElementById('contact-form');
   const responseMsg = document.getElementById('form-response-msg');
   const submitBtn = document.getElementById('btn-submit-contact');
+
+  // Replace with your Web3Forms Access Key (get a free one from https://web3forms.com/)
+  const WEB3FORMS_ACCESS_KEY = "YOUR_ACCESS_KEY_HERE";
 
   contactForm.addEventListener('submit', function(e) {
     e.preventDefault();
@@ -278,17 +281,47 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const name = document.getElementById('form-name').value;
     const email = document.getElementById('form-email').value;
+    const subject = document.getElementById('form-subject').value;
+    const message = document.getElementById('form-message').value;
 
-    setTimeout(() => {
-      // Simulate successful response message
+    const formData = {
+      access_key: WEB3FORMS_ACCESS_KEY,
+      name: name,
+      email: email,
+      subject: subject,
+      message: message
+    };
+
+    fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    })
+    .then(async (response) => {
+      let json = await response.json();
       submitBtn.disabled = false;
       submitBtn.innerHTML = 'Send Message <i class="fa-solid fa-paper-plane"></i>';
       
-      responseMsg.className = 'form-response success';
-      responseMsg.innerHTML = `<i class="fa-solid fa-square-check"></i> Command successful. Message logged to ROS2 topic inbox. Thank you, <strong>${name}</strong>! I will get back to you at <strong>${email}</strong>.`;
-      
-      // Reset form
-      contactForm.reset();
-    }, 1500);
+      if (response.status == 200) {
+        responseMsg.className = 'form-response success';
+        responseMsg.innerHTML = `<i class="fa-solid fa-square-check"></i> Command successful. Message logged to ROS2 topic inbox. Thank you, <strong>${name}</strong>! I will get back to you at <strong>${email}</strong>.`;
+        responseMsg.style.display = 'block';
+        contactForm.reset();
+      } else {
+        responseMsg.className = 'form-response error';
+        responseMsg.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Submission failed: ${json.message || 'Please check your access key.'}`;
+        responseMsg.style.display = 'block';
+      }
+    })
+    .catch(error => {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = 'Send Message <i class="fa-solid fa-paper-plane"></i>';
+      responseMsg.className = 'form-response error';
+      responseMsg.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Network error. Please check your internet connection and try again.`;
+      responseMsg.style.display = 'block';
+    });
   });
 });
