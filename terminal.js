@@ -79,14 +79,14 @@ Passionate about low-latency Linux workspaces, ROS 2 middleware, and embedded sy
 
   const skillsText = `=== TECHNICAL SKILLS ===
 * Frameworks: ROS 2 (Jazzy/Humble), Gazebo Harmonic, Nav2, SLAM, MoveIt
-* Languages:  C, C++, Python, Rust (Learning), Bash Scripting
+* Languages:  C, C++, Python, Rust, Bash Scripting
 * Hardware:   STM32 (ARM), ESP32, Raspberry Pi, LiDAR, UART/I2C/SPI
 * CAD/Design: SolidWorks, Fusion 360, EasyEDA, KiCad
 * Systems:    Linux (Ubuntu/Hyprland), Docker, Git, CODESYS soft PLC`;
 
   const projectsText = `=== KEY PROJECTS ===
 1. Mecanum Bot Simulation - ROS2 Jazzy, Gazebo Harmonic, LiDAR, SLAM
-2. ROS 2 Watchdog         - Anomaly/ मैसेज फ़्लड detector node
+2. RoboShield Watchdog     - Real-time RTPS/DDS intrusion detection node (Rust)
 3. Line Follower Robot    - Physical STM32 robot running < 1ms loop control
 4. Temp Sensor PCB        - Custom 2-layer PCB for ESP32 designed in EasyEDA
 5. Motor Control PLC      - CODESYS Ladder logic industrial logic simulation`;
