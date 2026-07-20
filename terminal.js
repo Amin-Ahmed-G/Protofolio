@@ -105,11 +105,12 @@ Passionate about low-latency Linux workspaces, ROS 2 middleware, and embedded sy
   - nav2_msgs/action/FollowWaypoints [/follow_waypoints] -> Multi-point path planning`;
 
   const projectsText = `=== KEY PROJECTS ===
-1. Mecanum Bot Simulation - ROS 2 Jazzy, Gazebo Harmonic, LiDAR, SLAM, Nav2 Actions
-2. Custom ROS 2 Service   - square_interfaces (Square.srv request/response pattern)
-3. Line Follower Robot    - Physical STM32 robot running < 1ms loop control
-4. Temp Sensor PCB        - Custom 2-layer PCB for ESP32 designed in EasyEDA
-5. Motor Control PLC      - CODESYS Ladder logic industrial logic simulation`;
+1. AMR Leader-Follower    - Multi-robot formation control, 4WD Gazebo sim, TF tracking, Nav2 AMCL, EKF fusion & Web Dashboard
+2. Mecanum Bot Simulation - ROS 2 Jazzy, Gazebo Harmonic, LiDAR, SLAM, Nav2 Actions
+3. RoboShield NIDS        - Wire-level RTPS/DDS intrusion detection & NFQUEUE firewall node
+4. Line Follower Robot    - Physical STM32 robot running < 1ms loop control
+5. Temp Sensor PCB        - Custom 2-layer PCB for ESP32 designed in EasyEDA
+6. Motor Control PLC      - CODESYS Ladder logic industrial logic simulation`;
 
   const contactText = `=== CONTACT DETAILS ===
 * Email:   aminahmedg2005@gmail.com
