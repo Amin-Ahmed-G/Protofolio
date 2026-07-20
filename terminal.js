@@ -29,20 +29,21 @@
   const bootSequence = [
     { text: "=== AMIN.ROBOTICS SYSTEM V2.6 ===", delay: 50 },
     { text: "Booting Hyprland custom kernel modules...", delay: 200 },
-    { text: "Mounting workspace: <span class='text-green'>/home/amin/workspace</span> ... [OK]", delay: 150 },
+    { text: "Mounting workspace: <span class='text-green'>/home/amin/ros2_ws</span> ... [OK]", delay: 150 },
     { text: "Detecting hardware architectures:", delay: 50 },
     { text: "  - Host workstation: CPU x86_64 Core-i7, OS: Ubuntu 24.04 LTS", delay: 50 },
     { text: "  - Target: STM32F4 ARM Cortex-M4, ESP32-WROOM-3D", delay: 50 },
     { text: "Initializing ROS2 Jazzy core...", delay: 300 },
-    { text: "Checking active ROS2 topic subscriptions:", delay: 80 },
-    { text: "  * <span class='text-green'>/cmd_vel</span> [geometry_msgs/msg/Twist]", delay: 30 },
-    { text: "  * <span class='text-green'>/scan</span> [sensor_msgs/msg/LaserScan]", delay: 30 },
-    { text: "  * <span class='text-green'>/odom</span> [nav_msgs/msg/Odometry]", delay: 30 },
-    { text: "  * <span class='text-green'>/roboshield/alerts</span> [roboshield_msgs/msg/Anomaly]", delay: 30 },
+    { text: "Checking active ROS2 topic subscriptions & interfaces:", delay: 80 },
+    { text: "  * <span class='text-green'>[MSG] /cmd_vel</span> [geometry_msgs/msg/Twist]", delay: 30 },
+    { text: "  * <span class='text-green'>[MSG] /scan</span> [sensor_msgs/msg/LaserScan]", delay: 30 },
+    { text: "  * <span class='text-green'>[MSG] /odom</span> [nav_msgs/msg/Odometry]", delay: 30 },
+    { text: "  * <span class='text-green'>[SRV] /square_number</span> [square_interfaces/srv/Square]", delay: 30 },
+    { text: "  * <span class='text-green'>[ACT] /navigate_to_pose</span> [nav2_msgs/action/NavigateToPose]", delay: 30 },
     { text: "Loading PID Controller settings... [READY]", delay: 100 },
     { text: "System diagnostics: <span class='text-green'>0 ERRORS</span>, all systems nominal.", delay: 100 },
     { text: "----------------------------------------", delay: 50 },
-    { text: "Type <span class='text-green'>'help'</span> to see a list of commands, or click the presets below.", delay: 50 }
+    { text: "Type <span class='text-green'>'interfaces'</span> or <span class='text-green'>'help'</span> to view ROS 2 architecture details.", delay: 50 }
   ];
 
   let bootIndex = 0;
@@ -67,6 +68,7 @@
   help        - Show this menu
   about       - Brief introduction of myself
   skills      - List my engineering stack
+  interfaces  - Display ROS 2 Msg, Srv, and Action definitions
   projects    - Show key engineering achievements
   contact     - Print my communication details
   diagnostics - Run system diagnostics checks
@@ -84,9 +86,27 @@ Passionate about low-latency Linux workspaces, ROS 2 middleware, and embedded sy
 * CAD/Design: SolidWorks, Fusion 360, EasyEDA, KiCad
 * Systems:    Linux (Ubuntu/Hyprland), Docker, Git, CODESYS soft PLC`;
 
+  const interfacesText = `=== ROS 2 INTERFACES, SERVICES & ACTIONS ===
+* MESSAGES (msg):
+  - geometry_msgs/msg/Twist     [/cmd_vel]             -> Velocity commands
+  - sensor_msgs/msg/LaserScan   [/scan]                -> 2D LiDAR scan data
+  - nav_msgs/msg/Odometry       [/odom]                -> Position & velocity feedback
+  - sensor_msgs/msg/JointState  [/joint_states]        -> Robot joint kinematics
+  - sensor_msgs/msg/Image       [/camera/image_raw]    -> Monocular vision feed
+  - tf2_msgs/msg/TFMessage      [/tf, /tf_static]      -> Coordinate transformations
+
+* SERVICES (srv):
+  - square_interfaces/srv/Square [/square_number]      -> Custom C++ squaring service
+  - nav2_msgs/srv/GetCostmap    [/global_costmap]      -> Costmap query service
+  - std_srvs/srv/Empty          [/reset_simulation]    -> Reset environment state
+
+* ACTIONS (action):
+  - nav2_msgs/action/NavigateToPose [/navigate_to_pose] -> Goal-based autonomous navigation
+  - nav2_msgs/action/FollowWaypoints [/follow_waypoints] -> Multi-point path planning`;
+
   const projectsText = `=== KEY PROJECTS ===
-1. Mecanum Bot Simulation - ROS2 Jazzy, Gazebo Harmonic, LiDAR, SLAM
-2. RoboShield Watchdog     - Real-time RTPS/DDS intrusion detection node (Rust)
+1. Mecanum Bot Simulation - ROS 2 Jazzy, Gazebo Harmonic, LiDAR, SLAM, Nav2 Actions
+2. Custom ROS 2 Service   - square_interfaces (Square.srv request/response pattern)
 3. Line Follower Robot    - Physical STM32 robot running < 1ms loop control
 4. Temp Sensor PCB        - Custom 2-layer PCB for ESP32 designed in EasyEDA
 5. Motor Control PLC      - CODESYS Ladder logic industrial logic simulation`;
@@ -122,6 +142,13 @@ Passionate about low-latency Linux workspaces, ROS 2 middleware, and embedded sy
         break;
       case 'skills':
         print(skillsText, 'cmd-out');
+        break;
+      case 'interfaces':
+      case 'ros2':
+      case 'srv':
+      case 'msg':
+      case 'action':
+        print(interfacesText, 'cmd-out');
         break;
       case 'projects':
         print(projectsText, 'cmd-out');
