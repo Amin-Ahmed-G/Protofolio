@@ -639,13 +639,41 @@ section {
 }
 
 .skill-list li {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 0.95rem;
   color: var(--text-secondary);
   border-bottom: 1px solid rgba(255, 255, 255, 0.02);
-  padding-bottom: 0.5rem;
+  padding: 0.5rem 0.4rem;
+  border-radius: 6px;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.skill-list li:hover {
+  background: rgba(0, 242, 254, 0.06);
+  color: #fff;
+}
+
+.skill-name-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.skill-icon {
+  font-size: 1rem;
+  color: var(--accent-cyan);
+  width: 18px;
+  text-align: center;
+  transition: transform 0.25s ease, color 0.25s ease;
+}
+
+.skill-list li:hover .skill-icon {
+  transform: scale(1.25) rotate(5deg);
+  color: var(--accent-green);
 }
 
 .skill-level {
@@ -656,11 +684,59 @@ section {
   color: var(--accent-cyan);
   padding: 0.15rem 0.5rem;
   border-radius: 4px;
+  transition: all 0.2s ease;
 }
 
 .skill-list li:hover .skill-level {
-  background: rgba(0, 242, 254, 0.1);
+  background: rgba(0, 242, 254, 0.15);
+  border-color: var(--accent-cyan);
   color: #fff;
+}
+
+/* Tooltip Popup Bubble */
+.skill-list li[data-tooltip]::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-6px) scale(0.9);
+  opacity: 0;
+  pointer-events: none;
+  background: #0f172a;
+  border: 1px solid var(--accent-cyan);
+  color: #fff;
+  font-size: 0.75rem;
+  font-family: 'Geist Mono', monospace;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  white-space: nowrap;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 15px rgba(0, 242, 254, 0.2);
+  z-index: 100;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.skill-list li[data-tooltip]::after {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(2px);
+  opacity: 0;
+  pointer-events: none;
+  border: 5px solid transparent;
+  border-top-color: var(--accent-cyan);
+  z-index: 100;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.skill-list li[data-tooltip]:hover::before {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-10px) scale(1);
+}
+
+.skill-list li[data-tooltip]:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-2px);
 }
 
 /* PID Simulator Layout */
