@@ -670,7 +670,7 @@ section {
 .skill-name-wrap span {
   line-height: 1.4;
   min-width: 0;
-  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .skill-icon-wrap {
