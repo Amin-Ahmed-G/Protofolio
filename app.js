@@ -261,14 +261,11 @@ document.addEventListener('DOMContentLoaded', function() {
   animateLidar();
 
   /* ==========================================================================
-     4. Contact Form Handler (Web3Forms API Integration)
+     4. Contact Form Handler (FormSubmit Integration - Direct to Email)
      ========================================================================== */
   const contactForm = document.getElementById('contact-form');
   const responseMsg = document.getElementById('form-response-msg');
   const submitBtn = document.getElementById('btn-submit-contact');
-
-  // Replace with your Web3Forms Access Key (get a free one from https://web3forms.com/)
-  const WEB3FORMS_ACCESS_KEY = "YOUR_ACCESS_KEY_HERE";
 
   contactForm.addEventListener('submit', function(e) {
     e.preventDefault();
@@ -285,14 +282,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const message = document.getElementById('form-message').value;
 
     const formData = {
-      access_key: WEB3FORMS_ACCESS_KEY,
       name: name,
       email: email,
-      subject: subject,
-      message: message
+      _subject: subject || `Portfolio Contact Message from ${name}`,
+      message: message,
+      _captcha: "false"
     };
 
-    fetch('https://api.web3forms.com/submit', {
+    fetch('https://formsubmit.co/ajax/aminahmedg2005@gmail.com', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -305,14 +302,19 @@ document.addEventListener('DOMContentLoaded', function() {
       submitBtn.disabled = false;
       submitBtn.innerHTML = 'Send Message <i class="fa-solid fa-paper-plane"></i>';
       
-      if (response.status == 200) {
+      if (response.ok || json.success === "true" || json.success === true) {
         responseMsg.className = 'form-response success';
-        responseMsg.innerHTML = `<i class="fa-solid fa-square-check"></i> Command successful. Message logged to ROS2 topic inbox. Thank you, <strong>${name}</strong>! I will get back to you at <strong>${email}</strong>.`;
+        responseMsg.innerHTML = `<i class="fa-solid fa-square-check"></i> Command successful! Message delivered to <strong>aminahmedg2005@gmail.com</strong>. Thank you, <strong>${name}</strong>!`;
+        responseMsg.style.display = 'block';
+        contactForm.reset();
+      } else if (json.message && json.message.includes('Activation')) {
+        responseMsg.className = 'form-response success';
+        responseMsg.innerHTML = `<i class="fa-solid fa-envelope-circle-check"></i> Message sent! An activation email was sent to <strong>aminahmedg2005@gmail.com</strong>. Click 'Activate Form' in that email to receive all future messages directly.`;
         responseMsg.style.display = 'block';
         contactForm.reset();
       } else {
         responseMsg.className = 'form-response error';
-        responseMsg.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Submission failed: ${json.message || 'Please check your access key.'}`;
+        responseMsg.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Submission issue: ${json.message || 'Unable to deliver message.'}`;
         responseMsg.style.display = 'block';
       }
     })
@@ -320,7 +322,7 @@ document.addEventListener('DOMContentLoaded', function() {
       submitBtn.disabled = false;
       submitBtn.innerHTML = 'Send Message <i class="fa-solid fa-paper-plane"></i>';
       responseMsg.className = 'form-response error';
-      responseMsg.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Network error. Please check your internet connection and try again.`;
+      responseMsg.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Network error. Please check your connection and try again.`;
       responseMsg.style.display = 'block';
     });
   });
