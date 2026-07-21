@@ -635,7 +635,7 @@ section {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
+  gap: 0.6rem;
 }
 
 .skill-list li {
@@ -643,13 +643,15 @@ section {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.95rem;
+  gap: 0.5rem;
+  font-size: 0.9rem;
   color: var(--text-secondary);
   border-bottom: 1px solid rgba(255, 255, 255, 0.02);
   padding: 0.5rem 0.4rem;
   border-radius: 6px;
   transition: all 0.25s ease;
   cursor: pointer;
+  min-width: 0;
 }
 
 .skill-list li:hover {
@@ -660,7 +662,18 @@ section {
 .skill-name-wrap {
   display: flex;
   align-items: center;
-  gap: 0.9rem;
+  gap: 0.7rem;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.skill-name-wrap span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  flex: 1;
 }
 
 .skill-icon-wrap {
@@ -697,14 +710,16 @@ section {
 }
 
 .skill-level {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: bold;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--border-color);
   color: var(--accent-cyan);
-  padding: 0.15rem 0.5rem;
+  padding: 0.15rem 0.45rem;
   border-radius: 4px;
   transition: all 0.2s ease;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .skill-list li:hover .skill-level {
