@@ -1380,3 +1380,26 @@ section {
 .project-video-container:hover video {
   filter: brightness(1.05);
 }
+
+/* Project Card Image Preview Styling */
+.project-image-container {
+  width: 100%;
+  position: relative;
+  background: #000;
+  border-bottom: 1px solid var(--border-color);
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+  overflow: hidden;
+}
+
+.project-image-container img {
+  width: 100%;
+  height: 210px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease, filter 0.3s ease;
+}
+
+.project-card:hover .project-image-container img {
+  transform: scale(1.04);
+  filter: brightness(1.05);
+}
