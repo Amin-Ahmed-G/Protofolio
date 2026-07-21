@@ -592,13 +592,17 @@ section {
 
 /* Skills Grid */
 .skills-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 1.5rem;
+  justify-content: center;
   margin-top: 1rem;
 }
 
 .skill-card {
+  flex: 1 1 280px;
+  min-width: 260px;
+  max-width: 420px;
   background: rgba(16, 21, 36, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
