@@ -311,85 +311,6 @@
       </div>
     </section>
 
-    <!-- PID Sandbox Section -->
-    <section id="pid-lab" class="pid-section scroll-reveal">
-      <div class="section-container">
-        <h2 class="section-title">Control Systems Lab</h2>
-        <p class="section-subtitle">A live interactive PID tuning simulator. Drag the sliders to see how gains affect the trajectory of a line follower robot.</p>
-        
-        <div class="pid-grid">
-          <!-- Simulation Canvas Column -->
-          <div class="pid-canvas-container">
-            <div class="pid-canvas-header">
-              <span class="status-indicator live"></span> LIVE TRACKING VISUALIZER
-            </div>
-            <canvas id="pid-canvas" width="600" height="300"></canvas>
-            <div class="pid-graph-container">
-              <div class="graph-label">Steering Error Over Time (e = line center - robot position)</div>
-              <canvas id="pid-graph" width="600" height="120"></canvas>
-            </div>
-          </div>
-          
-          <!-- Controls Column -->
-          <div class="pid-controls-card">
-            <h3>PID Gain Tuning</h3>
-            <p class="controls-desc">Formulate steering: \(u(t) = K_p e(t) + K_i \int e(t)dt + K_d \frac{de(t)}{dt}\)</p>
-            
-            <div class="control-presets">
-              <span class="preset-label">Presets:</span>
-              <button class="btn btn-preset active" id="preset-tuned">Perfect Tune</button>
-              <button class="btn btn-preset" id="preset-oscillating">Oscillating (High Kp)</button>
-              <button class="btn btn-preset" id="preset-sluggish">Sluggish (Low Kp)</button>
-            </div>
-            
-            <div class="slider-group">
-              <div class="slider-header">
-                <label for="pid-kp"><strong>Kp</strong> (Proportional - Reacts to current error)</label>
-                <span id="val-kp">0.05</span>
-              </div>
-              <input type="range" id="pid-kp" min="0" max="0.3" step="0.005" value="0.05">
-            </div>
-
-            <div class="slider-group">
-              <div class="slider-header">
-                <label for="pid-ki"><strong>Ki</strong> (Integral - Eliminates steady-state offset)</label>
-                <span id="val-ki">0.0001</span>
-              </div>
-              <input type="range" id="pid-ki" min="0" max="0.001" step="0.00005" value="0.0001">
-            </div>
-
-            <div class="slider-group">
-              <div class="slider-header">
-                <label for="pid-kd"><strong>Kd</strong> (Derivative - Anticipates future error / dampens)</label>
-                <span id="val-kd">0.35</span>
-              </div>
-              <input type="range" id="pid-kd" min="0" max="1.5" step="0.02" value="0.35">
-            </div>
-            
-            <div class="simulation-stats">
-              <div class="stat-item">
-                <span class="stat-label">Crosstrack Error:</span>
-                <span class="stat-value" id="stat-error">0.00 px</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">Control Output:</span>
-                <span class="stat-value" id="stat-control">0.00 rad/s</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">Control Loop Tick:</span>
-                <span class="stat-value text-green">&lt; 1.0 ms</span>
-              </div>
-            </div>
-            
-            <div class="pid-actions">
-              <button class="btn btn-primary" id="btn-restart-sim"><i class="fa-solid fa-rotate"></i> Reset Track</button>
-              <button class="btn btn-secondary" id="btn-toggle-sim-track">Change Track</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- Projects Section -->
     <section id="projects" class="projects-section scroll-reveal">
       <div class="section-container">
@@ -590,6 +511,85 @@
               <div class="project-links">
                 <a href="https://github.com/Amin-Ahmed-G/Ubuntu-conky-setup" class="project-link" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub Repo</a>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PID Sandbox Section -->
+    <section id="pid-lab" class="pid-section scroll-reveal">
+      <div class="section-container">
+        <h2 class="section-title">Control Systems Lab</h2>
+        <p class="section-subtitle">A live interactive PID tuning simulator. Drag the sliders to see how gains affect the trajectory of a line follower robot.</p>
+        
+        <div class="pid-grid">
+          <!-- Simulation Canvas Column -->
+          <div class="pid-canvas-container">
+            <div class="pid-canvas-header">
+              <span class="status-indicator live"></span> LIVE TRACKING VISUALIZER
+            </div>
+            <canvas id="pid-canvas" width="600" height="300"></canvas>
+            <div class="pid-graph-container">
+              <div class="graph-label">Steering Error Over Time (e = line center - robot position)</div>
+              <canvas id="pid-graph" width="600" height="120"></canvas>
+            </div>
+          </div>
+          
+          <!-- Controls Column -->
+          <div class="pid-controls-card">
+            <h3>PID Gain Tuning</h3>
+            <p class="controls-desc">Formulate steering: \(u(t) = K_p e(t) + K_i \int e(t)dt + K_d \frac{de(t)}{dt}\)</p>
+            
+            <div class="control-presets">
+              <span class="preset-label">Presets:</span>
+              <button class="btn btn-preset active" id="preset-tuned">Perfect Tune</button>
+              <button class="btn btn-preset" id="preset-oscillating">Oscillating (High Kp)</button>
+              <button class="btn btn-preset" id="preset-sluggish">Sluggish (Low Kp)</button>
+            </div>
+            
+            <div class="slider-group">
+              <div class="slider-header">
+                <label for="pid-kp"><strong>Kp</strong> (Proportional - Reacts to current error)</label>
+                <span id="val-kp">0.05</span>
+              </div>
+              <input type="range" id="pid-kp" min="0" max="0.3" step="0.005" value="0.05">
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-header">
+                <label for="pid-ki"><strong>Ki</strong> (Integral - Eliminates steady-state offset)</label>
+                <span id="val-ki">0.0001</span>
+              </div>
+              <input type="range" id="pid-ki" min="0" max="0.001" step="0.00005" value="0.0001">
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-header">
+                <label for="pid-kd"><strong>Kd</strong> (Derivative - Anticipates future error / dampens)</label>
+                <span id="val-kd">0.35</span>
+              </div>
+              <input type="range" id="pid-kd" min="0" max="1.5" step="0.02" value="0.35">
+            </div>
+            
+            <div class="simulation-stats">
+              <div class="stat-item">
+                <span class="stat-label">Crosstrack Error:</span>
+                <span class="stat-value" id="stat-error">0.00 px</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Control Output:</span>
+                <span class="stat-value" id="stat-control">0.00 rad/s</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Control Loop Tick:</span>
+                <span class="stat-value text-green">&lt; 1.0 ms</span>
+              </div>
+            </div>
+            
+            <div class="pid-actions">
+              <button class="btn btn-primary" id="btn-restart-sim"><i class="fa-solid fa-rotate"></i> Reset Track</button>
+              <button class="btn btn-secondary" id="btn-toggle-sim-track">Change Track</button>
             </div>
           </div>
         </div>
