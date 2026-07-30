@@ -215,13 +215,21 @@
           <!-- KKR Internship -->
           <div class="timeline-item">
             <div class="timeline-dot"></div>
-            <div class="timeline-date">2026 (20 Days)</div>
+            <div class="timeline-date">Jul 2026 · 20 Days</div>
             <div class="timeline-content">
               <h3>Karthikesh Robotics (KKR)</h3>
-              <span class="role">Robotics Intern | Chennai, India</span>
+              <span class="role">Robotics Intern · Chennai, India | Mentors: Karthikesh &amp; Sundar</span>
               <p>
-                Developed Gazebo (gz) physics simulations and Autonomous Mobile Robot (AMR) project configurations. Configured multi-robot navigation topologies and evaluated sensor integration workflows for real-time mobile platforms.
+                Completed an intensive 20-day robotics training program culminating in the <strong>Café Butler Robot</strong> — a fully autonomous multi-table delivery robot built from scratch using ROS 2 Jazzy and Gazebo Harmonic. Implemented a custom 7-state Finite State Machine (FSM), Nav2 navigation with AMCL localisation, dual LiDAR sensor fusion, DWB local planner, keepout zone costmaps, nearest-neighbour route optimisation, and a live WebSocket operator dashboard. Built on and extended the simulation environment provided by mentor <strong>Sundar sir</strong> as a reference base.
               </p>
+              <div class="project-tech" style="margin-top: 0.8rem;">
+                <span>ROS 2 Jazzy</span>
+                <span>Gazebo Harmonic</span>
+                <span>Nav2 + AMCL</span>
+                <span>Python FSM</span>
+                <span>rosbridge WebSocket</span>
+                <span>DWB Controller</span>
+              </div>
             </div>
           </div>
 
@@ -366,6 +374,31 @@
         <p class="section-subtitle">Key engineering projects from my academic research and GitHub repositories.</p>
         
         <div class="projects-grid">
+          <!-- 0. Café Butler Robot — FEATURED (pinned first) -->
+          <div class="project-card featured-card">
+            <div class="project-video-container">
+              <video src="videos/cafe_butler_robot.mp4" controls autoplay loop muted playsinline></video>
+            </div>
+            <div class="project-badge" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">⭐ Featured · Autonomous Delivery</div>
+            <div class="project-info">
+              <h3>Café Butler Robot — Autonomous Multi-Table Delivery System</h3>
+              <p class="project-desc">A fully autonomous FSM-driven differential-drive mobile robot that navigates a simulated café environment, collects food orders from the kitchen, and delivers them to multiple customer tables with route optimisation. Features a live WebSocket operator dashboard, Nav2 navigation stack, AMCL localisation, dual LiDAR sensors, keepout zones, and delivery metrics logging. Final project under the mentorship of <strong>Karthikesh Robotics</strong>.</p>
+              <div class="project-tech">
+                <span>ROS 2 Jazzy</span>
+                <span>Gazebo Harmonic</span>
+                <span>Nav2</span>
+                <span>AMCL</span>
+                <span>Python FSM</span>
+                <span>rosbridge WebSocket</span>
+                <span>DWB Controller</span>
+                <span>Web Dashboard</span>
+              </div>
+              <div class="project-links">
+                <a href="https://github.com/Amin-Ahmed-G/cafe-butler-robot" class="project-link" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub Repo</a>
+              </div>
+            </div>
+          </div>
+
           <!-- 1. AMR Leader Follower -->
           <div class="project-card">
             <div class="project-video-container">
