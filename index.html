@@ -378,7 +378,11 @@
           <!-- 1. AMR Leader Follower — FIRST -->
           <div class="project-card">
             <div class="project-video-container">
-              <video src="videos/amr_leader_follower.mp4" controls autoplay loop muted playsinline></video>
+              <video controls autoplay loop muted playsinline preload="metadata">
+                <source src="videos/amr_leader_follower.mp4" type="video/mp4">
+                <source src="videos/amr_leader_follower.webm" type="video/webm">
+                Your browser does not support HTML5 video.
+              </video>
             </div>
             <div class="project-badge">Swarm &amp; AMRs</div>
             <div class="project-info">
