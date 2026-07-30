@@ -1667,60 +1667,63 @@ section {
   overflow-x: auto;
   display: flex;
   justify-content: center;
+  padding: 1.2rem 0;
 }
 
 .ContributionCalendar-grid {
   border-collapse: separate !important;
-  border-spacing: 3px !important;
+  border-spacing: 4px !important;
   margin: 0 auto;
 }
 
-.ContributionCalendar-day, td.ContributionCalendar-day {
-  width: 11px;
-  height: 11px;
-  border-radius: 2px;
-  transition: transform 0.15s ease, filter 0.15s ease;
+.ContributionCalendar-day, td.ContributionCalendar-day, rect.ContributionCalendar-day {
+  width: 13px !important;
+  height: 13px !important;
+  border-radius: 3px !important;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s ease !important;
 }
 
-.ContributionCalendar-day:hover {
-  transform: scale(1.3);
-  z-index: 10;
+.ContributionCalendar-day:hover, td.ContributionCalendar-day:hover, rect.ContributionCalendar-day:hover {
+  transform: scale(1.5) !important;
+  z-index: 20;
+  box-shadow: 0 0 12px var(--accent-cyan) !important;
 }
 
-.ContributionCalendar-day[data-level="0"] { background-color: #161b22 !important; fill: #161b22; outline: 1px solid rgba(255, 255, 255, 0.04); }
+.ContributionCalendar-day[data-level="0"] { background-color: #161b22 !important; fill: #161b22; outline: 1px solid rgba(0, 242, 254, 0.08); }
 .ContributionCalendar-day[data-level="1"] { background-color: #0e4429 !important; fill: #0e4429; }
 .ContributionCalendar-day[data-level="2"] { background-color: #006d32 !important; fill: #006d32; }
-.ContributionCalendar-day[data-level="3"] { background-color: #26a641 !important; fill: #26a641; }
-.ContributionCalendar-day[data-level="4"] { background-color: #39d353 !important; fill: #39d353; box-shadow: 0 0 6px rgba(57, 211, 83, 0.6); }
+.ContributionCalendar-day[data-level="3"] { background-color: #26a641 !important; fill: #26a641; box-shadow: 0 0 6px rgba(38, 166, 65, 0.6); }
+.ContributionCalendar-day[data-level="4"] { background-color: #00f2fe !important; fill: #00f2fe; box-shadow: 0 0 10px #00f2fe, 0 0 18px rgba(0, 242, 254, 0.4); }
 
 .ContributionCalendar-label {
-  color: #8b949e;
-  font-size: 0.75rem;
+  color: var(--accent-cyan);
+  font-size: 0.78rem;
   font-family: 'Geist Mono', monospace;
-  padding-bottom: 4px;
+  padding-bottom: 6px;
+  font-weight: 600;
 }
 
 .github-calendar-legend {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-top: 1.2rem;
-  font-size: 0.75rem;
+  gap: 8px;
+  margin-top: 1.5rem;
+  font-size: 0.78rem;
   color: #8b949e;
   font-family: 'Geist Mono', monospace;
 }
 
 .legend-sq {
-  width: 11px;
-  height: 11px;
-  border-radius: 2px;
+  width: 13px;
+  height: 13px;
+  border-radius: 3px;
   display: inline-block;
 }
-.legend-sq.sq-0 { background-color: #161b22; outline: 1px solid rgba(255,255,255,0.05); }
+.legend-sq.sq-0 { background-color: #161b22; outline: 1px solid rgba(0, 242, 254, 0.08); }
 .legend-sq.sq-1 { background-color: #0e4429; }
 .legend-sq.sq-2 { background-color: #006d32; }
-.legend-sq.sq-3 { background-color: #26a641; }
-.legend-sq.sq-4 { background-color: #39d353; box-shadow: 0 0 6px rgba(57, 211, 83, 0.6); }
+.legend-sq.sq-3 { background-color: #26a641; box-shadow: 0 0 6px rgba(38, 166, 65, 0.6); }
+.legend-sq.sq-4 { background-color: #00f2fe; box-shadow: 0 0 10px #00f2fe; }
 
 .github-stats-grid {
   display: grid;
