@@ -2439,3 +2439,10 @@ body.panel-open { overflow: hidden; }
    ENHANCEMENTS — Contact Link Hover
    ========================================================================== */
 .contact-link:hover { color: var(--accent-cyan) !important; text-shadow: 0 0 8px rgba(0, 242, 254, 0.4); }
+
+/* ==========================================================================
+   ENHANCEMENTS — Fix Skill List Layout
+   ========================================================================== */
+.skill-list li {
+  flex-wrap: wrap;
+}
