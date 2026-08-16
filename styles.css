@@ -2446,3 +2446,60 @@ body.panel-open { overflow: hidden; }
 .skill-list li {
   flex-wrap: wrap;
 }
+
+/* ==========================================================================
+   ENHANCEMENTS — Brute Force Layout Fixes
+   ========================================================================== */
+.skill-list li {
+  flex-wrap: wrap !important;
+}
+.skill-name-wrap, .skill-level {
+  flex-shrink: 0 !important;
+  white-space: nowrap !important;
+}
+
+/* ==========================================================================
+   ENHANCEMENTS — Modern Contact Grid
+   ========================================================================== */
+.contact-buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.contact-btn {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(16, 21, 36, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  color: var(--text-primary);
+}
+.contact-btn i {
+  font-size: 1.5rem;
+  color: var(--accent-cyan);
+}
+.contact-btn-text {
+  display: flex;
+  flex-direction: column;
+}
+.contact-btn-title {
+  font-family: ''Geist Mono'', monospace;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.1rem;
+}
+.contact-btn-sub {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+.contact-btn:hover {
+  background: rgba(0, 242, 254, 0.05);
+  border-color: rgba(0, 242, 254, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 242, 254, 0.15);
+  transform: translateY(-2px);
+}
