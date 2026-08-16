@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - Not Found | Amin Ahmed G</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <style>
+    :root {
+      --bg-primary: #0a0d14;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --accent-cyan: #00f2fe;
+      --border-glow: rgba(0, 242, 254, 0.3);
+    }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+      font-family: 'Outfit', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+    }
+    .error-container {
+      max-width: 600px;
+      padding: 2rem;
+    }
+    h1 {
+      font-size: 8rem;
+      color: var(--accent-cyan);
+      margin: 0 0 1rem 0;
+      font-family: 'Geist Mono', monospace;
+      text-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
+      line-height: 1;
+    }
+    h2 {
+      font-size: 1.8rem;
+      margin-top: 0;
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+    p {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      margin-bottom: 2.5rem;
+      line-height: 1.6;
+    }
+    a {
+      display: inline-block;
+      padding: 0.8rem 1.8rem;
+      border-radius: 8px;
+      background: rgba(0, 242, 254, 0.08);
+      border: 1px solid var(--border-glow);
+      color: var(--accent-cyan);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.95rem;
+    }
+    a:hover {
+      background: rgba(0, 242, 254, 0.16);
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.35);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="error-container">
+    <h1>404</h1>
+    <h2>System Offline</h2>
+    <p>The requested page trajectory could not be computed. It may have been renamed, deleted, or you might have a broken link.</p>
+    <a href="/">Return to Base Station</a>
+  </div>
+</body>
+</html>

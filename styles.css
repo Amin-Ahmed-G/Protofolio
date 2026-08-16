@@ -2434,3 +2434,8 @@ body.panel-open { overflow: hidden; }
   #detail-panel { width: 100vw; border-left: none; border-top: 1px solid var(--border-glow); top: auto; bottom: 0; height: 90dvh; transform: translateY(100%); border-radius: 16px 16px 0 0; }
   #detail-panel.open { transform: translateY(0); }
 }
+
+/* ==========================================================================
+   ENHANCEMENTS — Contact Link Hover
+   ========================================================================== */
+.contact-link:hover { color: var(--accent-cyan) !important; text-shadow: 0 0 8px rgba(0, 242, 254, 0.4); }
