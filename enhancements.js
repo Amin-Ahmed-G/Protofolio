@@ -917,9 +917,9 @@
       tipText = cell.dataset.level === '0' ? 'No contributions' : 'Contributions';
     }
     
-    const formattedTitle = dateStr ? `${tipText} on ${dateStr}` : tipText;
-    cell.setAttribute('title', formattedTitle);
-    cell.setAttribute('data-tooltip', formattedTitle);
+    // Clear title and data-tooltip so default browser and CSS pseudo-elements don't create duplicate overlays
+    cell.removeAttribute('title');
+    cell.removeAttribute('data-tooltip');
 
     cell.addEventListener('mouseenter', () => {
       heatmapTooltip.innerHTML = `<span style="color:#00f2fe;font-weight:600;">${dateStr}</span> &bull; <span style="color:#e2e8f0;">${tipText}</span>`;

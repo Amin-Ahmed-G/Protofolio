@@ -2472,8 +2472,7 @@ body.panel-open { overflow: hidden; }
    ENHANCEMENTS � Heatmap tooltip
    ========================================================================== */
 
-.ContributionCalendar-day[data-tooltip] { position: relative; cursor: default; }
-.ContributionCalendar-day[data-tooltip]:hover::after { content: attr(data-tooltip); position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: var(--bg-secondary); border: 1px solid var(--border-glow); color: var(--text-secondary); font-family: 'Geist Mono', monospace; font-size: 0.65rem; white-space: nowrap; padding: 4px 8px; border-radius: 4px; z-index: 10; pointer-events: none; }
+tool-tip, .sr-only { display: none !important; }
 
 /* ==========================================================================
    ENHANCEMENTS � Mobile panel bottom sheet
