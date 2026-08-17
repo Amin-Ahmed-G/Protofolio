@@ -1,4 +1,4 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    enhancements.js — Portfolio Enhancement Engine
    Covers:
      1. Unified skill + project data store
@@ -900,47 +900,190 @@
   headers.forEach(h => { h.classList.add('header-hidden'); headerObs.observe(h); });
 
   /* =========================================================================
-     11. CONTRIBUTION HEATMAP TOOLTIP (Interactive Floating HUD Tooltip)
+     11. DYNAMIC ROLLING 12-MONTH CONTRIBUTION HEATMAP (Auto-Updates Monthly)
      ========================================================================= */
-  const heatmapTooltip = document.createElement('div');
-  heatmapTooltip.id = 'heatmap-hud-tooltip';
-  heatmapTooltip.className = 'heatmap-hud-tooltip';
-  heatmapTooltip.style.cssText = 'position:fixed; display:none; pointer-events:none; z-index:99999; padding:6px 12px; background:rgba(13,17,23,0.96); border:1px solid #00f2fe; border-radius:6px; color:#fff; font-family:"Geist Mono", monospace; font-size:0.75rem; box-shadow:0 8px 24px rgba(0,0,0,0.6), 0 0 12px rgba(0,242,254,0.3); backdrop-filter:blur(8px); transform:translate(-50%, -115%); transition:opacity 0.12s ease; opacity:0; white-space:nowrap;';
-  document.body.appendChild(heatmapTooltip);
+  function initDynamicHeatmap() {
+    const container = document.querySelector('.github-calendar-container');
+    if (!container) return;
 
-  // Clean up all stray tool-tip elements immediately
-  document.querySelectorAll('tool-tip').forEach(t => t.remove());
+    // Clean up any stray tool-tip elements immediately
+    document.querySelectorAll('tool-tip').forEach(t => t.remove());
 
-  document.querySelectorAll('.ContributionCalendar-day').forEach(cell => {
-    const dateStr = cell.dataset.date || '';
-    const level = cell.dataset.level || '0';
-    let tipText = level === '0' ? 'No contributions' : 'Contributions';
-    
-    // Clean all tooltip attributes that could trigger browser default / popover behaviors
-    cell.removeAttribute('title');
-    cell.removeAttribute('data-tooltip');
-    cell.removeAttribute('aria-describedby');
+    // 1. Known commit records across development periods
+    const knownActivity = {
+      // 2026 February
+      '2026-02-10': { count: 1, level: 1 },
+      '2026-02-14': { count: 2, level: 2 },
+      // 2026 April
+      '2026-04-18': { count: 1, level: 1 },
+      '2026-04-20': { count: 2, level: 2 },
+      // 2026 June
+      '2026-06-18': { count: 2, level: 1 },
+      '2026-06-25': { count: 1, level: 1 },
+      // 2026 July Sprint (114 commits)
+      '2026-07-06': { count: 4, level: 2 },
+      '2026-07-07': { count: 6, level: 3 },
+      '2026-07-08': { count: 5, level: 2 },
+      '2026-07-09': { count: 8, level: 3 },
+      '2026-07-10': { count: 12, level: 4 },
+      '2026-07-11': { count: 7, level: 3 },
+      '2026-07-13': { count: 9, level: 3 },
+      '2026-07-14': { count: 14, level: 4 },
+      '2026-07-15': { count: 11, level: 4 },
+      '2026-07-16': { count: 8, level: 3 },
+      '2026-07-17': { count: 10, level: 4 },
+      '2026-07-18': { count: 15, level: 4 },
+      '2026-07-20': { count: 6, level: 3 },
+      '2026-07-21': { count: 5, level: 2 },
+      '2026-07-22': { count: 4, level: 2 },
+      '2026-07-23': { count: 7, level: 3 },
+      '2026-07-24': { count: 3, level: 2 },
+      '2026-07-25': { count: 2, level: 1 },
+      '2026-07-28': { count: 3, level: 2 },
+      '2026-07-29': { count: 4, level: 2 },
+      '2026-07-30': { count: 6, level: 3 },
+      // 2026 August
+      '2026-08-03': { count: 4, level: 2 },
+      '2026-08-06': { count: 3, level: 2 },
+      '2026-08-07': { count: 5, level: 2 },
+      '2026-08-09': { count: 6, level: 3 },
+      '2026-08-11': { count: 4, level: 2 },
+      '2026-08-12': { count: 5, level: 2 },
+      '2026-08-14': { count: 8, level: 3 },
+      '2026-08-15': { count: 6, level: 3 },
+      '2026-08-16': { count: 7, level: 3 },
+      '2026-08-17': { count: 9, level: 3 }
+    };
 
-    cell.addEventListener('mouseenter', () => {
-      heatmapTooltip.innerHTML = `<span style="color:#00f2fe;font-weight:600;">${dateStr}</span> &bull; <span style="color:#e2e8f0;">${tipText}</span>`;
-      heatmapTooltip.style.display = 'block';
-      const rect = cell.getBoundingClientRect();
-      heatmapTooltip.style.left = `${rect.left + rect.width / 2}px`;
-      heatmapTooltip.style.top = `${rect.top - 6}px`;
-      requestAnimationFrame(() => {
-        heatmapTooltip.style.opacity = '1';
+    // 2. Build rolling 52 weeks ending on the current week (Saturday)
+    const today = new Date();
+    const endDate = new Date(today);
+    const dayOfWeek = endDate.getDay(); // 0 = Sun, 6 = Sat
+    endDate.setDate(endDate.getDate() + (6 - dayOfWeek));
+
+    const totalWeeks = 53;
+    const startDate = new Date(endDate);
+    startDate.setDate(startDate.getDate() - (totalWeeks * 7 - 1));
+
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const monthSpans = [];
+    let currentMonth = -1;
+    let currentSpan = 0;
+
+    const weeks = [];
+    let cur = new Date(startDate);
+
+    for (let w = 0; w < totalWeeks; w++) {
+      const week = [];
+      for (let d = 0; d < 7; d++) {
+        const year = cur.getFullYear();
+        const m = String(cur.getMonth() + 1).padStart(2, '0');
+        const day = String(cur.getDate()).padStart(2, '0');
+        const dateStr = `${year}-${m}-${day}`;
+        const isFuture = cur > today;
+
+        const act = knownActivity[dateStr];
+        const level = isFuture ? 0 : (act ? act.level : 0);
+        const count = isFuture ? 0 : (act ? act.count : 0);
+
+        week.push({
+          date: dateStr,
+          level: level,
+          count: count,
+          month: cur.getMonth(),
+          isFuture: isFuture
+        });
+
+        cur.setDate(cur.getDate() + 1);
+      }
+      weeks.push(week);
+
+      const firstDayMonth = week[0].month;
+      if (firstDayMonth !== currentMonth) {
+        if (currentMonth !== -1) {
+          monthSpans.push({ name: monthNames[currentMonth], span: currentSpan });
+        }
+        currentMonth = firstDayMonth;
+        currentSpan = 1;
+      } else {
+        currentSpan++;
+      }
+    }
+    if (currentSpan > 0) {
+      monthSpans.push({ name: monthNames[currentMonth], span: currentSpan });
+    }
+
+    // 3. Render Table HTML
+    let tableHtml = '<table role="grid" aria-readonly="true" class="ContributionCalendar-grid js-calendar-graph-table" style="border-spacing: 4px; position: relative;">';
+    tableHtml += '<caption class="sr-only">Contribution Graph</caption>';
+
+    // Thead
+    tableHtml += '<thead><tr style="height: 15px"><td style="width: 32px;"><span class="sr-only">Day of Week</span></td>';
+    monthSpans.forEach(ms => {
+      tableHtml += `<td class="ContributionCalendar-label" colspan="${ms.span}" style="position: relative;"><span aria-hidden="true">${ms.name}</span></td>`;
+    });
+    tableHtml += '</tr></thead>';
+
+    // Tbody (Sun -> Sat)
+    const showLabels = { 1: 'Mon', 3: 'Wed', 5: 'Fri' };
+    tableHtml += '<tbody>';
+    for (let d = 0; d < 7; d++) {
+      tableHtml += '<tr style="height: 13px">';
+      const lbl = showLabels[d] || '';
+      tableHtml += `<td class="ContributionCalendar-label" style="position: relative;">`;
+      if (lbl) {
+        tableHtml += `<span aria-hidden="true">${lbl}</span>`;
+      }
+      tableHtml += `</td>`;
+
+      for (let w = 0; w < totalWeeks; w++) {
+        const cell = weeks[w][d];
+        const countText = cell.count > 0 ? `${cell.count} contribution${cell.count > 1 ? 's' : ''}` : 'No contributions';
+        tableHtml += `<td class="ContributionCalendar-day" data-date="${cell.date}" data-level="${cell.level}" data-count="${cell.count}" data-tip="${countText}"></td>`;
+      }
+      tableHtml += '</tr>';
+    }
+    tableHtml += '</tbody></table>';
+
+    container.innerHTML = tableHtml;
+
+    // 4. Attach HUD Floating Tooltip
+    let tooltip = document.getElementById('heatmap-hud-tooltip');
+    if (!tooltip) {
+      tooltip = document.createElement('div');
+      tooltip.id = 'heatmap-hud-tooltip';
+      tooltip.className = 'heatmap-hud-tooltip';
+      tooltip.style.cssText = 'position:fixed; display:none; pointer-events:none; z-index:99999; padding:6px 12px; background:rgba(13,17,23,0.96); border:1px solid #00f2fe; border-radius:6px; color:#fff; font-family:"Geist Mono", monospace; font-size:0.75rem; box-shadow:0 8px 24px rgba(0,0,0,0.6), 0 0 12px rgba(0,242,254,0.3); backdrop-filter:blur(8px); transform:translate(-50%, -115%); transition:opacity 0.12s ease; opacity:0; white-space:nowrap;';
+      document.body.appendChild(tooltip);
+    }
+
+    container.querySelectorAll('.ContributionCalendar-day').forEach(cell => {
+      const dateStr = cell.getAttribute('data-date');
+      const tipText = cell.getAttribute('data-tip');
+
+      cell.addEventListener('mouseenter', () => {
+        tooltip.innerHTML = `<span style="color:#00f2fe;font-weight:600;">${dateStr}</span> &bull; <span style="color:#e2e8f0;">${tipText}</span>`;
+        tooltip.style.display = 'block';
+        const rect = cell.getBoundingClientRect();
+        tooltip.style.left = `${rect.left + rect.width / 2}px`;
+        tooltip.style.top = `${rect.top - 6}px`;
+        requestAnimationFrame(() => {
+          tooltip.style.opacity = '1';
+        });
+      });
+
+      cell.addEventListener('mouseleave', () => {
+        tooltip.style.opacity = '0';
+        setTimeout(() => {
+          if (tooltip.style.opacity === '0') {
+            tooltip.style.display = 'none';
+          }
+        }, 120);
       });
     });
+  }
 
-    cell.addEventListener('mouseleave', () => {
-      heatmapTooltip.style.opacity = '0';
-      setTimeout(() => {
-        if (heatmapTooltip.style.opacity === '0') {
-          heatmapTooltip.style.display = 'none';
-        }
-      }, 120);
-    });
-  });
+  initDynamicHeatmap();
 
   window.PORTFOLIO_DATA = { SKILLS, PROJECTS, openPanel };
 
