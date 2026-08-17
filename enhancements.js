@@ -18,7 +18,7 @@
      ========================================================================= */
   const SKILLS = {
     ros2: {
-      name: 'ROS 2 (Jazzy, Humble)',
+      name: 'ROS 2 (Humble / Jazzy)',
       level: 'Intermediate',
       what: 'The middleware framework used in almost all modern robotics software — manages communication between nodes (sensors, planners, controllers) over a publish-subscribe network built on DDS.',
       usedIn: ['amr-leader-follower', 'cafe-butler', 'roboshield', 'mecanum-bot', 'two-wheel-bot'],
@@ -197,7 +197,7 @@
       badge: 'Simulation',
       summary: 'Autonomous differential drive robot with LiDAR and camera, built to validate navigation logic across drive kinematics.',
       problem: 'A navigation stack tuned for one robot platform often hides assumptions about kinematics, sensor placement, and TF frames that aren\'t obvious until you run it on a different platform.',
-      built: 'Differential drive robot in ROS 2 Jazzy / Gazebo Harmonic. Joint state broadcaster, diff_drive_controller via gz_ros2_control, 360° LiDAR plugin, and camera plugin. Python waypoint navigation node for automated testing of path following behaviour across different track layouts.',
+      built: 'Differential drive robot in ROS 2 (Humble / Jazzy) / Gazebo Harmonic. Joint state broadcaster, diff_drive_controller via gz_ros2_control, 360° LiDAR plugin, and camera plugin. Python waypoint navigation node for automated testing of path following behaviour across different track layouts.',
       broke: 'The navigation stack lost position without any warning when the drive controller reset odometry without republishing the transform. Added a watchdog that flags stale transforms immediately instead of letting navigation fail silently — a small addition that prevents a very hard-to-diagnose bug.',
       skills: ['ros2', 'gazebo', 'python', 'cpp', 'linux'],
       repo: 'https://github.com/Amin-Ahmed-G/two_wheel_robot',
@@ -208,7 +208,7 @@
       badge: 'Simulation',
       summary: '4-wheel holonomic drive robot simulation with SLAM and Nav2.',
       problem: 'Holonomic drive kinematics (the ability to move laterally) introduces odometry drift patterns that standard differential-drive models don\'t capture — SLAM and localisation break if you ignore this.',
-      built: '4-wheel mecanum drive robot in ROS 2 Jazzy / Gazebo Harmonic. Custom gz_ros2_control nodes for the mecanum wheel kinematics. Cartographer SLAM for map building. Nav2 for autonomous navigation with a modified costmap configuration for holonomic platforms.',
+      built: '4-wheel mecanum drive robot in ROS 2 (Humble / Jazzy) / Gazebo Harmonic. Custom gz_ros2_control nodes for the mecanum wheel kinematics. Cartographer SLAM for map building. Nav2 for autonomous navigation with a modified costmap configuration for holonomic platforms.',
       broke: 'SLAM produced distorted maps because the odometry model didn\'t account for the sideways drift a holonomic drive introduces. Rebuilt the odometry around a model that actually reflects mecanum kinematics rather than treating it like a standard differential drive.',
       skills: ['ros2', 'gazebo', 'nav2', 'slam', 'cpp', 'python'],
       repo: 'https://github.com/Amin-Ahmed-G/mecanum_bot'

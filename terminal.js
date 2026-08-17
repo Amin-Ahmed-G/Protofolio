@@ -1,4 +1,4 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    Mock Interactive Terminal - Robotics Software Engineer Workspace
    ========================================================================== */
 
@@ -156,11 +156,11 @@ Mentors: Karthikesh Sir & Sundar Sir
 Location: Chennai, India (July 2026)
 
 Summary:
-Completed an intensive 20-day robotics training program. Built the Café Butler Autonomous Delivery Robot from scratch using ROS 2 Jazzy & Gazebo Harmonic. 
+Completed an intensive 20-day robotics training program. Built the Café Butler Autonomous Delivery Robot from scratch using ROS 2 (Humble / Jazzy) & Gazebo Harmonic. 
 Special thanks to mentor Sundar sir for providing the base simulation environment reference.`;
 
   const skillsText = `=== TECHNICAL SKILLS MATRIX ===
-* Robotics Middleware: ROS 2 (Jazzy/Humble), Nav2, MoveIt 2, SLAM Cartographer, AMCL
+* Robotics Middleware: ROS 2 (Humble / Jazzy), Nav2, MoveIt 2, SLAM Cartographer, AMCL
 * Simulation Tools:    Gazebo Harmonic, RViz2, URDF/Xacro, SDF, ros2_control
 * Languages:           Python 3.12, C++17, C, Bash Scripting
 * Embedded Systems:    STM32 (ARM Cortex-M), ESP32, PID Motor Control, UART/I2C/SPI
