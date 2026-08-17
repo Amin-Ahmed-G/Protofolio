@@ -1,4 +1,4 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    enhancements.js — Portfolio Enhancement Engine
    Covers:
      1. Unified skill + project data store
@@ -900,17 +900,46 @@
   headers.forEach(h => { h.classList.add('header-hidden'); headerObs.observe(h); });
 
   /* =========================================================================
-     11. CONTRIBUTION HEATMAP TOOLTIP (for existing calendar cells)
+     11. CONTRIBUTION HEATMAP TOOLTIP (Interactive Floating HUD Tooltip)
      ========================================================================= */
+  const heatmapTooltip = document.createElement('div');
+  heatmapTooltip.id = 'heatmap-hud-tooltip';
+  heatmapTooltip.className = 'heatmap-hud-tooltip';
+  heatmapTooltip.style.cssText = 'position:fixed; display:none; pointer-events:none; z-index:99999; padding:6px 12px; background:rgba(13,17,23,0.96); border:1px solid #00f2fe; border-radius:6px; color:#fff; font-family:"Geist Mono", monospace; font-size:0.75rem; box-shadow:0 8px 24px rgba(0,0,0,0.6), 0 0 12px rgba(0,242,254,0.3); backdrop-filter:blur(8px); transform:translate(-50%, -115%); transition:opacity 0.12s ease; opacity:0; white-space:nowrap;';
+  document.body.appendChild(heatmapTooltip);
+
   document.querySelectorAll('.ContributionCalendar-day').forEach(cell => {
     const tip = cell.nextElementSibling;
-    if (!tip) return;
-    const tipText = tip.textContent.trim();
-    if (!tipText || tipText.includes('No contributions')) {
-      cell.setAttribute('data-tooltip', cell.dataset.date || '');
-    } else {
-      cell.setAttribute('data-tooltip', `${tipText} — ${cell.dataset.date || ''}`);
+    let tipText = tip ? tip.textContent.trim() : '';
+    const dateStr = cell.dataset.date || '';
+    
+    if (!tipText) {
+      tipText = cell.dataset.level === '0' ? 'No contributions' : 'Contributions';
     }
+    
+    const formattedTitle = dateStr ? `${tipText} on ${dateStr}` : tipText;
+    cell.setAttribute('title', formattedTitle);
+    cell.setAttribute('data-tooltip', formattedTitle);
+
+    cell.addEventListener('mouseenter', () => {
+      heatmapTooltip.innerHTML = `<span style="color:#00f2fe;font-weight:600;">${dateStr}</span> &bull; <span style="color:#e2e8f0;">${tipText}</span>`;
+      heatmapTooltip.style.display = 'block';
+      const rect = cell.getBoundingClientRect();
+      heatmapTooltip.style.left = `${rect.left + rect.width / 2}px`;
+      heatmapTooltip.style.top = `${rect.top - 6}px`;
+      requestAnimationFrame(() => {
+        heatmapTooltip.style.opacity = '1';
+      });
+    });
+
+    cell.addEventListener('mouseleave', () => {
+      heatmapTooltip.style.opacity = '0';
+      setTimeout(() => {
+        if (heatmapTooltip.style.opacity === '0') {
+          heatmapTooltip.style.display = 'none';
+        }
+      }, 120);
+    });
   });
 
   window.PORTFOLIO_DATA = { SKILLS, PROJECTS, openPanel };

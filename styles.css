@@ -1647,6 +1647,7 @@ section {
 
 .github-graph-wrap {
   width: 100%;
+  min-width: 0;
   border-radius: var(--border-radius);
   border: 1px solid rgba(0, 242, 254, 0.22);
   margin-bottom: 2.5rem;
@@ -1687,9 +1688,11 @@ section {
 
 .github-calendar-container {
   width: 100%;
+  min-width: 0;
   overflow-x: auto;
+  overflow-y: visible;
   display: block;
-  padding: 1rem 0.5rem 1rem 0;
+  padding: 1rem 0.5rem;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 242, 254, 0.2) transparent;
@@ -1698,18 +1701,20 @@ section {
 .ContributionCalendar-grid {
   border-collapse: separate !important;
   border-spacing: 4px !important;
-  margin: 0;
+  margin: 0 auto !important;
+  width: max-content;
 }
 
 .ContributionCalendar-day, td.ContributionCalendar-day, rect.ContributionCalendar-day {
   width: 13px !important;
   height: 13px !important;
   border-radius: 3px !important;
+  cursor: pointer;
   transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s ease !important;
 }
 
 .ContributionCalendar-day:hover, td.ContributionCalendar-day:hover, rect.ContributionCalendar-day:hover {
-  transform: scale(1.5) !important;
+  transform: scale(1.4) !important;
   z-index: 20;
   box-shadow: 0 0 12px var(--accent-cyan) !important;
 }
@@ -1722,15 +1727,34 @@ section {
 
 .ContributionCalendar-label {
   color: var(--accent-cyan);
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-family: 'Geist Mono', monospace;
   padding-bottom: 6px;
   font-weight: 600;
 }
 
+td.ContributionCalendar-label {
+  width: 32px !important;
+  min-width: 32px !important;
+  padding: 0 6px 0 0 !important;
+  position: relative !important;
+  vertical-align: middle !important;
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.72rem;
+  color: #8b949e;
+  font-weight: 500;
+}
+
+td.ContributionCalendar-label span[aria-hidden="true"] {
+  font-size: 0.70rem;
+  color: #8b949e;
+  letter-spacing: 0.5px;
+}
+
 .github-calendar-legend {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   margin-top: 1.5rem;
   font-size: 0.78rem;
