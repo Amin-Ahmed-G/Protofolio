@@ -908,18 +908,18 @@
   heatmapTooltip.style.cssText = 'position:fixed; display:none; pointer-events:none; z-index:99999; padding:6px 12px; background:rgba(13,17,23,0.96); border:1px solid #00f2fe; border-radius:6px; color:#fff; font-family:"Geist Mono", monospace; font-size:0.75rem; box-shadow:0 8px 24px rgba(0,0,0,0.6), 0 0 12px rgba(0,242,254,0.3); backdrop-filter:blur(8px); transform:translate(-50%, -115%); transition:opacity 0.12s ease; opacity:0; white-space:nowrap;';
   document.body.appendChild(heatmapTooltip);
 
+  // Clean up all stray tool-tip elements immediately
+  document.querySelectorAll('tool-tip').forEach(t => t.remove());
+
   document.querySelectorAll('.ContributionCalendar-day').forEach(cell => {
-    const tip = cell.nextElementSibling;
-    let tipText = tip ? tip.textContent.trim() : '';
     const dateStr = cell.dataset.date || '';
+    const level = cell.dataset.level || '0';
+    let tipText = level === '0' ? 'No contributions' : 'Contributions';
     
-    if (!tipText) {
-      tipText = cell.dataset.level === '0' ? 'No contributions' : 'Contributions';
-    }
-    
-    // Clear title and data-tooltip so default browser and CSS pseudo-elements don't create duplicate overlays
+    // Clean all tooltip attributes that could trigger browser default / popover behaviors
     cell.removeAttribute('title');
     cell.removeAttribute('data-tooltip');
+    cell.removeAttribute('aria-describedby');
 
     cell.addEventListener('mouseenter', () => {
       heatmapTooltip.innerHTML = `<span style="color:#00f2fe;font-weight:600;">${dateStr}</span> &bull; <span style="color:#e2e8f0;">${tipText}</span>`;

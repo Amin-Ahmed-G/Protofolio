@@ -2472,7 +2472,7 @@ body.panel-open { overflow: hidden; }
    ENHANCEMENTS � Heatmap tooltip
    ========================================================================== */
 
-tool-tip, .sr-only { display: none !important; }
+tool-tip, .sr-only, [popover] { display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }
 
 /* ==========================================================================
    ENHANCEMENTS � Mobile panel bottom sheet
