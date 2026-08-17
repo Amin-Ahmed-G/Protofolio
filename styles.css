@@ -1,4 +1,4 @@
-/* ==========================================================================
+ï»¿/* ==========================================================================
    Amin Ahmed G - Robotics Software Engineer Portfolio Style Sheet
    ========================================================================== */
 
@@ -962,6 +962,29 @@ section {
 }
 
 /* Projects Section Styles */
+.projects-section-label {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.section-label-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 242, 254, 0.25), transparent);
+}
+
+.section-label-text {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-cyan);
+  white-space: nowrap;
+  opacity: 0.8;
+}
+
 .projects-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
@@ -1631,7 +1654,8 @@ section {
   padding: 1.8rem 1.5rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
+  overflow: hidden;
   box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 242, 254, 0.06);
 }
 
@@ -1666,14 +1690,18 @@ section {
   width: 100%;
   overflow-x: auto;
   display: flex;
-  justify-content: center;
-  padding: 1.2rem 0;
+  justify-content: flex-start;
+  padding: 1.2rem 1rem 1.2rem 0.5rem;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 242, 254, 0.2) transparent;
 }
 
 .ContributionCalendar-grid {
   border-collapse: separate !important;
   border-spacing: 4px !important;
-  margin: 0 auto;
+  margin: 0;
+  min-width: max-content;
 }
 
 .ContributionCalendar-day, td.ContributionCalendar-day, rect.ContributionCalendar-day {
@@ -2237,7 +2265,7 @@ section {
 
 
 /* ==========================================================================
-   ENHANCEMENTS — Detail Panel System
+   ENHANCEMENTS ï¿½ Detail Panel System
    ========================================================================== */
 
 #detail-backdrop {
@@ -2326,7 +2354,7 @@ body.panel-open { overflow: hidden; }
 .panel-action-btn:hover { background: rgba(0,242,254,0.16); box-shadow: 0 0 14px rgba(0,242,254,0.25); }
 
 /* ==========================================================================
-   ENHANCEMENTS — Project Debug Drawer + Card Tilt
+   ENHANCEMENTS ï¿½ Project Debug Drawer + Card Tilt
    ========================================================================== */
 
 .project-card { transition: transform 0.15s ease, box-shadow 0.2s ease; will-change: transform; position: relative; overflow: hidden; }
@@ -2353,14 +2381,14 @@ body.panel-open { overflow: hidden; }
 .skill-clickable li:hover .skill-name-wrap span { color: var(--accent-cyan); }
 
 /* ==========================================================================
-   ENHANCEMENTS — Skill Progress Bars
+   ENHANCEMENTS ï¿½ Skill Progress Bars
    ========================================================================== */
 
 .skill-bar-wrap { width: 100%; height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; margin-top: 6px; overflow: hidden; }
 .skill-bar-fill { height: 100%; width: 0; border-radius: 2px; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue)); transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 6px rgba(0,242,254,0.4); }
 
 /* ==========================================================================
-   ENHANCEMENTS — FSM Visualizer Panel
+   ENHANCEMENTS ï¿½ FSM Visualizer Panel
    ========================================================================== */
 
 .pid-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
@@ -2389,7 +2417,7 @@ body.panel-open { overflow: hidden; }
 @media (max-width: 768px) { .fsm-layout { grid-template-columns: 1fr; } #fsm-canvas { width: 100%; } }
 
 /* ==========================================================================
-   ENHANCEMENTS — Matrix Easter Egg
+   ENHANCEMENTS ï¿½ Matrix Easter Egg
    ========================================================================== */
 
 #matrix-overlay { position: fixed; inset: 0; z-index: 9999; background: #0a0d14; cursor: pointer; }
@@ -2400,34 +2428,34 @@ body.panel-open { overflow: hidden; }
 @keyframes matrixOut { to { opacity: 0; } }
 
 /* ==========================================================================
-   ENHANCEMENTS — Section Header Fade-In
+   ENHANCEMENTS ï¿½ Section Header Fade-In
    ========================================================================== */
 
 .header-hidden { opacity: 0; transform: translateY(12px); }
 .header-revealed { opacity: 1; transform: translateY(0); transition: opacity 0.4s ease-out, transform 0.4s ease-out; }
 
 /* ==========================================================================
-   ENHANCEMENTS — Button Glow
+   ENHANCEMENTS ï¿½ Button Glow
    ========================================================================== */
 
 .btn-glow-ready.btn-primary:hover { box-shadow: 0 0 20px rgba(0,242,254,0.35), 0 4px 14px rgba(0,114,255,0.3); }
 .btn-glow-ready.btn-secondary:hover { box-shadow: 0 0 14px rgba(0,242,254,0.2); }
 
 /* ==========================================================================
-   ENHANCEMENTS — Terminal cursor + typewriter
+   ENHANCEMENTS ï¿½ Terminal cursor + typewriter
    ========================================================================== */
 
 .typewriter-out { white-space: pre-wrap; color: var(--accent-green); }
 
 /* ==========================================================================
-   ENHANCEMENTS — Heatmap tooltip
+   ENHANCEMENTS ï¿½ Heatmap tooltip
    ========================================================================== */
 
 .ContributionCalendar-day[data-tooltip] { position: relative; cursor: default; }
 .ContributionCalendar-day[data-tooltip]:hover::after { content: attr(data-tooltip); position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: var(--bg-secondary); border: 1px solid var(--border-glow); color: var(--text-secondary); font-family: 'Geist Mono', monospace; font-size: 0.65rem; white-space: nowrap; padding: 4px 8px; border-radius: 4px; z-index: 10; pointer-events: none; }
 
 /* ==========================================================================
-   ENHANCEMENTS — Mobile panel bottom sheet
+   ENHANCEMENTS ï¿½ Mobile panel bottom sheet
    ========================================================================== */
 
 @media (max-width: 600px) {
@@ -2436,19 +2464,19 @@ body.panel-open { overflow: hidden; }
 }
 
 /* ==========================================================================
-   ENHANCEMENTS — Contact Link Hover
+   ENHANCEMENTS ï¿½ Contact Link Hover
    ========================================================================== */
 .contact-link:hover { color: var(--accent-cyan) !important; text-shadow: 0 0 8px rgba(0, 242, 254, 0.4); }
 
 /* ==========================================================================
-   ENHANCEMENTS — Fix Skill List Layout
+   ENHANCEMENTS ï¿½ Fix Skill List Layout
    ========================================================================== */
 .skill-list li {
   flex-wrap: wrap;
 }
 
 /* ==========================================================================
-   ENHANCEMENTS — Brute Force Layout Fixes
+   ENHANCEMENTS ï¿½ Brute Force Layout Fixes
    ========================================================================== */
 .skill-list li {
   flex-wrap: wrap !important;
@@ -2459,7 +2487,7 @@ body.panel-open { overflow: hidden; }
 }
 
 /* ==========================================================================
-   ENHANCEMENTS — Modern Contact Grid
+   ENHANCEMENTS ï¿½ Modern Contact Grid
    ========================================================================== */
 .contact-buttons-grid {
   display: grid;
