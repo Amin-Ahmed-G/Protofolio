@@ -1655,7 +1655,6 @@ section {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  overflow: hidden;
   box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 242, 254, 0.06);
 }
 
@@ -1689,9 +1688,8 @@ section {
 .github-calendar-container {
   width: 100%;
   overflow-x: auto;
-  display: flex;
-  justify-content: flex-start;
-  padding: 1.2rem 1rem 1.2rem 0.5rem;
+  display: block;
+  padding: 1rem 0.5rem 1rem 0;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 242, 254, 0.2) transparent;
@@ -1701,7 +1699,6 @@ section {
   border-collapse: separate !important;
   border-spacing: 4px !important;
   margin: 0;
-  min-width: max-content;
 }
 
 .ContributionCalendar-day, td.ContributionCalendar-day, rect.ContributionCalendar-day {
