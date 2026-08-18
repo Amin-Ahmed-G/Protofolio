@@ -1056,10 +1056,11 @@
     // 4. Calculate real-time total contribution count across rolling matrix
     const calculateTotal = () => weeks.flat().reduce((sum, cell) => sum + cell.count, 0);
 
+    let currentRepoCount = 13;
     const updateHeaderTotal = (total) => {
       const statElem = document.querySelector('.hud-table-stat');
       if (statElem) {
-        statElem.innerHTML = `<i class="fa-brands fa-github"></i> 9 Public Repos &bull; ${total} Total Contributions`;
+        statElem.innerHTML = `<i class="fa-brands fa-github"></i> ${currentRepoCount} Public Repos &bull; ${total} Total Contributions`;
       }
     };
 
@@ -1108,7 +1109,19 @@
       cell.addEventListener('mouseleave', hideTooltip);
     });
 
-    // 6. Asynchronously sync live GitHub push events to update total in real time
+    // 6. Asynchronously sync live GitHub user profile & push events
+    fetch('https://api.github.com/users/Amin-Ahmed-G')
+      .then(res => res.json())
+      .then(user => {
+        if (user && typeof user.public_repos === 'number') {
+          currentRepoCount = user.public_repos;
+          const statVal = document.querySelector('.gh-stat-highlight .gh-stat-val');
+          if (statVal) statVal.textContent = currentRepoCount;
+          updateHeaderTotal(totalContributions);
+        }
+      })
+      .catch(() => {});
+
     fetch('https://api.github.com/users/Amin-Ahmed-G/events')
       .then(res => res.json())
       .then(events => {
