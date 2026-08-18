@@ -1066,15 +1066,29 @@
     let totalContributions = calculateTotal();
     updateHeaderTotal(totalContributions);
 
-    // 5. Attach HUD Floating Tooltip
+    // 5. Attach HUD Floating Tooltip with robust auto-hide
     let tooltip = document.getElementById('heatmap-hud-tooltip');
     if (!tooltip) {
       tooltip = document.createElement('div');
       tooltip.id = 'heatmap-hud-tooltip';
       tooltip.className = 'heatmap-hud-tooltip';
-      tooltip.style.cssText = 'position:fixed; display:none; pointer-events:none; z-index:99999; padding:6px 12px; background:rgba(13,17,23,0.96); border:1px solid #00f2fe; border-radius:6px; color:#fff; font-family:"Geist Mono", monospace; font-size:0.75rem; box-shadow:0 8px 24px rgba(0,0,0,0.6), 0 0 12px rgba(0,242,254,0.3); backdrop-filter:blur(8px); transform:translate(-50%, -115%); transition:opacity 0.12s ease; opacity:0; white-space:nowrap;';
+      tooltip.style.cssText = 'position:fixed; display:none; pointer-events:none; z-index:99999; padding:6px 12px; background:rgba(13,17,23,0.96); border:1px solid #00f2fe; border-radius:6px; color:#fff; font-family:"Geist Mono", monospace; font-size:0.75rem; box-shadow:0 8px 24px rgba(0,0,0,0.6), 0 0 12px rgba(0,242,254,0.3); backdrop-filter:blur(8px); transform:translate(-50%, -115%); transition:opacity 0.1s ease; opacity:0; white-space:nowrap;';
       document.body.appendChild(tooltip);
     }
+
+    const hideTooltip = () => {
+      tooltip.style.opacity = '0';
+      tooltip.style.display = 'none';
+    };
+
+    hideTooltip();
+
+    const graphWrap = document.querySelector('.github-graph-wrap');
+    if (graphWrap) {
+      graphWrap.addEventListener('mouseleave', hideTooltip);
+    }
+    container.addEventListener('mouseleave', hideTooltip);
+    window.addEventListener('scroll', hideTooltip, { passive: true });
 
     container.querySelectorAll('.ContributionCalendar-day').forEach(cell => {
       const dateStr = cell.getAttribute('data-date');
@@ -1091,14 +1105,7 @@
         });
       });
 
-      cell.addEventListener('mouseleave', () => {
-        tooltip.style.opacity = '0';
-        setTimeout(() => {
-          if (tooltip.style.opacity === '0') {
-            tooltip.style.display = 'none';
-          }
-        }, 120);
-      });
+      cell.addEventListener('mouseleave', hideTooltip);
     });
 
     // 6. Asynchronously sync live GitHub push events to update total in real time
