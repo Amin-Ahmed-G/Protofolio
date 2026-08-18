@@ -1831,6 +1831,12 @@ td.ContributionCalendar-label span[aria-hidden="true"] {
   backdrop-filter: blur(10px);
 }
 
+.gh-stat-box.gh-stat-highlight {
+  border-color: rgba(0, 242, 254, 0.4);
+  background: rgba(0, 242, 254, 0.04);
+  box-shadow: 0 0 20px rgba(0, 242, 254, 0.08);
+}
+
 .gh-stat-box:hover {
   transform: translateY(-5px);
   border-color: var(--accent-cyan);

@@ -952,12 +952,20 @@
       '2026-08-14': { count: 8, level: 3 },
       '2026-08-15': { count: 6, level: 3 },
       '2026-08-16': { count: 7, level: 3 },
-      '2026-08-17': { count: 9, level: 3 }
+      '2026-08-17': { count: 9, level: 3 },
+      '2026-08-18': { count: 4, level: 2 }
     };
 
-    // 2. Build rolling 52 weeks ending on the current week (Saturday)
-    const today = new Date();
-    const endDate = new Date(today);
+    // 2. Build rolling 52 weeks covering all activity up through the latest record
+    let latestDate = new Date();
+    Object.keys(knownActivity).forEach(dStr => {
+      const pDate = new Date(dStr);
+      if (pDate > latestDate) {
+        latestDate = pDate;
+      }
+    });
+
+    const endDate = new Date(latestDate);
     const dayOfWeek = endDate.getDay(); // 0 = Sun, 6 = Sat
     endDate.setDate(endDate.getDate() + (6 - dayOfWeek));
 
@@ -980,18 +988,16 @@
         const m = String(cur.getMonth() + 1).padStart(2, '0');
         const day = String(cur.getDate()).padStart(2, '0');
         const dateStr = `${year}-${m}-${day}`;
-        const isFuture = cur > today;
 
         const act = knownActivity[dateStr];
-        const level = isFuture ? 0 : (act ? act.level : 0);
-        const count = isFuture ? 0 : (act ? act.count : 0);
+        const level = act ? act.level : 0;
+        const count = act ? act.count : 0;
 
         week.push({
           date: dateStr,
           level: level,
           count: count,
-          month: cur.getMonth(),
-          isFuture: isFuture
+          month: cur.getMonth()
         });
 
         cur.setDate(cur.getDate() + 1);
@@ -1053,7 +1059,7 @@
     const updateHeaderTotal = (total) => {
       const statElem = document.querySelector('.hud-table-stat');
       if (statElem) {
-        statElem.textContent = `${total} Total Contributions`;
+        statElem.innerHTML = `<i class="fa-brands fa-github"></i> 9 Public Repos &bull; ${total} Total Contributions`;
       }
     };
 
