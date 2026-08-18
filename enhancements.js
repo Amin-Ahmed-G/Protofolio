@@ -1047,7 +1047,20 @@
 
     container.innerHTML = tableHtml;
 
-    // 4. Attach HUD Floating Tooltip
+    // 4. Calculate real-time total contribution count across rolling matrix
+    const calculateTotal = () => weeks.flat().reduce((sum, cell) => sum + cell.count, 0);
+
+    const updateHeaderTotal = (total) => {
+      const statElem = document.querySelector('.hud-table-stat');
+      if (statElem) {
+        statElem.textContent = `${total} Total Contributions`;
+      }
+    };
+
+    let totalContributions = calculateTotal();
+    updateHeaderTotal(totalContributions);
+
+    // 5. Attach HUD Floating Tooltip
     let tooltip = document.getElementById('heatmap-hud-tooltip');
     if (!tooltip) {
       tooltip = document.createElement('div');
@@ -1081,6 +1094,29 @@
         }, 120);
       });
     });
+
+    // 6. Asynchronously sync live GitHub push events to update total in real time
+    fetch('https://api.github.com/users/Amin-Ahmed-G/events')
+      .then(res => res.json())
+      .then(events => {
+        if (!Array.isArray(events)) return;
+        let hasNewData = false;
+        events.forEach(evt => {
+          if (evt.type === 'PushEvent' && evt.created_at) {
+            const dateStr = evt.created_at.split('T')[0];
+            const size = (evt.payload && evt.payload.size) || 1;
+            if (!knownActivity[dateStr]) {
+              knownActivity[dateStr] = { count: size, level: Math.min(4, Math.ceil(size / 3)) };
+              hasNewData = true;
+            }
+          }
+        });
+        if (hasNewData) {
+          // Re-trigger dynamic matrix rendering with live events
+          initDynamicHeatmap();
+        }
+      })
+      .catch(() => {});
   }
 
   initDynamicHeatmap();

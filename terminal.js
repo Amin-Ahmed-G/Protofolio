@@ -1,4 +1,4 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    Mock Interactive Terminal - Robotics Software Engineer Workspace
    ========================================================================== */
 
@@ -61,7 +61,7 @@
   // Help text
   const helpText = `Available Commands:
   help              - Show this help menu
-  call / phone      - Reach out directly via Phone (+91 8122241705) or WhatsApp
+  call / phone      - Reach out directly via Phone (+91 8122241705)
   ros2              - List active ROS 2 topics, nodes & services
   cafe-launch       - Simulate launching Café Butler delivery system
   fsm               - Display 7-State Finite State Machine workflow
@@ -177,14 +177,13 @@ Special thanks to mentor Sundar sir for providing the base simulation environmen
 
   const contactText = `=== CONTACT TELEMETRY & DIRECT ACTIONS ===
 * Phone:    <a href="tel:+918122241705" class="text-green" style="font-weight: bold; text-decoration: underline;">+91 8122241705</a> [Active Line]
-* WhatsApp: <a href="https://wa.me/918122241705?text=Hi%20Amin,%20saw%20your%20portfolio!" target="_blank" class="text-green" style="text-decoration: underline;">Open Chat</a>
 * Email:    <a href="mailto:aminahmedg2005@gmail.com" style="color: #00f2fe; text-decoration: underline;">aminahmedg2005@gmail.com</a>
 * GitHub:   <a href="https://github.com/Amin-Ahmed-G" target="_blank" style="color: #00f2fe; text-decoration: underline;">https://github.com/Amin-Ahmed-G</a>
+* LinkedIn: <a href="https://www.linkedin.com/in/amin-ahmed-g/" target="_blank" style="color: #00f2fe; text-decoration: underline;">https://www.linkedin.com/in/amin-ahmed-g/</a>
 * Location: Chennai, Tamil Nadu, India
 
 <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap;">
   <a href="tel:+918122241705" class="contact-action-btn call-now-btn" style="padding: 4px 10px; font-size: 0.75rem;"><i class="fa-solid fa-phone-flip"></i> Call +91 8122241705</a>
-  <a href="https://wa.me/918122241705?text=Hi%20Amin,%20saw%20your%20portfolio!" target="_blank" class="contact-action-btn whatsapp-now-btn" style="padding: 4px 10px; font-size: 0.75rem;"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
 </div>`;
 
   const aboutText = `Amin Ahmed G is a B.E. Robotics & Automation Student at Anna University.
