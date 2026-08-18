@@ -428,6 +428,32 @@
             </div>
           </div>
 
+          <!-- 4. Two-Wheel Robot Simulation -->
+          <div class="project-card" id="two-wheel-bot" data-project-id="two-wheel-bot">
+            <div class="project-video-container">
+              <video src="videos/two_wheel_robot.mp4" controls autoplay loop muted playsinline></video>
+            </div>
+            <div class="project-badge">Simulation</div>
+            <div class="project-info">
+              <h3>Two-Wheel Differential Bot</h3>
+              <p class="project-desc">Autonomous differential drive mobile robot simulated in ROS 2 (Humble / Jazzy) and Gazebo Harmonic. Features LiDAR sensor plugins, joint state broad-casters, Gazebo diff-drive controllers, and Python waypoint navigation.</p>
+              <div class="project-tech">
+                <span>ROS 2 (Humble / Jazzy)</span>
+                <span>Gazebo Harmonic</span>
+                <span>Differential Drive</span>
+                <span>Python</span>
+              </div>
+              <div class="project-links">
+                <a href="https://github.com/Amin-Ahmed-G/two_wheel_robot" class="project-link" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub Repo</a>
+              </div>
+            </div>
+            <div class="project-debug-drawer">
+              <div class="drawer-broke-label">Engineering Challenge</div>
+              <p class="drawer-broke-text">The navigation stack lost position without warning when the drive controller reset odometry without republishing the transform. Added a watchdog that flags stale transforms immediately.</p>
+              <button class="drawer-detail-link" data-open-project="two-wheel-bot">Full breakdown →</button>
+            </div>
+          </div>
+
           <!-- RoboShield — Featured (bridges robotics → networking/security) -->
           <div class="project-card" id="roboshield" data-project-id="roboshield">
             <div class="project-badge">Security &amp; Networking</div>
@@ -461,32 +487,6 @@
           <span class="section-label-line"></span>
         </div>
         <div class="projects-grid secondary-projects-grid">
-
-          <!-- 3. Two-Wheel Robot Simulation -->
-          <div class="project-card" id="two-wheel-bot" data-project-id="two-wheel-bot">
-            <div class="project-video-container">
-              <video src="videos/two_wheel_robot.mp4" controls autoplay loop muted playsinline poster="images/two_wheel_robot_preview.png"></video>
-            </div>
-            <div class="project-badge">Simulation</div>
-            <div class="project-info">
-              <h3>Two-Wheel Differential Bot</h3>
-              <p class="project-desc">Autonomous differential drive mobile robot simulated in ROS 2 (Humble / Jazzy) and Gazebo Harmonic. Features LiDAR sensor plugins, joint state broad-casters, Gazebo diff-drive controllers, and Python waypoint navigation.</p>
-              <div class="project-tech">
-                <span>ROS 2 (Humble / Jazzy)</span>
-                <span>Gazebo Harmonic</span>
-                <span>Differential Drive</span>
-                <span>Python</span>
-              </div>
-              <div class="project-links">
-                <a href="https://github.com/Amin-Ahmed-G/two_wheel_robot" class="project-link" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub Repo</a>
-              </div>
-            </div>
-            <div class="project-debug-drawer">
-              <div class="drawer-broke-label">Engineering Challenge</div>
-              <p class="drawer-broke-text">The navigation stack lost position without warning when the drive controller reset odometry without republishing the transform. Added a watchdog that flags stale transforms immediately.</p>
-              <button class="drawer-detail-link" data-open-project="two-wheel-bot">Full breakdown →</button>
-            </div>
-          </div>
 
           <!-- 5. STM32 Line Follower Robot -->
           <div class="project-card" id="stm32-line-follower" data-project-id="stm32-line-follower">
