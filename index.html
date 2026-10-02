@@ -65,9 +65,10 @@
         <a href="#home" class="nav-link active">Home</a>
         <a href="#about" class="nav-link">About</a>
         <a href="#skills" class="nav-link">Skills</a>
-        <a href="#experience" class="nav-link">Work Experience</a>
+        <a href="#architecture" class="nav-link">Stack</a>
+        <a href="#experience" class="nav-link">Experience</a>
         <a href="#projects" class="nav-link">Projects</a>
-        <a href="#pid-lab" class="nav-link">PID Lab</a>
+        <a href="#pid-lab" class="nav-link">Lab</a>
         <a href="#github" class="nav-link">GitHub</a>
         <a href="#contact" class="nav-link">Contact</a>
         <a href="resume.pdf" download class="nav-link"><i class="fa-solid fa-download"></i> Resume</a>
@@ -116,10 +117,10 @@
             </div>
                         <div class="terminal-presets">
               <button class="preset-cmd-btn" data-cmd="call">call</button>
-              <button class="preset-cmd-btn" data-cmd="ros2">ros2</button>
+              <button class="preset-cmd-btn" data-cmd="ros2 node list">node list</button>
               <button class="preset-cmd-btn" data-cmd="cafe-launch">cafe-launch</button>
               <button class="preset-cmd-btn" data-cmd="fsm">fsm</button>
-              <button class="preset-cmd-btn" data-cmd="tf">tf</button>
+              <button class="preset-cmd-btn" data-cmd="ros2 topic echo /scan">topic echo</button>
               <button class="preset-cmd-btn" data-cmd="metrics">metrics</button>
               <button class="preset-cmd-btn" data-cmd="diagnostics">diagnostics</button>
               <button class="preset-cmd-btn" data-cmd="contact">contact</button>
@@ -251,6 +252,61 @@
               <li data-tooltip="JAKA Cobots & AMR/AGV deployments" data-skill-id="cobots"><div class="skill-name-wrap"><div class="skill-icon-wrap"><i class="fa-solid fa-robot skill-icon"></i></div><span>Collaborative Robots (JAKA)</span></div><span class="skill-level">Familiar</span><div class="skill-bar-wrap"><div class="skill-bar-fill" data-pct="35"></div></div></li>
             </ul>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section id="architecture" class="arch-section scroll-reveal">
+      <div class="section-container">
+        <h2 class="section-title">How I Build Robots</h2>
+        <p class="section-subtitle">The layers of a mobile robot stack I work across, from sensors to the operator's screen. Click a project to see its real ROS 2 node graph.</p>
+        <div class="arch-grid">
+          <ol class="arch-stack" aria-label="Robot software stack, top to bottom">
+            <li class="arch-layer">
+              <div class="arch-layer-head"><span class="arch-layer-idx">L6</span><i class="fa-solid fa-display"></i><h3>Operator UI</h3></div>
+              <p class="arch-tools">rosbridge WebSocket dashboards &middot; RViz2</p>
+              <div class="arch-chips"><button type="button" class="arch-chip" data-open-project="cafe-butler">Café Butler</button><button type="button" class="arch-chip" data-open-project="amr-leader-follower">AMR Leader-Follower</button></div>
+            </li>
+            <li class="arch-layer">
+              <div class="arch-layer-head"><span class="arch-layer-idx">L5</span><i class="fa-solid fa-diagram-project"></i><h3>Task layer</h3></div>
+              <p class="arch-tools">Python FSMs &middot; Nav2 action clients &middot; route heuristics</p>
+              <div class="arch-chips"><button type="button" class="arch-chip" data-open-project="cafe-butler">Café Butler</button></div>
+            </li>
+            <li class="arch-layer">
+              <div class="arch-layer-head"><span class="arch-layer-idx">L4</span><i class="fa-solid fa-route"></i><h3>Navigation</h3></div>
+              <p class="arch-tools">Nav2 &middot; bt_navigator &middot; planner / controller servers &middot; costmaps &amp; keepout zones</p>
+              <div class="arch-chips"><button type="button" class="arch-chip" data-open-project="cafe-butler">Café Butler</button><button type="button" class="arch-chip" data-open-project="amr-leader-follower">AMR Leader-Follower</button><button type="button" class="arch-chip" data-open-project="two-wheel-bot">Two-Wheel Bot</button></div>
+            </li>
+            <li class="arch-layer">
+              <div class="arch-layer-head"><span class="arch-layer-idx">L3</span><i class="fa-solid fa-map-location-dot"></i><h3>Localization &amp; mapping</h3></div>
+              <p class="arch-tools">slam_toolbox &middot; AMCL &middot; robot_localization EKF &middot; TF2</p>
+              <div class="arch-chips"><button type="button" class="arch-chip" data-open-project="amr-leader-follower">AMR Leader-Follower</button><button type="button" class="arch-chip" data-open-project="mecanum-bot">Mecanum Bot</button><button type="button" class="arch-chip" data-open-project="two-wheel-bot">Two-Wheel Bot</button></div>
+            </li>
+            <li class="arch-layer">
+              <div class="arch-layer-head"><span class="arch-layer-idx">L2</span><i class="fa-solid fa-gears"></i><h3>Control &amp; simulation</h3></div>
+              <p class="arch-tools">ros2_control (diff-drive, mecanum) &middot; ros_gz_bridge &middot; Gazebo Harmonic &middot; URDF/Xacro</p>
+              <div class="arch-chips"><button type="button" class="arch-chip" data-open-project="mecanum-bot">Mecanum Bot</button><button type="button" class="arch-chip" data-open-project="two-wheel-bot">Two-Wheel Bot</button><button type="button" class="arch-chip" data-open-project="amr-leader-follower">AMR Leader-Follower</button></div>
+            </li>
+            <li class="arch-layer">
+              <div class="arch-layer-head"><span class="arch-layer-idx">L1</span><i class="fa-solid fa-microchip"></i><h3>Firmware &amp; PLC</h3></div>
+              <p class="arch-tools">STM32 bare-metal &middot; sub-1 ms PID loops &middot; UART / I2C / SPI &middot; IEC 61131-3 ladder</p>
+              <div class="arch-chips"><button type="button" class="arch-chip" data-open-project="stm32-line-follower">STM32 Line Follower</button><button type="button" class="arch-chip" data-open-project="motor-control-plc">Motor Control PLC</button></div>
+            </li>
+            <li class="arch-layer">
+              <div class="arch-layer-head"><span class="arch-layer-idx">L0</span><i class="fa-solid fa-satellite-dish"></i><h3>Hardware &amp; sensors</h3></div>
+              <p class="arch-tools">2D LiDAR &middot; IMU &middot; encoders &middot; custom 2-layer PCBs</p>
+              <div class="arch-chips"><button type="button" class="arch-chip" data-open-project="temp-sensor-pcb">Temp Sensor PCB</button><button type="button" class="arch-chip" data-open-project="stm32-line-follower">STM32 Line Follower</button></div>
+            </li>
+          </ol>
+          <aside class="arch-rail" aria-label="Transport layer">
+            <div class="arch-rail-inner">
+              <i class="fa-solid fa-tower-broadcast"></i>
+              <h3>DDS / RTPS transport</h3>
+              <p>Every ROS 2 message between these layers crosses the DDS wire protocol. I build tooling that inspects it.</p>
+              <button type="button" class="arch-chip" data-open-project="roboshield">RoboShield</button>
+            </div>
+          </aside>
         </div>
       </div>
     </section>

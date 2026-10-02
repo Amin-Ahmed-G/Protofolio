@@ -305,6 +305,7 @@
     detailPanel.focus();
     history.pushState({ panel: type, id }, '', `#${type}/${id}`);
     attachPanelLinks();
+    bindRosGraph(detailContent);
   }
 
   function closePanel(restoreHistory) {
@@ -416,6 +417,8 @@
       </div>
 
       ${brokeSection}
+
+      ${rosGraphSection(p, id)}
 
       <div class="panel-section">
         <h3 class="panel-section-title"><i class="fa-solid fa-tags"></i> Skills used</h3>
@@ -808,7 +811,8 @@
       if (!val) return;
       const CMDS = ['help', 'whoami', 'ros2', 'cafe-launch', 'fsm', 'tf', 'metrics',
         'skills', 'projects', 'contact', 'about', 'diagnostics', 'clear', 'pid',
-        'karthikesh', 'call', 'matrix', 'sudo'];
+        'karthikesh', 'call', 'matrix', 'sudo', 'colcon build', 'ros2 node list',
+        'ros2 topic list', 'ros2 topic echo /scan', 'ros2 action list', 'ros2 pkg list', 'ros2 launch '];
       const matches = CMDS.filter(c => c.startsWith(val));
       if (matches.length === 1) {
         terminalInput.value = matches[0];
@@ -1022,6 +1026,281 @@
   }
 
   initHeatmap();
+
+  /* =========================================================================
+     12. ROS 2 PACKAGE METADATA + rqt_graph-STYLE NODE GRAPHS
+     Node/topic names are taken from each repo's launch files and source.
+     ========================================================================= */
+  const ROS = {
+    'amr-leader-follower': {
+      distro: 'Jazzy',
+      pkgs: ['amr_leader_follower'],
+      launch: 'ros2 launch amr_leader_follower leader_follower.launch.py',
+      nodes: ['/ros_gz_bridge', '/slam_toolbox', '/leader/bt_navigator', '/leader/diff_drive_controller',
+        '/follower/amcl', '/follower/ekf_filter_node', '/follower_controller', '/follower/diff_drive_controller'],
+      topics: [
+        { name: '/leader/scan', type: 'sensor_msgs/msg/LaserScan', from: ['/ros_gz_bridge'], to: ['/slam_toolbox', '/leader/bt_navigator'] },
+        { name: '/leader/diff_drive_controller/odom', type: 'nav_msgs/msg/Odometry', from: ['/leader/diff_drive_controller'], to: ['/leader/bt_navigator'] },
+        { name: '/map', type: 'nav_msgs/msg/OccupancyGrid', from: ['/slam_toolbox'], to: ['/follower/amcl'] },
+        { name: '/follower/diff_drive_controller/odom', type: 'nav_msgs/msg/Odometry', from: ['/follower/diff_drive_controller'], to: ['/follower/ekf_filter_node'] },
+        { name: '/tf', type: 'tf2_msgs/msg/TFMessage', from: ['/follower/amcl', '/follower/ekf_filter_node'], to: ['/follower_controller'] },
+        { name: '/follower/scan', type: 'sensor_msgs/msg/LaserScan', from: ['/ros_gz_bridge'], to: ['/follower_controller'] },
+        { name: '/follower/diff_drive_controller/cmd_vel', type: 'geometry_msgs/msg/TwistStamped', from: ['/follower_controller'], to: ['/follower/diff_drive_controller'] }
+      ],
+      actions: []
+    },
+    'cafe-butler': {
+      distro: 'Jazzy',
+      pkgs: ['cafe_butler_bringup', 'cafe_butler_description', 'cafe_butler_fsm', 'cafe_butler_metrics', 'cafe_butler_dashboard'],
+      launch: 'ros2 launch cafe_butler_bringup full_system.launch.py open_dashboard:=true',
+      nodes: ['/ros_gz_bridge', '/map_server', '/amcl', '/rosbridge_websocket', '/cafe_operator_node', '/cafe_butler_fsm',
+        '/bt_navigator', '/velocity_smoother', '/cafe_butler_metrics_logger'],
+      topics: [
+        { name: '/new_order', type: 'std_msgs/msg/String', from: ['/rosbridge_websocket', '/cafe_operator_node'], to: ['/cafe_butler_fsm'] },
+        { name: '/kitchen_confirm', type: 'std_msgs/msg/String', from: ['/rosbridge_websocket', '/cafe_operator_node'], to: ['/cafe_butler_fsm'] },
+        { name: '/table_confirm', type: 'std_msgs/msg/String', from: ['/rosbridge_websocket', '/cafe_operator_node'], to: ['/cafe_butler_fsm'] },
+        { name: '/cancel_order', type: 'std_msgs/msg/String', from: ['/rosbridge_websocket', '/cafe_operator_node'], to: ['/cafe_butler_fsm'] },
+        { name: '/fsm_status', type: 'std_msgs/msg/String', from: ['/cafe_butler_fsm'], to: ['/rosbridge_websocket', '/cafe_operator_node'] },
+        { name: '/fsm_events', type: 'std_msgs/msg/String', from: ['/cafe_butler_fsm'], to: ['/cafe_butler_metrics_logger'] },
+        { name: '/map', type: 'nav_msgs/msg/OccupancyGrid', from: ['/map_server'], to: ['/amcl'] },
+        { name: '/scan', type: 'sensor_msgs/msg/LaserScan', from: ['/ros_gz_bridge'], to: ['/amcl', '/bt_navigator'] },
+        { name: '/odom', type: 'nav_msgs/msg/Odometry', from: ['/ros_gz_bridge'], to: ['/cafe_butler_fsm', '/cafe_butler_metrics_logger', '/velocity_smoother'] },
+        { name: '/amcl_pose', type: 'geometry_msgs/msg/PoseWithCovarianceStamped', from: ['/amcl'], to: ['/rosbridge_websocket'] },
+        { name: '/cmd_vel', type: 'geometry_msgs/msg/Twist', from: ['/velocity_smoother', '/cafe_butler_fsm'], to: ['/ros_gz_bridge'] }
+      ],
+      actions: [
+        { name: '/navigate_to_pose', type: 'nav2_msgs/action/NavigateToPose', from: ['/cafe_butler_fsm'], to: ['/bt_navigator'] }
+      ]
+    },
+    'mecanum-bot': {
+      distro: 'Jazzy',
+      pkgs: ['mecanum_bot'],
+      launch: 'ros2 launch mecanum_bot mecanum_sim.launch.py',
+      nodes: ['/ros_gz_bridge', '/slam_toolbox', '/waypoint_follower', '/mecanum_drive_controller', '/robot_state_publisher', '/rviz2'],
+      topics: [
+        { name: '/scan', type: 'sensor_msgs/msg/LaserScan', from: ['/ros_gz_bridge'], to: ['/slam_toolbox', '/rviz2'] },
+        { name: '/map', type: 'nav_msgs/msg/OccupancyGrid', from: ['/slam_toolbox'], to: ['/rviz2'] },
+        { name: '/mecanum_drive_controller/reference', type: 'geometry_msgs/msg/TwistStamped', from: ['/waypoint_follower'], to: ['/mecanum_drive_controller'] },
+        { name: '/mecanum_drive_controller/odometry', type: 'nav_msgs/msg/Odometry', from: ['/mecanum_drive_controller'], to: ['/waypoint_follower'] },
+        { name: '/tf', type: 'tf2_msgs/msg/TFMessage', from: ['/robot_state_publisher', '/slam_toolbox'], to: ['/rviz2'] }
+      ],
+      actions: []
+    },
+    'two-wheel-bot': {
+      distro: 'Jazzy',
+      pkgs: ['two_wheel_robot'],
+      launch: 'ros2 launch two_wheel_robot two_wheel_navigation.launch.py',
+      nodes: ['/ros_gz_bridge', '/slam_toolbox', '/bt_navigator', '/diff_drive_controller', '/tf_to_pose_publisher'],
+      topics: [
+        { name: '/scan', type: 'sensor_msgs/msg/LaserScan', from: ['/ros_gz_bridge'], to: ['/slam_toolbox', '/bt_navigator'] },
+        { name: '/map', type: 'nav_msgs/msg/OccupancyGrid', from: ['/slam_toolbox'], to: ['/bt_navigator'] },
+        { name: '/tf', type: 'tf2_msgs/msg/TFMessage', from: ['/slam_toolbox', '/diff_drive_controller'], to: ['/tf_to_pose_publisher'] },
+        { name: '/robot_pose', type: 'geometry_msgs/msg/PoseStamped', from: ['/tf_to_pose_publisher'], to: [] },
+        { name: '/camera/image_raw', type: 'sensor_msgs/msg/Image', from: ['/ros_gz_bridge'], to: [] }
+      ],
+      actions: []
+    },
+    'roboshield': {
+      kind: 'rust',
+      crates: ['roboshield-core', 'roboshield-simulator'],
+      launch: 'cargo build --release'
+    }
+  };
+  Object.keys(ROS).forEach(id => { if (PROJECTS[id]) PROJECTS[id].ros = ROS[id]; });
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  }
+
+  /* --- rqt_graph-style SVG: ellipses = nodes, boxes = topics/actions --- */
+  function renderRosGraph(ros, maxWidth) {
+    const edges = [];
+    const channels = ros.topics.concat(ros.actions.map(a => Object.assign({ action: true }, a)));
+    const vertices = new Map();
+    ros.nodes.forEach(n => vertices.set(n, { id: n, kind: 'node' }));
+    channels.forEach(c => {
+      const key = 'ch:' + c.name;
+      vertices.set(key, { id: key, kind: c.action ? 'action' : 'topic', label: c.name, type: c.type });
+      c.from.forEach(n => edges.push({ from: n, to: key, action: !!c.action }));
+      c.to.forEach(n => edges.push({ from: key, to: n, action: !!c.action }));
+    });
+
+    // Longest-path layering; DFS back-edges are ignored so feedback loops don't explode ranks
+    const out = new Map();
+    edges.forEach(e => { if (!out.has(e.from)) out.set(e.from, []); out.get(e.from).push(e.to); });
+    const state = new Map();
+    const order = [];
+    function visit(v) {
+      if (state.get(v) === 2) return;
+      if (state.get(v) === 1) return; // back edge
+      state.set(v, 1);
+      (out.get(v) || []).forEach(visit);
+      state.set(v, 2);
+      order.push(v);
+    }
+    vertices.forEach((_, k) => visit(k));
+    order.reverse();
+    const pos = new Map(order.map((v, i) => [v, i]));
+    const rank = new Map(order.map(v => [v, 0]));
+    order.forEach(v => (out.get(v) || []).forEach(w => {
+      if (pos.get(w) > pos.get(v)) rank.set(w, Math.max(rank.get(w), rank.get(v) + 1));
+    }));
+
+    const ranks = [];
+    vertices.forEach((v, k) => {
+      const r = rank.get(k);
+      (ranks[r] = ranks[r] || []).push(v);
+    });
+
+    // Top-down layout: each rank becomes one or more rows, wrapped to fit maxWidth
+    const CHAR_W = 6.4, H_GAP = 14, ROW_GAP = 30, PAD = 12;
+    const labelOf = v => v.kind === 'node' ? v.id : v.label;
+    vertices.forEach(v => {
+      v.w = labelOf(v).length * CHAR_W + (v.kind === 'node' ? 30 : 18);
+      v.h = v.kind === 'node' ? 30 : 24;
+    });
+    const usable = Math.max(240, maxWidth - PAD * 2);
+    const rows = [];
+    ranks.forEach(rk => {
+      if (!rk) return;
+      let row = [], rowW = 0;
+      rk.forEach(v => {
+        if (row.length && rowW + H_GAP + v.w > usable) { rows.push(row); row = []; rowW = 0; }
+        rowW += (row.length ? H_GAP : 0) + v.w;
+        row.push(v);
+      });
+      if (row.length) rows.push(row);
+    });
+    const rowWidth = row => row.reduce((sum, v) => sum + v.w, 0) + H_GAP * (row.length - 1);
+    const width = Math.max(...rows.map(rowWidth)) + PAD * 2;
+    let y = PAD;
+    rows.forEach(row => {
+      let x = (width - rowWidth(row)) / 2;
+      row.forEach(v => {
+        v.cx = x + v.w / 2;
+        v.cy = y + 15;
+        x += v.w + H_GAP;
+      });
+      y += 30 + ROW_GAP;
+    });
+    const height = y - ROW_GAP + PAD;
+
+    let svg = `<svg class="ros-graph" width="${Math.round(width)}" height="${Math.round(height)}" viewBox="0 0 ${Math.round(width)} ${Math.round(height)}" role="img" aria-label="ROS 2 node and topic graph">`;
+    svg += '<defs><marker id="ros-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker></defs>';
+    edges.forEach(e => {
+      const a = vertices.get(e.from), b = vertices.get(e.to);
+      if (!a || !b) return;
+      let d;
+      if (b.cy > a.cy) {
+        const y1 = a.cy + a.h / 2, y2 = b.cy - b.h / 2, my = (y1 + y2) / 2;
+        d = `M${a.cx},${y1} C${a.cx},${my} ${b.cx},${my} ${b.cx},${y2}`;
+      } else {
+        // Feedback edge (target above or beside source): loop out along the right side
+        const x1 = a.cx + a.w / 2, x2 = b.cx + b.w / 2;
+        const bulge = Math.min(width - 2, Math.max(x1, x2) + 28);
+        d = `M${x1},${a.cy} C${bulge},${a.cy} ${bulge},${b.cy} ${x2},${b.cy}`;
+      }
+      svg += `<path class="ros-edge${e.action ? ' is-action' : ''}" data-from="${escapeHtml(e.from)}" data-to="${escapeHtml(e.to)}" d="${d}" marker-end="url(#ros-arrow)"/>`;
+    });
+    vertices.forEach((v, k) => {
+      const label = escapeHtml(labelOf(v));
+      if (v.kind === 'node') {
+        svg += `<g class="ros-v ros-node" data-id="${escapeHtml(k)}" tabindex="0"><title>node ${label}</title>` +
+          `<ellipse cx="${v.cx}" cy="${v.cy}" rx="${v.w / 2}" ry="${v.h / 2}"/>` +
+          `<text x="${v.cx}" y="${v.cy}">${label}</text></g>`;
+      } else {
+        const t = escapeHtml(v.type);
+        svg += `<g class="ros-v ros-${v.kind}" data-id="${escapeHtml(k)}" tabindex="0"><title>${label} [${t}]</title>` +
+          `<rect x="${v.cx - v.w / 2}" y="${v.cy - 12}" width="${v.w}" height="24" rx="${v.kind === 'action' ? 12 : 3}"/>` +
+          `<text x="${v.cx}" y="${v.cy}">${label}</text></g>`;
+      }
+    });
+    svg += '</svg>';
+    return svg;
+  }
+
+  function bindRosGraph(root) {
+    const holder = root.querySelector('.ros-graph-scroll');
+    if (!holder) return;
+    holder.innerHTML = renderRosGraph(PROJECTS[holder.dataset.project].ros, holder.clientWidth || 400);
+    const svg = holder.querySelector('.ros-graph');
+    const info = root.querySelector('.ros-graph-info');
+    const defaultInfo = info ? info.innerHTML : '';
+    const vs = svg.querySelectorAll('.ros-v');
+    const es = svg.querySelectorAll('.ros-edge');
+    function focusVertex(g) {
+      const id = g.dataset.id;
+      const linked = new Set([id]);
+      es.forEach(e => {
+        const hit = e.dataset.from === id || e.dataset.to === id;
+        e.classList.toggle('is-hot', hit);
+        if (hit) { linked.add(e.dataset.from); linked.add(e.dataset.to); }
+      });
+      vs.forEach(v => v.classList.toggle('is-dim', !linked.has(v.dataset.id)));
+      if (info) info.textContent = g.querySelector('title').textContent;
+    }
+    function reset() {
+      es.forEach(e => e.classList.remove('is-hot'));
+      vs.forEach(v => v.classList.remove('is-dim'));
+      if (info) info.innerHTML = defaultInfo;
+    }
+    vs.forEach(g => {
+      g.addEventListener('mouseenter', () => focusVertex(g));
+      g.addEventListener('focus', () => focusVertex(g));
+      g.addEventListener('mouseleave', reset);
+      g.addEventListener('blur', reset);
+    });
+  }
+
+  function rosGraphSection(p, id) {
+    const ros = p.ros;
+    if (!ros || !ros.nodes) return '';
+    return `
+      <div class="panel-section ros-graph-section">
+        <h3 class="panel-section-title"><i class="fa-solid fa-diagram-project"></i> Node graph (rqt_graph)</h3>
+        <div class="ros-graph-scroll" data-project="${id}"></div>
+        <p class="ros-graph-info">Hover a node or topic to trace its connections. Ellipses are nodes, boxes are topics, rounded boxes are actions.</p>
+      </div>`;
+  }
+
+  /* --- Package metadata strip on project cards --- */
+  function rosMetaHtml(ros) {
+    const counts = ros.kind === 'rust'
+      ? `<span class="ros-meta-chip">Rust</span><span class="ros-meta-counts">${ros.crates.length} crates &middot; passive RTPS capture</span>`
+      : `<span class="ros-meta-chip">ROS 2 ${ros.distro}</span><span class="ros-meta-counts">${ros.pkgs.length} pkg${ros.pkgs.length > 1 ? 's' : ''} &middot; ${ros.nodes.length} nodes &middot; ${ros.topics.length} topics${ros.actions.length ? ` &middot; ${ros.actions.length} action${ros.actions.length > 1 ? 's' : ''}` : ''}</span>`;
+    return `<div class="ros-meta">${counts}
+      <div class="ros-launch"><code>${escapeHtml(ros.launch)}</code>
+        <button type="button" class="ros-copy-btn" aria-label="Copy launch command" title="Copy command"><i class="fa-regular fa-copy"></i></button>
+      </div></div>`;
+  }
+
+  Object.keys(ROS).forEach(id => {
+    const tech = document.querySelector(`#${id} .project-info .project-tech`);
+    if (!tech) return;
+    tech.insertAdjacentHTML('afterend', rosMetaHtml(ROS[id]));
+    const btn = tech.nextElementSibling.querySelector('.ros-copy-btn');
+    btn.addEventListener('click', e => {
+      e.stopPropagation(); // card itself opens the detail panel
+      const cmd = ROS[id].launch;
+      const done = () => {
+        const utils = window.portfolioUtils;
+        if (utils && utils.showToast) utils.showToast('Launch command copied', 'fa-solid fa-terminal');
+        btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+        setTimeout(() => { btn.innerHTML = '<i class="fa-regular fa-copy"></i>'; }, 1500);
+      };
+      if (navigator.clipboard) navigator.clipboard.writeText(cmd).then(done).catch(() => {});
+    });
+    btn.addEventListener('keydown', e => e.stopPropagation());
+  });
+
+  /* --- Architecture section: chips open the project panel --- */
+  document.querySelectorAll('.arch-section [data-open-project]').forEach(el => {
+    el.addEventListener('click', e => {
+      e.preventDefault();
+      panelTriggerEl = el;
+      openPanel('project', el.dataset.openProject);
+    });
+  });
 
   window.PORTFOLIO_DATA = { SKILLS, PROJECTS, openPanel };
 

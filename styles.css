@@ -2701,3 +2701,148 @@ td.ContributionCalendar-corner { width: 32px; }
   }
   .scroll-reveal, .scroll-reveal.reveal-hidden, .header-hidden { opacity: 1 !important; transform: none !important; }
 }
+
+/* ==========================================================================
+   ROS 2 package metadata strip (project cards)
+   ========================================================================== */
+.ros-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.6rem;
+  margin: 0.9rem 0 0.2rem;
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.72rem;
+}
+.ros-meta-chip {
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  background: rgba(34, 49, 77, 0.9);
+  border: 1px solid rgba(0, 242, 254, 0.35);
+  color: var(--accent-cyan);
+  font-weight: 600;
+}
+.ros-meta-counts { color: var(--text-secondary); }
+.ros-launch {
+  flex-basis: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+  padding: 0.35rem 0.4rem 0.35rem 0.6rem;
+  background: rgba(5, 8, 14, 0.85);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+}
+.ros-launch code {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  white-space: nowrap;
+  color: var(--accent-green);
+  scrollbar-width: none;
+}
+.ros-launch code::before { content: '$ '; color: var(--text-muted); }
+.ros-copy-btn {
+  flex-shrink: 0;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-secondary);
+  padding: 0.2rem 0.45rem;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.ros-copy-btn:hover, .ros-copy-btn:focus-visible { color: var(--accent-cyan); border-color: var(--accent-cyan); }
+
+/* ==========================================================================
+   rqt_graph-style node graph (detail panel)
+   ========================================================================== */
+.ros-graph-scroll { overflow-x: auto; scrollbar-width: thin; scrollbar-color: rgba(0, 242, 254, 0.3) transparent; }
+.ros-graph { display: block; margin: 0 auto; max-width: none; font-family: 'Geist Mono', monospace; }
+.ros-graph text { font-size: 10.5px; fill: var(--text-primary); text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+.ros-graph .ros-node ellipse { fill: rgba(0, 114, 255, 0.14); stroke: var(--accent-blue); stroke-width: 1.2; }
+.ros-graph .ros-topic rect { fill: rgba(0, 255, 135, 0.08); stroke: rgba(0, 255, 135, 0.55); stroke-width: 1; }
+.ros-graph .ros-action rect { fill: rgba(251, 146, 60, 0.1); stroke: #fb923c; stroke-width: 1; stroke-dasharray: 4 3; }
+.ros-graph .ros-v { cursor: pointer; transition: opacity 0.15s ease; outline: none; }
+.ros-graph .ros-v:focus-visible ellipse, .ros-graph .ros-v:focus-visible rect { stroke: var(--accent-cyan); stroke-width: 2; }
+.ros-graph .ros-v.is-dim { opacity: 0.25; }
+.ros-graph .ros-edge { fill: none; stroke: rgba(148, 163, 184, 0.45); stroke-width: 1.1; transition: stroke 0.15s ease, opacity 0.15s ease; }
+.ros-graph .ros-edge.is-action { stroke-dasharray: 4 3; }
+.ros-graph .ros-edge.is-hot { stroke: var(--accent-cyan); stroke-width: 1.8; }
+.ros-graph:has(.is-hot) .ros-edge:not(.is-hot) { opacity: 0.2; }
+.ros-graph marker path { fill: rgba(148, 163, 184, 0.7); }
+.ros-graph-info {
+  margin-top: 0.6rem;
+  min-height: 1.4em;
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Architecture ("How I Build Robots") section
+   ========================================================================== */
+.arch-grid {
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.arch-stack { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+.arch-layer {
+  display: grid;
+  grid-template-columns: minmax(190px, 230px) 1fr;
+  align-items: center;
+  gap: 0.5rem 1.2rem;
+  padding: 0.85rem 1.1rem;
+  background: rgba(16, 21, 36, 0.6);
+  border: 1px solid var(--border-color);
+  border-left: 3px solid rgba(0, 242, 254, 0.45);
+  border-radius: 8px;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.arch-layer:hover { border-color: var(--border-glow); background: rgba(16, 21, 36, 0.85); }
+.arch-layer-head { display: flex; align-items: center; gap: 0.6rem; }
+.arch-layer-head i { color: var(--accent-cyan); width: 1.1rem; text-align: center; }
+.arch-layer-head h3 { font-size: 0.95rem; font-weight: 600; color: var(--text-primary); }
+.arch-layer-idx {
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  min-width: 1.4rem;
+}
+.arch-tools { font-family: 'Geist Mono', monospace; font-size: 0.76rem; color: var(--text-secondary); }
+.arch-chips { grid-column: 2; display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.arch-chip {
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.7rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(0, 242, 254, 0.08);
+  border: 1px solid rgba(0, 242, 254, 0.3);
+  color: var(--accent-cyan);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.arch-chip:hover, .arch-chip:focus-visible { background: rgba(0, 242, 254, 0.18); border-color: var(--accent-cyan); outline: none; }
+.arch-rail {
+  border: 1px dashed rgba(251, 146, 60, 0.55);
+  border-radius: 8px;
+  background: repeating-linear-gradient(180deg, rgba(251, 146, 60, 0.04) 0 6px, transparent 6px 12px);
+  display: flex;
+}
+.arch-rail-inner { padding: 1.1rem; display: flex; flex-direction: column; gap: 0.6rem; justify-content: center; }
+.arch-rail i { color: #fb923c; font-size: 1.3rem; }
+.arch-rail h3 { font-size: 0.95rem; color: var(--text-primary); }
+.arch-rail p { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.55; }
+.arch-rail .arch-chip { align-self: flex-start; color: #fb923c; border-color: rgba(251, 146, 60, 0.5); background: rgba(251, 146, 60, 0.08); }
+
+@media (max-width: 960px) {
+  .arch-grid { grid-template-columns: 1fr; }
+  .arch-layer { grid-template-columns: 1fr; }
+  .arch-chips { grid-column: 1; }
+}
+
+.terminal-body .text-muted-term { color: var(--text-muted); }

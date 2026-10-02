@@ -34,9 +34,9 @@
     { text: "  * <span class='text-green'>/cafe_butler_fsm</span> [Python 7-State FSM Node]", delay: 30 },
     { text: "  * <span class='text-green'>/bt_navigator</span> [Nav2 Behavior Tree Navigator]", delay: 30 },
     { text: "  * <span class='text-green'>/amcl</span> [Adaptive Monte Carlo Localisation]", delay: 30 },
-    { text: "  * <span class='text-green'>/dwb_controller</span> [DWB Local Planner @ 20Hz]", delay: 30 },
+    { text: "  * <span class='text-green'>/controller_server</span> [Nav2 DWB Local Planner]", delay: 30 },
     { text: "  * <span class='text-green'>/rosbridge_websocket</span> [WebSocket Server Port 9090]", delay: 30 },
-    { text: "  * <span class='text-green'>/metrics_logger</span> [CSV Delivery Analytics]", delay: 30 },
+    { text: "  * <span class='text-green'>/cafe_butler_metrics_logger</span> [CSV Delivery Analytics]", delay: 30 },
     { text: "System Status: <span class='text-green'>0 ERRORS</span>, Nav2 Stack fully initialized.", delay: 80 },
     { text: "--------------------------------------------------------", delay: 40 },
     { text: "Type <span class='text-green'>'help'</span>, <span class='text-green'>'ros2'</span>, <span class='text-green'>'cafe'</span>, or <span class='text-green'>'fsm'</span> to interact with the system.", delay: 40 }
@@ -62,7 +62,15 @@
   const helpText = `Available Commands:
   help              - Show this help menu
   call / phone      - Reach out directly via Phone (+91 8122241705)
-  ros2              - List active ROS 2 topics, nodes & services
+  ros2              - Overview of the active ROS 2 graph
+  ros2 node list    - Nodes in the active workspace
+  ros2 topic list   - Topics (add -t for types)
+  ros2 topic info T - Publishers / subscribers of topic T
+  ros2 topic echo T - Stream messages (e.g. /scan, /odom)
+  ros2 action list  - Action servers
+  ros2 pkg list     - Packages across all my workspaces
+  ros2 launch P F   - Launch a package (switches active workspace)
+  colcon build      - Build every package
   cafe-launch       - Simulate launching Café Butler delivery system
   fsm               - Display 7-State Finite State Machine workflow
   tf                - Display TF2 coordinate transformation tree
@@ -85,7 +93,7 @@ ACTIVE NODES:
   • /controller_server           (DWB Local Planner)
   • /rosbridge_websocket         (Port 9090)
   • /robot_state_publisher       (URDF TF Broadcaster)
-  • /metrics_logger              (CSV Telemetry Logger)
+  • /cafe_butler_metrics_logger  (CSV Telemetry Logger)
 
 ACTIVE TOPICS:
   • /scan                        [sensor_msgs/msg/LaserScan] 360° LiDAR
@@ -189,6 +197,96 @@ Special thanks to mentor Sundar sir for providing the base simulation environmen
   const aboutText = `Amin Ahmed G is a B.E. Robotics & Automation Student at Anna University.
 Focuses on building control layers, autonomous navigation stacks, and real-time firmware for mobile robotics.`;
 
+
+  /* ---------- ROS 2 CLI emulation, driven by the real project graphs ---------- */
+  let activeProject = 'cafe-butler';
+  let echoTimer = null;
+
+  function rosProjects() {
+    const d = window.PORTFOLIO_DATA;
+    if (!d) return [];
+    return Object.keys(d.PROJECTS).filter(id => d.PROJECTS[id].ros && d.PROJECTS[id].ros.nodes)
+      .map(id => Object.assign({ id }, d.PROJECTS[id]));
+  }
+  function activeRos() {
+    const p = rosProjects().find(x => x.id === activeProject);
+    return p ? p.ros : null;
+  }
+  function stopEcho() { if (echoTimer) { clearInterval(echoTimer); echoTimer = null; } }
+
+  function echoMessage(topic, type, seq) {
+    const t = (1759400000 + seq * 0.1).toFixed(1).split('.');
+    const header = `header:\n  stamp:\n    sec: ${t[0]}\n    nanosec: ${t[1]}00000000\n`;
+    if (type === 'sensor_msgs/msg/LaserScan') {
+      const ranges = Array.from({ length: 6 }, (_, i) => (1.2 + Math.abs(Math.sin(seq * 0.7 + i)) * 2.4).toFixed(3));
+      return `${header}  frame_id: lidar_link\nangle_min: -3.1416\nangle_max: 3.1416\nangle_increment: 0.0175\nrange_min: 0.12\nrange_max: 12.0\nranges: [${ranges.join(', ')}, '...']\n---`;
+    }
+    if (type === 'nav_msgs/msg/Odometry') {
+      const x = (seq * 0.021).toFixed(3), w = (0.05 * Math.sin(seq / 3)).toFixed(3);
+      return `${header}  frame_id: odom\nchild_frame_id: base_footprint\npose:\n  pose:\n    position: {x: ${x}, y: 0.000, z: 0.0}\ntwist:\n  twist:\n    linear: {x: 0.210, y: 0.0, z: 0.0}\n    angular: {x: 0.0, y: 0.0, z: ${w}}\n---`;
+    }
+    return null;
+  }
+
+  function rosCli(args) {
+    stopEcho();
+    const ros = activeRos();
+    if (!ros) { print('ROS graph data still loading, try again in a moment.', 'cmd-error'); return; }
+    const [verb, sub, arg] = args;
+    const ws = `<span class="text-muted-term">(workspace: ${activeProject})</span>`;
+
+    if (verb === 'node' && sub === 'list') {
+      print(ros.nodes.slice().sort().join('\n'), 'cmd-out'); print(ws);
+    } else if (verb === 'topic' && sub === 'list') {
+      const withType = args.includes('-t');
+      print(ros.topics.slice().sort((a, b) => a.name.localeCompare(b.name)).map(t => withType ? `${t.name} [${t.type}]` : t.name).join('\n'), 'cmd-out'); print(ws);
+    } else if (verb === 'topic' && sub === 'info' && arg) {
+      const t = ros.topics.find(x => x.name === arg);
+      if (!t) { print(`Unknown topic '${arg}'. Try 'ros2 topic list'.`, 'cmd-error'); return; }
+      print(`Type: ${t.type}\nPublisher count: ${t.from.length}\n  ${t.from.join('\n  ')}\nSubscription count: ${t.to.length}${t.to.length ? '\n  ' + t.to.join('\n  ') : ''}`, 'cmd-out');
+    } else if (verb === 'topic' && sub === 'echo' && arg) {
+      const t = ros.topics.find(x => x.name === arg);
+      if (!t) { print(`Unknown topic '${arg}'. Try 'ros2 topic list'.`, 'cmd-error'); return; }
+      if (!echoMessage(t.name, t.type, 0)) {
+        print(`Echo is emulated for LaserScan and Odometry topics only. '${arg}' is ${t.type}.`, 'cmd-error'); return;
+      }
+      let seq = 0;
+      print(echoMessage(t.name, t.type, seq++), 'cmd-out');
+      echoTimer = setInterval(() => {
+        print(echoMessage(t.name, t.type, seq++), 'cmd-out');
+        if (seq >= 4) { stopEcho(); print('^C (emulated stream stopped after 4 messages)', 'text-muted-term'); }
+      }, 700);
+    } else if (verb === 'action' && sub === 'list') {
+      print(ros.actions.length ? ros.actions.map(a => a.name).join('\n') : '(no action servers in this workspace)', 'cmd-out'); print(ws);
+    } else if (verb === 'pkg' && sub === 'list') {
+      print(rosProjects().flatMap(p => p.ros.pkgs).sort().join('\n'), 'cmd-out');
+    } else if (verb === 'launch' && sub) {
+      const p = rosProjects().find(x => x.ros.pkgs.includes(sub));
+      if (!p) { print(`Package '${sub}' not found. Try 'ros2 pkg list'.`, 'cmd-error'); return; }
+      activeProject = p.id;
+      const lines = [`[INFO] [launch]: Default logging verbosity is set to INFO`,
+        `<span class='text-muted-term'>$ ${p.ros.launch}</span>`]
+        .concat(p.ros.nodes.map((n, i) => `[INFO] [${n.split('/').pop()}-${i + 1}]: process started with pid [${4120 + i * 7}]`))
+        .concat([`<span class='text-green'>Active workspace -> ${p.id}. Try 'ros2 node list' or open the project's node graph.</span>`]);
+      lines.forEach((l, i) => setTimeout(() => print(l), i * 90));
+    } else {
+      print("Supported: ros2 node list | topic list [-t] | topic info <t> | topic echo <t> | action list | pkg list | launch <pkg> [file]", 'cmd-error');
+    }
+  }
+
+  function colconBuild() {
+    stopEcho();
+    const pkgs = rosProjects().flatMap(p => p.ros.pkgs).sort();
+    if (!pkgs.length) { print('ROS graph data still loading, try again in a moment.', 'cmd-error'); return; }
+    const out = [];
+    pkgs.forEach((pkg, i) => {
+      out.push(`Starting >>> ${pkg}`);
+      out.push(`<span class='text-green'>Finished <<< ${pkg} [${(1.1 + (pkg.length % 7) * 0.6).toFixed(1)}s]</span>`);
+    });
+    out.push(`\nSummary: ${pkgs.length} packages finished`);
+    out.forEach((l, i) => setTimeout(() => print(l), i * 60));
+  }
+
   // Parser command function
   function handleCommand(cmdStr) {
     const trimmed = cmdStr.trim();
@@ -208,9 +306,16 @@ Focuses on building control layers, autonomous navigation stacks, and real-time 
         print(helpText, 'cmd-out');
         break;
       case 'ros2':
+        if (args.length) { rosCli(args); break; }
+        print(ros2Text, 'cmd-out');
+        break;
       case 'nodes':
       case 'topics':
         print(ros2Text, 'cmd-out');
+        break;
+      case 'colcon':
+        if (args[0] === 'build') colconBuild();
+        else print("usage: colcon build", 'cmd-error');
         break;
       case 'cafe':
       case 'cafe-launch':
@@ -244,14 +349,14 @@ Focuses on building control layers, autonomous navigation stacks, and real-time 
         print(skillsText, 'cmd-out');
         break;
       case 'projects':
-        print(projectsText, 'cmd-out');
+        print(projectsText, 'cmd-out cmd-html');
         break;
       case 'contact':
       case 'phone':
       case 'call':
       case 'whatsapp':
       case 'tel':
-        print(contactText, 'cmd-out');
+        print(contactText, 'cmd-out cmd-html');
         break;
       case 'matrix':
       case 'sudo':
