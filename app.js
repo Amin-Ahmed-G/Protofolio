@@ -3,6 +3,8 @@
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', function() {
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   
   /* ==========================================================================
      1. Navigation Menu Toggle & Highlight
@@ -255,7 +257,8 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
 
-    requestAnimationFrame(animateLidar);
+    // Reduced motion: draw a single static frame instead of animating
+    if (!reduceMotion) requestAnimationFrame(animateLidar);
   }
 
   animateLidar();
@@ -436,6 +439,28 @@ document.addEventListener('DOMContentLoaded', function() {
       if (floatingWidget) floatingWidget.classList.remove('active');
     });
   }
+
+
+  /* ==========================================================================
+     Project videos: load and play only while on screen
+     ========================================================================== */
+  const lazyVideos = document.querySelectorAll('video[data-autoplay]');
+  if (!reduceMotion && 'IntersectionObserver' in window) {
+    const videoObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const video = entry.target;
+        if (entry.isIntersecting) {
+          video.play().catch(() => {});
+        } else if (!video.paused) {
+          video.pause();
+        }
+      });
+    }, { threshold: 0.35 });
+    lazyVideos.forEach(v => videoObserver.observe(v));
+  }
+
+  // Shared helpers for enhancements.js
+  window.portfolioUtils = { copyToClipboard, showToast };
 
 });
 
