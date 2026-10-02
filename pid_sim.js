@@ -421,3 +421,18 @@
     }
   };
 })();
+
+/* Control Systems Lab tabs (PID simulator / FSM visualizer) */
+document.querySelectorAll('.pid-tab-btn[data-tab]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tab = btn.dataset.tab;
+    document.querySelectorAll('.pid-tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.pid-tab-btn').forEach(b => {
+      b.classList.remove('active');
+      b.setAttribute('aria-selected', 'false');
+    });
+    document.getElementById(tab + '-tab-panel').classList.add('active');
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected', 'true');
+  });
+});

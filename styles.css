@@ -2639,3 +2639,52 @@ td.ContributionCalendar-corner { width: 32px; }
 
 .heatmap-fallback { text-align: center; color: var(--text-secondary); padding: 2rem 1rem; }
 .heatmap-fallback a { color: var(--accent-cyan); }
+
+/* ==========================================================================
+   Utility & component classes (formerly inline styles)
+   ========================================================================== */
+.mt-sm { margin-top: 0.8rem; }
+.mt-md { margin-top: 1rem; }
+.mt-xl { margin-top: 3rem; }
+.mb-md { margin-bottom: 1rem; }
+
+.about-highlights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin: 1.2rem 0;
+}
+.highlight-box {
+  background: rgba(16, 21, 36, 0.6);
+  border: 1px solid rgba(0, 242, 254, 0.2);
+  padding: 1rem;
+  border-radius: 8px;
+}
+.highlight-box .highlight-icon { color: var(--accent-cyan); font-size: 1.2rem; margin-bottom: 0.3rem; }
+.highlight-box h4 { font-size: 0.9rem; color: #fff; margin-bottom: 0.2rem; }
+.highlight-box p { font-size: 0.76rem; color: var(--text-secondary); margin: 0; }
+.about-resume-cta { margin-top: 1.5rem; }
+
+.subsection-title { margin-top: 2.5rem; font-size: 1.1rem; color: var(--text-secondary); letter-spacing: 0.04em; }
+
+.fsm-log-line.is-muted { color: var(--text-muted); }
+.fsm-canvas-label {
+  color: var(--text-secondary);
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.72rem;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.gh-stat-highlight .gh-stat-icon,
+.gh-stat-highlight .gh-stat-val { color: var(--accent-cyan); }
+
+.contact-location {
+  margin-top: 2rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
