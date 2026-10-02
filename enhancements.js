@@ -900,252 +900,128 @@
   headers.forEach(h => { h.classList.add('header-hidden'); headerObs.observe(h); });
 
   /* =========================================================================
-     11. DYNAMIC ROLLING 12-MONTH CONTRIBUTION HEATMAP (Auto-Updates Monthly)
+     11. LIVE 12-MONTH CONTRIBUTION HEATMAP (real GitHub data, fetched once)
      ========================================================================= */
-  function initDynamicHeatmap() {
+  const GH_USER = 'Amin-Ahmed-G';
+  const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+  // Groups a flat day list (oldest first) into Sun-Sat weeks, padding the first week.
+  function buildWeeks(days) {
+    const weeks = [];
+    let week = [];
+    const firstDow = new Date(days[0].date + 'T00:00:00').getDay();
+    for (let i = 0; i < firstDow; i++) week.push(null);
+    days.forEach(day => {
+      week.push(day);
+      if (week.length === 7) { weeks.push(week); week = []; }
+    });
+    if (week.length) { while (week.length < 7) week.push(null); weeks.push(week); }
+    return weeks;
+  }
+
+  function renderHeatmap(container, days) {
+    const weeks = buildWeeks(days);
+
+    const monthSpans = [];
+    weeks.forEach(week => {
+      const first = week.find(Boolean);
+      const m = new Date(first.date + 'T00:00:00').getMonth();
+      const last = monthSpans[monthSpans.length - 1];
+      if (last && last.month === m) last.span++;
+      else monthSpans.push({ month: m, span: 1 });
+    });
+
+    let html = '<table role="grid" aria-readonly="true" class="ContributionCalendar-grid">';
+    html += '<caption class="sr-only">GitHub contribution graph, last 12 months</caption>';
+    html += '<thead><tr><td class="ContributionCalendar-corner"><span class="sr-only">Day of Week</span></td>';
+    monthSpans.forEach(ms => {
+      // Skip the label on a 1-week sliver so it doesn't collide with its neighbour
+      html += `<td class="ContributionCalendar-label" colspan="${ms.span}"><span aria-hidden="true">${ms.span > 1 ? MONTH_NAMES[ms.month] : ''}</span></td>`;
+    });
+    html += '</tr></thead><tbody>';
+
+    const dayLabels = { 1: 'Mon', 3: 'Wed', 5: 'Fri' };
+    for (let d = 0; d < 7; d++) {
+      html += `<tr><td class="ContributionCalendar-label"><span aria-hidden="true">${dayLabels[d] || ''}</span></td>`;
+      weeks.forEach(week => {
+        const cell = week[d];
+        if (!cell) { html += '<td class="ContributionCalendar-day is-empty"></td>'; return; }
+        const tip = cell.count > 0 ? `${cell.count} contribution${cell.count > 1 ? 's' : ''}` : 'No contributions';
+        html += `<td class="ContributionCalendar-day" data-date="${cell.date}" data-level="${cell.level}" data-tip="${tip}"></td>`;
+      });
+      html += '</tr>';
+    }
+    html += '</tbody></table>';
+    container.innerHTML = html;
+    container.removeAttribute('aria-busy');
+  }
+
+  function renderHeatmapFallback(container) {
+    container.innerHTML = `<p class="heatmap-fallback">Live contribution data is unavailable right now. <a href="https://github.com/${GH_USER}" target="_blank" rel="noopener noreferrer">View activity on GitHub →</a></p>`;
+    container.removeAttribute('aria-busy');
+  }
+
+  function updateHeatmapStat(repos, total) {
+    const statElem = document.querySelector('.hud-table-stat');
+    if (!statElem) return;
+    const parts = [];
+    if (repos != null) parts.push(`${repos} Public Repos`);
+    if (total != null) parts.push(`${total} Contributions (12 mo)`);
+    if (parts.length) statElem.innerHTML = `<i class="fa-brands fa-github"></i> ${parts.join(' &bull; ')}`;
+  }
+
+  function initHeatmapTooltip(container) {
+    const tooltip = document.createElement('div');
+    tooltip.className = 'heatmap-hud-tooltip';
+    tooltip.setAttribute('role', 'tooltip');
+    document.body.appendChild(tooltip);
+
+    const hide = () => tooltip.classList.remove('visible');
+    container.addEventListener('mouseleave', hide);
+    window.addEventListener('scroll', hide, { passive: true });
+
+    // Delegated, so it survives re-renders without re-binding
+    container.addEventListener('mouseover', e => {
+      const cell = e.target.closest('.ContributionCalendar-day[data-date]');
+      if (!cell) { hide(); return; }
+      tooltip.innerHTML = `<span class="tip-date">${cell.dataset.date}</span> &bull; ${cell.dataset.tip}`;
+      const rect = cell.getBoundingClientRect();
+      tooltip.style.left = `${rect.left + rect.width / 2}px`;
+      tooltip.style.top = `${rect.top - 6}px`;
+      tooltip.classList.add('visible');
+    });
+  }
+
+  function initHeatmap() {
     const container = document.querySelector('.github-calendar-container');
     if (!container) return;
+    initHeatmapTooltip(container);
 
-    // Clean up any stray tool-tip elements immediately
-    document.querySelectorAll('tool-tip').forEach(t => t.remove());
+    const repoState = { repos: null, total: null };
 
-    // 1. Known commit records across development periods
-    const knownActivity = {
-      // 2026 February
-      '2026-02-10': { count: 1, level: 1 },
-      '2026-02-14': { count: 2, level: 2 },
-      // 2026 April
-      '2026-04-18': { count: 1, level: 1 },
-      '2026-04-20': { count: 2, level: 2 },
-      // 2026 June
-      '2026-06-18': { count: 2, level: 1 },
-      '2026-06-25': { count: 1, level: 1 },
-      // 2026 July Sprint (114 commits)
-      '2026-07-06': { count: 4, level: 2 },
-      '2026-07-07': { count: 6, level: 3 },
-      '2026-07-08': { count: 5, level: 2 },
-      '2026-07-09': { count: 8, level: 3 },
-      '2026-07-10': { count: 12, level: 4 },
-      '2026-07-11': { count: 7, level: 3 },
-      '2026-07-13': { count: 9, level: 3 },
-      '2026-07-14': { count: 14, level: 4 },
-      '2026-07-15': { count: 11, level: 4 },
-      '2026-07-16': { count: 8, level: 3 },
-      '2026-07-17': { count: 10, level: 4 },
-      '2026-07-18': { count: 15, level: 4 },
-      '2026-07-20': { count: 6, level: 3 },
-      '2026-07-21': { count: 5, level: 2 },
-      '2026-07-22': { count: 4, level: 2 },
-      '2026-07-23': { count: 7, level: 3 },
-      '2026-07-24': { count: 3, level: 2 },
-      '2026-07-25': { count: 2, level: 1 },
-      '2026-07-28': { count: 3, level: 2 },
-      '2026-07-29': { count: 4, level: 2 },
-      '2026-07-30': { count: 6, level: 3 },
-      // 2026 August
-      '2026-08-03': { count: 4, level: 2 },
-      '2026-08-06': { count: 3, level: 2 },
-      '2026-08-07': { count: 5, level: 2 },
-      '2026-08-09': { count: 6, level: 3 },
-      '2026-08-11': { count: 4, level: 2 },
-      '2026-08-12': { count: 5, level: 2 },
-      '2026-08-14': { count: 8, level: 3 },
-      '2026-08-15': { count: 6, level: 3 },
-      '2026-08-16': { count: 7, level: 3 },
-      '2026-08-17': { count: 9, level: 3 },
-      '2026-08-18': { count: 4, level: 2 }
-    };
-
-    // 2. Build rolling 52 weeks covering all activity up through the latest record
-    let latestDate = new Date();
-    Object.keys(knownActivity).forEach(dStr => {
-      const pDate = new Date(dStr);
-      if (pDate > latestDate) {
-        latestDate = pDate;
-      }
-    });
-
-    const endDate = new Date(latestDate);
-    const dayOfWeek = endDate.getDay(); // 0 = Sun, 6 = Sat
-    endDate.setDate(endDate.getDate() + (6 - dayOfWeek));
-
-    const totalWeeks = 53;
-    const startDate = new Date(endDate);
-    startDate.setDate(startDate.getDate() - (totalWeeks * 7 - 1));
-
-    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const monthSpans = [];
-    let currentMonth = -1;
-    let currentSpan = 0;
-
-    const weeks = [];
-    let cur = new Date(startDate);
-
-    for (let w = 0; w < totalWeeks; w++) {
-      const week = [];
-      for (let d = 0; d < 7; d++) {
-        const year = cur.getFullYear();
-        const m = String(cur.getMonth() + 1).padStart(2, '0');
-        const day = String(cur.getDate()).padStart(2, '0');
-        const dateStr = `${year}-${m}-${day}`;
-
-        const act = knownActivity[dateStr];
-        const level = act ? act.level : 0;
-        const count = act ? act.count : 0;
-
-        week.push({
-          date: dateStr,
-          level: level,
-          count: count,
-          month: cur.getMonth()
-        });
-
-        cur.setDate(cur.getDate() + 1);
-      }
-      weeks.push(week);
-
-      const firstDayMonth = week[0].month;
-      if (firstDayMonth !== currentMonth) {
-        if (currentMonth !== -1) {
-          monthSpans.push({ name: monthNames[currentMonth], span: currentSpan });
-        }
-        currentMonth = firstDayMonth;
-        currentSpan = 1;
-      } else {
-        currentSpan++;
-      }
-    }
-    if (currentSpan > 0) {
-      monthSpans.push({ name: monthNames[currentMonth], span: currentSpan });
-    }
-
-    // 3. Render Table HTML
-    let tableHtml = '<table role="grid" aria-readonly="true" class="ContributionCalendar-grid js-calendar-graph-table" style="border-spacing: 4px; position: relative;">';
-    tableHtml += '<caption class="sr-only">Contribution Graph</caption>';
-
-    // Thead
-    tableHtml += '<thead><tr style="height: 15px"><td style="width: 32px;"><span class="sr-only">Day of Week</span></td>';
-    monthSpans.forEach(ms => {
-      tableHtml += `<td class="ContributionCalendar-label" colspan="${ms.span}" style="position: relative;"><span aria-hidden="true">${ms.name}</span></td>`;
-    });
-    tableHtml += '</tr></thead>';
-
-    // Tbody (Sun -> Sat)
-    const showLabels = { 1: 'Mon', 3: 'Wed', 5: 'Fri' };
-    tableHtml += '<tbody>';
-    for (let d = 0; d < 7; d++) {
-      tableHtml += '<tr style="height: 13px">';
-      const lbl = showLabels[d] || '';
-      tableHtml += `<td class="ContributionCalendar-label" style="position: relative;">`;
-      if (lbl) {
-        tableHtml += `<span aria-hidden="true">${lbl}</span>`;
-      }
-      tableHtml += `</td>`;
-
-      for (let w = 0; w < totalWeeks; w++) {
-        const cell = weeks[w][d];
-        const countText = cell.count > 0 ? `${cell.count} contribution${cell.count > 1 ? 's' : ''}` : 'No contributions';
-        tableHtml += `<td class="ContributionCalendar-day" data-date="${cell.date}" data-level="${cell.level}" data-count="${cell.count}" data-tip="${countText}"></td>`;
-      }
-      tableHtml += '</tr>';
-    }
-    tableHtml += '</tbody></table>';
-
-    container.innerHTML = tableHtml;
-
-    // 4. Calculate real-time total contribution count across rolling matrix
-    const calculateTotal = () => weeks.flat().reduce((sum, cell) => sum + cell.count, 0);
-
-    let currentRepoCount = 13;
-    const updateHeaderTotal = (total) => {
-      const statElem = document.querySelector('.hud-table-stat');
-      if (statElem) {
-        statElem.innerHTML = `<i class="fa-brands fa-github"></i> ${currentRepoCount} Public Repos &bull; ${total} Total Contributions`;
-      }
-    };
-
-    let totalContributions = calculateTotal();
-    updateHeaderTotal(totalContributions);
-
-    // 5. Attach HUD Floating Tooltip with robust auto-hide
-    let tooltip = document.getElementById('heatmap-hud-tooltip');
-    if (!tooltip) {
-      tooltip = document.createElement('div');
-      tooltip.id = 'heatmap-hud-tooltip';
-      tooltip.className = 'heatmap-hud-tooltip';
-      tooltip.style.cssText = 'position:fixed; display:none; pointer-events:none; z-index:99999; padding:6px 12px; background:rgba(13,17,23,0.96); border:1px solid #00f2fe; border-radius:6px; color:#fff; font-family:"Geist Mono", monospace; font-size:0.75rem; box-shadow:0 8px 24px rgba(0,0,0,0.6), 0 0 12px rgba(0,242,254,0.3); backdrop-filter:blur(8px); transform:translate(-50%, -115%); transition:opacity 0.1s ease; opacity:0; white-space:nowrap;';
-      document.body.appendChild(tooltip);
-    }
-
-    const hideTooltip = () => {
-      tooltip.style.opacity = '0';
-      tooltip.style.display = 'none';
-    };
-
-    hideTooltip();
-
-    const graphWrap = document.querySelector('.github-graph-wrap');
-    if (graphWrap) {
-      graphWrap.addEventListener('mouseleave', hideTooltip);
-    }
-    container.addEventListener('mouseleave', hideTooltip);
-    window.addEventListener('scroll', hideTooltip, { passive: true });
-
-    container.querySelectorAll('.ContributionCalendar-day').forEach(cell => {
-      const dateStr = cell.getAttribute('data-date');
-      const tipText = cell.getAttribute('data-tip');
-
-      cell.addEventListener('mouseenter', () => {
-        tooltip.innerHTML = `<span style="color:#00f2fe;font-weight:600;">${dateStr}</span> &bull; <span style="color:#e2e8f0;">${tipText}</span>`;
-        tooltip.style.display = 'block';
-        const rect = cell.getBoundingClientRect();
-        tooltip.style.left = `${rect.left + rect.width / 2}px`;
-        tooltip.style.top = `${rect.top - 6}px`;
-        requestAnimationFrame(() => {
-          tooltip.style.opacity = '1';
-        });
-      });
-
-      cell.addEventListener('mouseleave', hideTooltip);
-    });
-
-    // 6. Asynchronously sync live GitHub user profile & push events
-    fetch('https://api.github.com/users/Amin-Ahmed-G')
-      .then(res => res.json())
-      .then(user => {
-        if (user && typeof user.public_repos === 'number') {
-          currentRepoCount = user.public_repos;
-          const statVal = document.querySelector('.gh-stat-highlight .gh-stat-val');
-          if (statVal) statVal.textContent = currentRepoCount;
-          updateHeaderTotal(totalContributions);
-        }
+    fetch(`https://github-contributions-api.jogruber.de/v4/${GH_USER}?y=last`)
+      .then(res => { if (!res.ok) throw new Error(res.status); return res.json(); })
+      .then(data => {
+        if (!data || !Array.isArray(data.contributions) || !data.contributions.length) throw new Error('empty');
+        renderHeatmap(container, data.contributions);
+        repoState.total = data.total && data.total.lastYear;
+        updateHeatmapStat(repoState.repos, repoState.total);
       })
-      .catch(() => {});
+      .catch(() => renderHeatmapFallback(container));
 
-    fetch('https://api.github.com/users/Amin-Ahmed-G/events')
-      .then(res => res.json())
-      .then(events => {
-        if (!Array.isArray(events)) return;
-        let hasNewData = false;
-        events.forEach(evt => {
-          if (evt.type === 'PushEvent' && evt.created_at) {
-            const dateStr = evt.created_at.split('T')[0];
-            const size = (evt.payload && evt.payload.size) || 1;
-            if (!knownActivity[dateStr]) {
-              knownActivity[dateStr] = { count: size, level: Math.min(4, Math.ceil(size / 3)) };
-              hasNewData = true;
-            }
-          }
-        });
-        if (hasNewData) {
-          // Re-trigger dynamic matrix rendering with live events
-          initDynamicHeatmap();
-        }
+    fetch(`https://api.github.com/users/${GH_USER}`)
+      .then(res => { if (!res.ok) throw new Error(res.status); return res.json(); })
+      .then(user => {
+        if (typeof user.public_repos !== 'number') return;
+        repoState.repos = user.public_repos;
+        const statVal = document.querySelector('.gh-stat-highlight .gh-stat-val');
+        if (statVal) statVal.textContent = user.public_repos;
+        updateHeatmapStat(repoState.repos, repoState.total);
       })
       .catch(() => {});
   }
 
-  initDynamicHeatmap();
+  initHeatmap();
 
   window.PORTFOLIO_DATA = { SKILLS, PROJECTS, openPanel };
 

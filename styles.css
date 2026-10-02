@@ -2597,3 +2597,45 @@ tool-tip, .sr-only, [popover] { display: none !important; visibility: hidden !im
   box-shadow: 0 4px 15px rgba(0, 242, 254, 0.15);
   transform: translateY(-2px);
 }
+
+/* ==========================================================================
+   Live heatmap: tooltip, skeleton, fallback
+   ========================================================================== */
+.ContributionCalendar-day.is-empty { background: transparent !important; outline: none !important; cursor: default; }
+.ContributionCalendar-day.is-empty:hover { transform: none !important; box-shadow: none !important; }
+td.ContributionCalendar-corner { width: 32px; }
+
+.heatmap-hud-tooltip {
+  position: fixed;
+  z-index: 99999;
+  pointer-events: none;
+  padding: 6px 12px;
+  background: rgba(13, 17, 23, 0.96);
+  border: 1px solid var(--accent-cyan);
+  border-radius: 6px;
+  color: #e2e8f0;
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 12px rgba(0, 242, 254, 0.3);
+  transform: translate(-50%, -115%);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.1s ease;
+}
+.heatmap-hud-tooltip.visible { opacity: 1; visibility: visible; }
+.heatmap-hud-tooltip .tip-date { color: var(--accent-cyan); font-weight: 600; }
+
+.heatmap-skeleton {
+  height: 130px;
+  max-width: 860px;
+  margin: 0 auto;
+  border-radius: 8px;
+  background: linear-gradient(90deg, rgba(22, 27, 34, 0.6) 25%, rgba(0, 242, 254, 0.08) 50%, rgba(22, 27, 34, 0.6) 75%);
+  background-size: 200% 100%;
+  animation: heatmap-shimmer 1.4s linear infinite;
+}
+@keyframes heatmap-shimmer { to { background-position: -200% 0; } }
+
+.heatmap-fallback { text-align: center; color: var(--text-secondary); padding: 2rem 1rem; }
+.heatmap-fallback a { color: var(--accent-cyan); }
