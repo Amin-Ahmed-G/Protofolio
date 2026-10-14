@@ -3081,3 +3081,16 @@ body { padding-bottom: 26px; }
   .about-image-wrapper { position: sticky; top: calc(var(--navbar-height) + 24px); }
 }
 
+.timeline-points {
+  margin: 0.8rem 0 0;
+  padding-left: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+.timeline-points li::marker { color: var(--accent-cyan); }
+.timeline-points strong { color: var(--text-primary); }
+.timeline-points code { font-size: 0.85em; color: var(--accent-green); }
