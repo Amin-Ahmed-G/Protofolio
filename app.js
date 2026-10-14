@@ -156,14 +156,14 @@ document.addEventListener('DOMContentLoaded', function() {
     ctx.lineTo(sweepCenter.x, sweepCenter.y);
     
     const grad = ctx.createRadialGradient(sweepCenter.x, sweepCenter.y, 0, sweepCenter.x, sweepCenter.y, sweepRadius);
-    grad.addColorStop(0, 'rgba(82, 214, 138, 0.08)');
-    grad.addColorStop(1, 'rgba(82, 214, 138, 0)');
+    grad.addColorStop(0, 'rgba(90, 169, 255, 0.08)');
+    grad.addColorStop(1, 'rgba(90, 169, 255, 0)');
     ctx.fillStyle = grad;
     ctx.fill();
     ctx.restore();
 
     // Draw scan concentric circles
-    ctx.strokeStyle = 'rgba(82, 214, 138, 0.02)';
+    ctx.strokeStyle = 'rgba(90, 169, 255, 0.02)';
     ctx.lineWidth = 1;
     for (let r = 150; r < sweepRadius; r += 150) {
       ctx.beginPath();
@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (dist < 100) {
           ctx.beginPath();
-          ctx.strokeStyle = `rgba(82, 214, 138, ${0.08 * (1 - dist / 100)})`;
+          ctx.strokeStyle = `rgba(90, 169, 255, ${0.08 * (1 - dist / 100)})`;
           ctx.lineWidth = 0.5;
           ctx.moveTo(p.x, p.y);
           ctx.lineTo(mouse.x, mouse.y);

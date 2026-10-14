@@ -4,32 +4,36 @@
 
 /* Design System Variables */
 :root {
-  /* RViz-inspired graphite palette */
-  --bg-primary: #17181b;
-  --bg-secondary: #1f2124;
-  --bg-tertiary: #2a2c30;
-  --panel-rgb: 31, 33, 37;
-  --deep-rgb: 20, 21, 24;
-  --text-primary: #eceef0;
-  --text-secondary: #a3a8b0;
-  --text-muted: #6f747c;
+  /* Navy base: deep, trustworthy, still dark enough for RViz-style visuals */
+  --bg-primary: #0e1420;
+  --bg-secondary: #151c2a;
+  --bg-tertiary: #1d2636;
+  --panel-rgb: 21, 28, 42;
+  --deep-rgb: 11, 16, 26;
+  --text-primary: #e8eef6;
+  --text-secondary: #9ba8ba;
+  --text-muted: #67768b;
 
-  /* Accents: Nav2 plan green, TF z-axis blue, marker amber, laser red */
-  --accent-rgb: 82, 214, 138;
+  /* Roles: azure = primary brand (trust), cyan = secondary highlight,
+     green = "working / success" (Nav2 plan, heatmap, terminal),
+     amber = goal markers only. (Variable names kept for compatibility.) */
+  --accent-rgb: 90, 169, 255;                 /* azure #5aa9ff */
   --accent-cyan: rgb(var(--accent-rgb));
-  --accent-blue-rgb: 76, 141, 255;
+  --accent-blue-rgb: 56, 205, 230;            /* cyan tone #38cde6 */
   --accent-blue: rgb(var(--accent-blue-rgb));
-  --accent-green-rgb: 245, 176, 65;
+  --accent-green-rgb: 82, 214, 138;           /* green tone #52d68a */
   --accent-green: rgb(var(--accent-green-rgb));
+  --plan-green: rgb(var(--accent-green-rgb));
+  --goal-amber: #f5b041;
   --laser-red: #ff5f57;
   --tf-x: #e5484d;
   --tf-y: #46c36f;
   --tf-z: #4c8dff;
   --accent-glow: rgba(var(--accent-rgb), 0.12);
-  --border-color: rgba(255, 255, 255, 0.08);
+  --border-color: rgba(148, 163, 184, 0.12);
   --border-glow: rgba(var(--accent-rgb), 0.35);
-  --grid-minor: rgba(160, 160, 164, 0.05);
-  --grid-major: rgba(160, 160, 164, 0.1);
+  --grid-minor: rgba(148, 163, 184, 0.045);
+  --grid-major: rgba(148, 163, 184, 0.09);
 
   /* Layout */
   --navbar-height: 70px;
@@ -1705,7 +1709,7 @@ section {
   border-radius: var(--border-radius);
   border: 1px solid rgba(var(--accent-rgb), 0.22);
   margin-bottom: 2.5rem;
-  background: #1a1b1e;
+  background: #121927;
   padding: 1.8rem 1.5rem;
   display: flex;
   flex-direction: column;
@@ -1773,11 +1777,11 @@ section {
   box-shadow: 0 0 12px rgba(var(--accent-rgb), 0.35) !important;
 }
 
-.ContributionCalendar-day[data-level="0"] { background-color: #2a2c30 !important; fill: #2a2c30; outline: 1px solid rgba(var(--accent-rgb), 0.08); }
+.ContributionCalendar-day[data-level="0"] { background-color: #1f2939 !important; fill: #1f2939; outline: 1px solid rgba(var(--accent-rgb), 0.08); }
 .ContributionCalendar-day[data-level="1"] { background-color: #0e4429 !important; fill: #0e4429; }
 .ContributionCalendar-day[data-level="2"] { background-color: #006d32 !important; fill: #006d32; }
 .ContributionCalendar-day[data-level="3"] { background-color: #26a641 !important; fill: #26a641; box-shadow: 0 0 6px rgba(38, 166, 65, 0.6); }
-.ContributionCalendar-day[data-level="4"] { background-color: var(--accent-cyan) !important; fill: var(--accent-cyan); box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.35), 0 0 18px rgba(var(--accent-rgb), 0.18); }
+.ContributionCalendar-day[data-level="4"] { background-color: var(--plan-green) !important; fill: var(--plan-green); box-shadow: 0 0 10px rgba(var(--accent-green-rgb), 0.35), 0 0 0 0 rgba(var(--accent-rgb), 0.35), 0 0 18px rgba(var(--accent-rgb), 0.18); }
 
 .ContributionCalendar-label {
   color: var(--accent-cyan);
@@ -1822,11 +1826,11 @@ td.ContributionCalendar-label span[aria-hidden="true"] {
   border-radius: 3px;
   display: inline-block;
 }
-.legend-sq.sq-0 { background-color: #2a2c30; outline: 1px solid rgba(var(--accent-rgb), 0.08); }
+.legend-sq.sq-0 { background-color: #1f2939; outline: 1px solid rgba(var(--accent-rgb), 0.08); }
 .legend-sq.sq-1 { background-color: #0e4429; }
 .legend-sq.sq-2 { background-color: #006d32; }
 .legend-sq.sq-3 { background-color: #26a641; box-shadow: 0 0 6px rgba(38, 166, 65, 0.6); }
-.legend-sq.sq-4 { background-color: var(--accent-cyan); box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.35); }
+.legend-sq.sq-4 { background-color: var(--plan-green); box-shadow: 0 0 10px rgba(var(--accent-green-rgb), 0.35); }
 
 .github-stats-grid {
   display: grid;
@@ -2914,12 +2918,12 @@ body {
   display: none;
 }
 .mission-svg { display: block; overflow: visible; }
-.mission-plan { fill: none; stroke: rgba(var(--accent-rgb), 0.28); stroke-width: 2; stroke-dasharray: 3 4; }
-.mission-travelled { fill: none; stroke: var(--accent-cyan); stroke-width: 2.5; stroke-linecap: round; }
-.mission-wp { fill: var(--bg-primary); stroke: rgba(var(--accent-rgb), 0.5); stroke-width: 1.5; transition: fill 0.2s ease, r 0.2s ease; }
-.mission-wp.is-visited { fill: var(--accent-cyan); stroke: var(--accent-cyan); }
+.mission-plan { fill: none; stroke: rgba(var(--accent-green-rgb), 0.28); stroke-width: 2; stroke-dasharray: 3 4; }
+.mission-travelled { fill: none; stroke: var(--plan-green); stroke-width: 2.5; stroke-linecap: round; }
+.mission-wp { fill: var(--bg-primary); stroke: rgba(var(--accent-green-rgb), 0.5); stroke-width: 1.5; transition: fill 0.2s ease, r 0.2s ease; }
+.mission-wp.is-visited { fill: var(--plan-green); stroke: var(--plan-green); }
 .mission-wp.is-active { r: 5.5; stroke: #fff; }
-.mission-goal path { fill: var(--accent-green); stroke: var(--bg-primary); stroke-width: 1; }
+.mission-goal path { fill: var(--goal-amber); stroke: var(--bg-primary); stroke-width: 1; }
 .mission-robot rect { fill: rgba(var(--panel-rgb), 0.95); stroke: var(--text-primary); stroke-width: 1.4; }
 .mission-robot line { stroke-width: 2; stroke-linecap: round; }
 .mission-robot .tf-x { stroke: var(--tf-x); }
@@ -2979,10 +2983,22 @@ body {
 .mission-hud .hud-item + .hud-item { padding-left: 1.4rem; border-left: 1px solid var(--border-color); }
 body { padding-bottom: 26px; }
 
-/* Shown from tablet-landscape up, so it survives browser zoom-in (125-150%) */
-@media (min-width: 900px) {
-  .mission-rail { display: block; }
+/* Always shown: vertical rail from 900px up (covers 125-150% browser zoom),
+   horizontal bar under the navbar below that (phones, 175%+ zoom) */
+.mission-rail { display: block; }
+.mission-rail.is-horizontal {
+  top: var(--navbar-height);
+  left: 0;
+  right: 0;
+  bottom: auto;
+  width: auto;
+  height: 26px;
+  background: rgba(var(--deep-rgb), 0.88);
+  border-bottom: 1px solid var(--border-color);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
+.mission-rail.is-horizontal .mission-label { left: 50%; top: 26px; transform: translateX(-50%); }
 /* Below 1280px the side gutter is too thin for the rail, so shift content right */
 @media (min-width: 900px) and (max-width: 1279px) {
   main, .footer { padding-left: 56px; }
@@ -3018,14 +3034,14 @@ body { padding-bottom: 26px; }
    About: RViz scene (replaces the old illustration)
    ========================================================================== */
 .about-rviz { display: block; width: 100%; height: auto; font-family: 'Geist Mono', monospace; }
-.about-rviz .rv-bg { fill: #222326; }
+.about-rviz .rv-bg { fill: #1b2230; }
 .about-rviz .rv-grid-line { stroke: rgba(160, 160, 164, 0.14); stroke-width: 1; }
 .about-rviz .rv-free { fill: rgba(205, 205, 205, 0.06); }
 .about-rviz .rv-occ { fill: #6b6e74; }
 .about-rviz .rv-inflate { fill: rgba(150, 90, 220, 0.12); stroke: rgba(150, 90, 220, 0.35); stroke-width: 1; }
-.about-rviz .rv-plan { fill: none; stroke: var(--accent-cyan); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 100; stroke-dashoffset: 0; }
+.about-rviz .rv-plan { fill: none; stroke: var(--plan-green); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 100; stroke-dashoffset: 0; }
 .about-rviz .rv-scan rect { fill: var(--laser-red); }
-.about-rviz .rv-goal path { fill: var(--accent-green); stroke: #1a1b1e; stroke-width: 1; }
+.about-rviz .rv-goal path { fill: var(--goal-amber); stroke: #121927; stroke-width: 1; }
 .about-rviz .rv-robot rect { fill: #2f3136; stroke: var(--text-primary); stroke-width: 1.6; }
 .about-rviz .rv-robot .rv-wheel { fill: #111; stroke: none; }
 .about-rviz .rv-robot .rv-lidar { fill: #111; stroke: var(--laser-red); stroke-width: 1.5; }
@@ -3033,8 +3049,8 @@ body { padding-bottom: 26px; }
 .about-rviz .tf-x { stroke: var(--tf-x); }
 .about-rviz .tf-y { stroke: var(--tf-y); }
 .about-rviz .rv-label { fill: var(--text-secondary); font-size: 12px; }
-.about-rviz .rv-bar { fill: #1a1b1e; }
-.about-rviz .rv-dot { fill: var(--accent-cyan); }
+.about-rviz .rv-bar { fill: #121927; }
+.about-rviz .rv-dot { fill: var(--plan-green); }
 .about-rviz .rv-title { fill: var(--text-primary); font-size: 14px; font-weight: 600; }
 .about-rviz .rv-meta { fill: var(--text-muted); font-size: 11.5px; }
 
@@ -3067,3 +3083,4 @@ body { padding-bottom: 26px; }
 @media (min-width: 993px) {
   .about-image-wrapper { position: sticky; top: calc(var(--navbar-height) + 24px); }
 }
+

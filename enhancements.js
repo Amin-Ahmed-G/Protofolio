@@ -714,8 +714,8 @@
         Object.entries({ Base: { x: 40, y: 75 }, Kitchen: { x: 220, y: 75 }, 'Table 1': { x: 140, y: 30 }, 'Table 2': { x: 140, y: 75 }, 'Table 3': { x: 140, y: 120 } }).forEach(([name, pos]) => {
           ctx.beginPath();
           ctx.arc(pos.x, pos.y, 8, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(82,214,138,0.1)';
-          ctx.strokeStyle = 'rgba(82,214,138,0.4)';
+          ctx.fillStyle = 'rgba(90,169,255,0.1)';
+          ctx.strokeStyle = 'rgba(90,169,255,0.4)';
           ctx.lineWidth = 1;
           ctx.fill(); ctx.stroke();
           ctx.fillStyle = 'rgba(148,163,184,0.8)';
@@ -729,9 +729,9 @@
         robotPos.y += (targetPos.y - robotPos.y) * 0.08;
         ctx.beginPath();
         ctx.arc(robotPos.x, robotPos.y, 7, 0, Math.PI * 2);
-        ctx.fillStyle = '#52d68a';
+        ctx.fillStyle = '#5aa9ff';
         ctx.shadowBlur = 12;
-        ctx.shadowColor = '#52d68a';
+        ctx.shadowColor = '#5aa9ff';
         ctx.fill();
         ctx.shadowBlur = 0;
 
@@ -874,13 +874,13 @@
     const chars = 'アイウエオカキクケコサシスセソABCDEFGH01234567ΩΔΨ∑∇∈';
 
     function draw() {
-      ctx.fillStyle = 'rgba(23,24,27,0.07)';
+      ctx.fillStyle = 'rgba(14,20,32,0.07)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#52d68a';
+      ctx.fillStyle = '#5aa9ff';
       ctx.font = '13px Geist Mono, monospace';
       drops.forEach((y, i) => {
         const char = chars[Math.floor(Math.random() * chars.length)];
-        ctx.fillStyle = i % 3 === 0 ? '#f5b041' : '#52d68a';
+        ctx.fillStyle = i % 3 === 0 ? '#52d68a' : '#5aa9ff';
         ctx.fillText(char, i * 14, y * 14);
         if (y * 14 > canvas.height && Math.random() > 0.975) drops[i] = 0;
         drops[i]++;

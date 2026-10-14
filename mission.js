@@ -26,7 +26,7 @@
   const rail = document.createElement('nav');
   rail.className = 'mission-rail';
   rail.setAttribute('aria-label', 'Mission waypoints');
-  rail.innerHTML = `<svg class="mission-svg" width="${RAIL_W}" aria-hidden="true">
+  rail.innerHTML = `<svg class="mission-svg" aria-hidden="true"><g class="mission-root">
       <path class="mission-plan"/>
       <path class="mission-travelled"/>
       <g class="mission-goal" style="display:none"><path d="M0,0 L-6,-14 L6,-14 z"/></g>
@@ -36,7 +36,7 @@
         <line class="tf-x" x1="0" y1="0" x2="13" y2="0"/>
         <line class="tf-y" x1="0" y1="0" x2="0" y2="-9"/>
       </g>
-    </svg>
+    </g></svg>
     <ol class="mission-links"></ol>`;
   document.body.appendChild(rail);
 
@@ -49,6 +49,9 @@
   document.body.appendChild(hud);
 
   const svg = rail.querySelector('.mission-svg');
+  const root = rail.querySelector('.mission-root');
+  const horizontalMQ = window.matchMedia('(max-width: 899px)');
+  let horizontal = false, cross = RAIL_W;
   const plan = rail.querySelector('.mission-plan');
   const travelled = rail.querySelector('.mission-travelled');
   const wpGroup = rail.querySelector('.mission-waypoints');
@@ -78,10 +81,19 @@
   }
 
   // ---- Layout: rebuild the plan whenever page height changes -------------
+  // The plan is always computed top-to-bottom; on narrow screens (or heavy browser
+  // zoom) the whole drawing is mirrored across the diagonal into a horizontal bar.
+  const railLength = () => horizontal ? rail.clientWidth : rail.clientHeight;
+
   function layout() {
-    const h = rail.clientHeight;
-    svg.setAttribute('height', h);
-    svg.setAttribute('viewBox', `0 0 ${RAIL_W} ${h}`);
+    horizontal = horizontalMQ.matches;
+    rail.classList.toggle('is-horizontal', horizontal);
+    cross = horizontal ? 26 : RAIL_W;
+    const h = railLength();
+    svg.setAttribute('width', horizontal ? h : cross);
+    svg.setAttribute('height', horizontal ? cross : h);
+    svg.setAttribute('viewBox', horizontal ? `0 0 ${h} ${cross}` : `0 0 ${cross} ${h}`);
+    root.setAttribute('transform', horizontal ? 'matrix(0,1,1,0,0,0)' : '');
     const pad = 10;
     const usable = h - pad * 2;
 
@@ -92,7 +104,8 @@
       if (i > 0) y = Math.max(y, waypointYs[i - 1] + 14);
       waypointYs.push(Math.min(y, h - pad));
     });
-    const pts = waypointYs.map((y, i) => ({ x: i % 2 === 0 ? 16 : 36, y }));
+    const lanes = horizontal ? [8, 18] : [16, 36];
+    const pts = waypointYs.map((y, i) => ({ x: lanes[i % 2], y }));
 
     // Smooth plan: vertical-tangent cubic segments between waypoints
     let d = `M${pts[0].x},${pts[0].y}`;
@@ -125,8 +138,8 @@
       c.dataset.index = i;
       wpGroup.appendChild(c);
       const link = links.children[i].firstElementChild;
-      link.style.top = `${p.y - 10}px`;
-      link.style.left = `${p.x - 10}px`;
+      link.style.top = `${(horizontal ? p.x : p.y) - 10}px`;
+      link.style.left = `${(horizontal ? p.y : p.x) - 10}px`;
     });
     update();
   }
@@ -146,7 +159,7 @@
     if (!samples.length) return;
     const max = document.documentElement.scrollHeight - window.innerHeight;
     const progress = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
-    const h = rail.clientHeight, pad = 10;
+    const h = railLength(), pad = 10;
     const idx = sampleAtY(pad + progress * (h - pad * 2));
     const s = samples[idx];
     const prev = samples[Math.max(0, idx - 2)], next = samples[Math.min(samples.length - 1, idx + 2)];
@@ -170,7 +183,7 @@
     if (goalIndex !== null && active === goalIndex) clearGoal();
 
     // HUD: metres down the page as -y, sideways offset as x, heading as theta (ROS: 0 = +x)
-    const x = ((s.x - RAIL_W / 2) / 10).toFixed(2);
+    const x = ((s.x - cross / 2) / 10).toFixed(2);
     const y = (-window.scrollY / 100).toFixed(2);
     const theta = (-heading).toFixed(2);
     hudPose.textContent = `x ${x}  y ${y}  θ ${theta}`;

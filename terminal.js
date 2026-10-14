@@ -190,9 +190,9 @@ Special thanks to mentor Sundar sir for providing the base simulation environmen
 
   const contactText = `=== CONTACT TELEMETRY & DIRECT ACTIONS ===
 * Phone:    <a href="tel:+918122241705" class="text-green" style="font-weight: bold; text-decoration: underline;">+91 8122241705</a> [Active Line]
-* Email:    <a href="mailto:aminahmedg2005@gmail.com" style="color: #52d68a; text-decoration: underline;">aminahmedg2005@gmail.com</a>
-* GitHub:   <a href="https://github.com/Amin-Ahmed-G" target="_blank" style="color: #52d68a; text-decoration: underline;">https://github.com/Amin-Ahmed-G</a>
-* LinkedIn: <a href="https://www.linkedin.com/in/amin-ahmed-g/" target="_blank" style="color: #52d68a; text-decoration: underline;">https://www.linkedin.com/in/amin-ahmed-g/</a>
+* Email:    <a href="mailto:aminahmedg2005@gmail.com" style="color: #5aa9ff; text-decoration: underline;">aminahmedg2005@gmail.com</a>
+* GitHub:   <a href="https://github.com/Amin-Ahmed-G" target="_blank" style="color: #5aa9ff; text-decoration: underline;">https://github.com/Amin-Ahmed-G</a>
+* LinkedIn: <a href="https://www.linkedin.com/in/amin-ahmed-g/" target="_blank" style="color: #5aa9ff; text-decoration: underline;">https://www.linkedin.com/in/amin-ahmed-g/</a>
 * Location: Chennai, Tamil Nadu, India
 
 <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap;">
