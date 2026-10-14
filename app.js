@@ -156,14 +156,14 @@ document.addEventListener('DOMContentLoaded', function() {
     ctx.lineTo(sweepCenter.x, sweepCenter.y);
     
     const grad = ctx.createRadialGradient(sweepCenter.x, sweepCenter.y, 0, sweepCenter.x, sweepCenter.y, sweepRadius);
-    grad.addColorStop(0, 'rgba(0, 242, 254, 0.08)');
-    grad.addColorStop(1, 'rgba(0, 242, 254, 0)');
+    grad.addColorStop(0, 'rgba(82, 214, 138, 0.08)');
+    grad.addColorStop(1, 'rgba(82, 214, 138, 0)');
     ctx.fillStyle = grad;
     ctx.fill();
     ctx.restore();
 
     // Draw scan concentric circles
-    ctx.strokeStyle = 'rgba(0, 242, 254, 0.02)';
+    ctx.strokeStyle = 'rgba(82, 214, 138, 0.02)';
     ctx.lineWidth = 1;
     for (let r = 150; r < sweepRadius; r += 150) {
       ctx.beginPath();
@@ -204,9 +204,9 @@ document.addEventListener('DOMContentLoaded', function() {
       // Draw point
       ctx.beginPath();
       if (p.glow > 0.1) {
-        ctx.fillStyle = `rgba(0, 242, 254, ${0.15 + p.glow * 0.8})`;
+        ctx.fillStyle = `rgba(255, 95, 87, ${0.15 + p.glow * 0.8})`;
         ctx.shadowBlur = p.glow * 8;
-        ctx.shadowColor = '#00f2fe';
+        ctx.shadowColor = '#ff5f57';
         ctx.arc(p.x, p.y, p.radius + p.glow * 1.5, 0, Math.PI * 2);
       } else {
         ctx.fillStyle = 'rgba(100, 116, 139, 0.12)';
@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (dist < 100) {
           ctx.beginPath();
-          ctx.strokeStyle = `rgba(0, 255, 135, ${0.08 * (1 - dist / 100)})`;
+          ctx.strokeStyle = `rgba(82, 214, 138, ${0.08 * (1 - dist / 100)})`;
           ctx.lineWidth = 0.5;
           ctx.moveTo(p.x, p.y);
           ctx.lineTo(mouse.x, mouse.y);
@@ -246,7 +246,7 @@ document.addEventListener('DOMContentLoaded', function() {
           ctx.beginPath();
           ctx.lineWidth = 0.5;
           if (avgGlow > 0.1) {
-            ctx.strokeStyle = `rgba(0, 242, 254, ${0.04 + avgGlow * 0.15 * (1 - dist / connectionDistance)})`;
+            ctx.strokeStyle = `rgba(255, 95, 87, ${0.04 + avgGlow * 0.15 * (1 - dist / connectionDistance)})`;
           } else {
             ctx.strokeStyle = `rgba(100, 116, 139, ${0.015 * (1 - dist / connectionDistance)})`;
           }

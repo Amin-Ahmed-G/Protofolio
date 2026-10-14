@@ -82,7 +82,12 @@
   contact           - Communication & contact details
   pid [p] [i] [d]   - Tune simulation PID gains directly
   diagnostics       - Re-run system initialization check
-  clear             - Clear terminal screen`;
+  clear             - Clear terminal screen
+
+Shell basics:
+  ls [-a] [dir]  cd <dir>  pwd  cat <file>  tree  echo  date
+  uname -a  hostname  uptime  history  neofetch
+  open <resume.pdf | project | github>`;
 
   const ros2Text = `=== ROS 2 JAZZY CORE TELEMETRY ===
 
@@ -185,9 +190,9 @@ Special thanks to mentor Sundar sir for providing the base simulation environmen
 
   const contactText = `=== CONTACT TELEMETRY & DIRECT ACTIONS ===
 * Phone:    <a href="tel:+918122241705" class="text-green" style="font-weight: bold; text-decoration: underline;">+91 8122241705</a> [Active Line]
-* Email:    <a href="mailto:aminahmedg2005@gmail.com" style="color: #00f2fe; text-decoration: underline;">aminahmedg2005@gmail.com</a>
-* GitHub:   <a href="https://github.com/Amin-Ahmed-G" target="_blank" style="color: #00f2fe; text-decoration: underline;">https://github.com/Amin-Ahmed-G</a>
-* LinkedIn: <a href="https://www.linkedin.com/in/amin-ahmed-g/" target="_blank" style="color: #00f2fe; text-decoration: underline;">https://www.linkedin.com/in/amin-ahmed-g/</a>
+* Email:    <a href="mailto:aminahmedg2005@gmail.com" style="color: #52d68a; text-decoration: underline;">aminahmedg2005@gmail.com</a>
+* GitHub:   <a href="https://github.com/Amin-Ahmed-G" target="_blank" style="color: #52d68a; text-decoration: underline;">https://github.com/Amin-Ahmed-G</a>
+* LinkedIn: <a href="https://www.linkedin.com/in/amin-ahmed-g/" target="_blank" style="color: #52d68a; text-decoration: underline;">https://www.linkedin.com/in/amin-ahmed-g/</a>
 * Location: Chennai, Tamil Nadu, India
 
 <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap;">
@@ -287,6 +292,204 @@ Focuses on building control layers, autonomous navigation stacks, and real-time 
     out.forEach((l, i) => setTimeout(() => print(l), i * 60));
   }
 
+
+  /* ---------- Basic shell: a small read-only home directory ---------- */
+  function escHtml(str) {
+    return String(str).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  }
+
+  let cwd = '/home/amin';
+  const HOME = '/home/amin';
+  const startTime = Date.now();
+
+  function projectFiles() {
+    const d = window.PORTFOLIO_DATA;
+    if (!d) return {};
+    const files = {};
+    Object.keys(d.PROJECTS).forEach(id => {
+      const p = d.PROJECTS[id];
+      files[id + '.md'] = () => [`# ${p.title}`, '', p.summary, '', `Problem: ${p.problem}`, '', p.repo ? `Repo: ${p.repo}` : '(no public repo)',
+        `Tip: run 'open ${id}' to see the full breakdown.`].join('\n');
+    });
+    return files;
+  }
+
+  function wsPackages() {
+    const d = window.PORTFOLIO_DATA;
+    if (!d) return {};
+    const pkgs = {};
+    Object.keys(d.PROJECTS).forEach(id => {
+      const ros = d.PROJECTS[id].ros;
+      if (ros && ros.pkgs) ros.pkgs.forEach(pkg => { pkgs[pkg] = { 'package.xml': () => `<package format="3">\n  <name>${pkg}</name>\n  <maintainer email="aminahmedg2005@gmail.com">Amin Ahmed G</maintainer>\n  <!-- full source: ${d.PROJECTS[id].repo} -->\n</package>` }; });
+    });
+    return pkgs;
+  }
+
+  // Directory tree; functions are lazy so they read portfolio data at call time
+  function fsTree() {
+    return {
+      home: { amin: {
+        'about.txt': () => aboutText,
+        'skills.txt': () => skillsText.replace(/^=== .* ===\n/, ''),
+        'contact.txt': () => 'Email:    aminahmedg2005@gmail.com\nPhone:    +91 8122241705\nGitHub:   https://github.com/Amin-Ahmed-G\nLinkedIn: https://www.linkedin.com/in/amin-ahmed-g/\nLocation: Chennai, Tamil Nadu, India',
+        'resume.pdf': 'binary',
+        projects: projectFiles(),
+        ros2_ws: { src: wsPackages() },
+        '.bashrc': () => "source /opt/ros/jazzy/setup.bash\nsource ~/ros2_ws/install/setup.bash\nexport ROS_DOMAIN_ID=42\nalias cafe-launch='ros2 launch cafe_butler_bringup full_system.launch.py open_dashboard:=true'"
+      } }
+    };
+  }
+
+  function resolvePath(arg) {
+    let path = !arg || arg === '~' ? HOME : arg.replace(/^~(?=\/|$)/, HOME);
+    if (!path.startsWith('/')) path = cwd + '/' + path;
+    const out = [];
+    path.split('/').forEach(seg => {
+      if (!seg || seg === '.') return;
+      if (seg === '..') out.pop(); else out.push(seg);
+    });
+    return '/' + out.join('/');
+  }
+
+  function lookup(path) {
+    let node = fsTree();
+    for (const seg of path.split('/').filter(Boolean)) {
+      if (!node || typeof node !== 'object' || !(seg in node)) return undefined;
+      node = node[seg];
+    }
+    return node;
+  }
+
+  const isDir = n => n && typeof n === 'object';
+  const promptPath = () => cwd === HOME ? '~' : cwd.startsWith(HOME + '/') ? '~' + cwd.slice(HOME.length) : cwd;
+
+  function updatePrompt() {
+    const label = `amin@roboshield:${promptPath()}$`;
+    const el = document.querySelector('.terminal-input-line .prompt');
+    if (el) el.textContent = label;
+    const title = document.querySelector('.terminal-title');
+    if (title) title.textContent = `amin@roboshield:${promptPath()}`;
+  }
+
+  function shellCommand(cmd, args) {
+    switch (cmd) {
+      case 'pwd':
+        print(cwd, 'cmd-out');
+        return true;
+      case 'ls': {
+        const showAll = args.some(a => /^-\w*a/.test(a));
+        const target = args.find(a => !a.startsWith('-'));
+        const path = resolvePath(target || '.');
+        const node = lookup(path);
+        if (node === undefined) { print(`ls: cannot access '${escHtml(target)}': No such file or directory`, 'cmd-error'); return true; }
+        if (!isDir(node)) { print(escHtml(target), 'cmd-out'); return true; }
+        const names = Object.keys(node).filter(n => showAll || !n.startsWith('.')).sort();
+        print(names.map(n => isDir(node[n]) ? `<span class="term-dir">${escHtml(n)}/</span>` : escHtml(n)).join('  ') || '', 'cmd-out cmd-html');
+        return true;
+      }
+      case 'cd': {
+        const path = resolvePath(args[0]);
+        const node = lookup(path);
+        if (!isDir(node)) { print(`cd: ${escHtml(args[0])}: ${node === undefined ? 'No such file or directory' : 'Not a directory'}`, 'cmd-error'); return true; }
+        cwd = path;
+        updatePrompt();
+        return true;
+      }
+      case 'cat': {
+        if (!args.length) { print('usage: cat <file>', 'cmd-error'); return true; }
+        args.forEach(a => {
+          const node = lookup(resolvePath(a));
+          if (node === undefined) print(`cat: ${escHtml(a)}: No such file or directory`, 'cmd-error');
+          else if (isDir(node)) print(`cat: ${escHtml(a)}: Is a directory`, 'cmd-error');
+          else if (node === 'binary') print(`cat: ${escHtml(a)}: binary file. Try 'open resume.pdf'.`, 'cmd-error');
+          else print(node(), 'cmd-out');
+        });
+        return true;
+      }
+      case 'tree': {
+        const start = resolvePath(args[0] || '.');
+        const root = lookup(start);
+        if (!isDir(root)) { print(`tree: ${escHtml(args[0] || '.')}: not a directory`, 'cmd-error'); return true; }
+        const lines = [promptPath() === '~' && !args[0] ? '.' : escHtml(args[0] || '.')];
+        (function walk(node, prefix) {
+          const names = Object.keys(node).filter(n => !n.startsWith('.')).sort();
+          names.forEach((n, i) => {
+            const last = i === names.length - 1;
+            lines.push(prefix + (last ? '└── ' : '├── ') + (isDir(node[n]) ? `<span class="term-dir">${escHtml(n)}</span>` : escHtml(n)));
+            if (isDir(node[n])) walk(node[n], prefix + (last ? '    ' : '│   '));
+          });
+        })(root, '');
+        print(lines.join('\n'), 'cmd-out cmd-html');
+        return true;
+      }
+      case 'open': {
+        const target = args[0] || '';
+        const d = window.PORTFOLIO_DATA;
+        const id = target.replace(/^.*\//, '').replace(/\.md$/, '');
+        if (/resume\.pdf$/.test(target)) { window.open('resume.pdf', '_blank', 'noopener'); print('Opening resume.pdf ...', 'text-green'); }
+        else if (d && d.PROJECTS[id]) { d.openPanel('project', id); print(`Opening ${id} ...`, 'text-green'); }
+        else if (target === 'github') { window.open('https://github.com/Amin-Ahmed-G', '_blank', 'noopener'); print('Opening GitHub ...', 'text-green'); }
+        else print("usage: open <resume.pdf | project-name | github>   (see 'ls projects')", 'cmd-error');
+        return true;
+      }
+      case 'echo':
+        print(args.join(' ').replace(/^["']|["']$/g, '').replace(/\$USER/g, 'amin').replace(/\$ROS_DISTRO/g, 'jazzy').replace(/\$ROS_DOMAIN_ID/g, '42'), 'cmd-out');
+        return true;
+      case 'date':
+        print(new Date().toString(), 'cmd-out');
+        return true;
+      case 'uname':
+        print(args.includes('-a') ? 'Linux roboshield 6.8.0-ros #42-Ubuntu SMP PREEMPT_DYNAMIC x86_64 GNU/Linux' : 'Linux', 'cmd-out');
+        return true;
+      case 'hostname':
+        print('roboshield', 'cmd-out');
+        return true;
+      case 'uptime': {
+        const s = Math.floor((Date.now() - startTime) / 1000);
+        print(`up ${Math.floor(s / 60)} min ${s % 60} s,  1 user,  load average: 0.42, 0.37, 0.31`, 'cmd-out');
+        return true;
+      }
+      case 'history':
+        print(history.map((h, i) => `${String(i + 1).padStart(4)}  ${h}`).join('\n'), 'cmd-out');
+        return true;
+      case 'neofetch':
+        print([
+          'amin@roboshield',
+          '---------------',
+          'OS:       Ubuntu 24.04 LTS x86_64',
+          'WM:       Hyprland',
+          'Shell:    bash 5.2',
+          'ROS:      ROS 2 Jazzy Jalisco',
+          'Sim:      Gazebo Harmonic',
+          'Langs:    C++ · Python · Rust · C',
+          'Focus:    Nav2 autonomy · DDS/ROS 2 security',
+          'Status:   open to robotics software roles'
+        ].join('\n'), 'cmd-out');
+        return true;
+      case 'mkdir': case 'touch': case 'rm': case 'mv': case 'cp': case 'nano': case 'vim': case 'vi':
+        if (cmd === 'rm' && args.join(' ').includes('-rf')) print('rm: nice try. This filesystem is read-only, and the robot is in LOCKDOWN.', 'cmd-error');
+        else print(`${cmd}: read-only file system (this is a portfolio, not a real shell)`, 'cmd-error');
+        return true;
+      case 'exit': case 'logout':
+        print('logout... just kidding, you can\'t leave that easily. Try \'contact\' instead.', 'cmd-out');
+        return true;
+    }
+    return false;
+  }
+
+  // Path completion for the Tab handler in enhancements.js
+  window.TERMINAL_FS = {
+    complete(partial) {
+      const slash = partial.lastIndexOf('/');
+      const dirPart = slash >= 0 ? partial.slice(0, slash + 1) : '';
+      const base = slash >= 0 ? partial.slice(slash + 1) : partial;
+      const node = lookup(resolvePath(dirPart || '.'));
+      if (!isDir(node)) return [];
+      return Object.keys(node).filter(n => n.startsWith(base) && (base.startsWith('.') || !n.startsWith('.')))
+        .map(n => dirPart + n + (isDir(node[n]) ? '/' : ''));
+    }
+  };
+
   // Parser command function
   function handleCommand(cmdStr) {
     const trimmed = cmdStr.trim();
@@ -295,7 +498,7 @@ Focuses on building control layers, autonomous navigation stacks, and real-time 
     history.push(trimmed);
     historyIndex = history.length;
 
-    print(`<span class="cmd-prompt">amin@roboshield:~$</span> ${trimmed}`);
+    print(`<span class="cmd-prompt">amin@roboshield:${promptPath()}$</span> ${escHtml(trimmed)}`);
 
     const parts = trimmed.split(/\s+/);
     const cmd = parts[0].toLowerCase();
@@ -397,7 +600,8 @@ Focuses on building control layers, autonomous navigation stacks, and real-time 
         }
         break;
       default:
-        print(`command not found: ${cmd}. Try 'help'.`, 'cmd-error');
+        if (shellCommand(cmd, args)) break;
+        print(`command not found: ${escHtml(cmd)}. Try 'help'.`, 'cmd-error');
     }
   }
 

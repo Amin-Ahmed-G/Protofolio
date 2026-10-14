@@ -243,7 +243,7 @@
 
     // Draw Active Sensor Path
     ctx.beginPath();
-    ctx.strokeStyle = '#00f2fe';
+    ctx.strokeStyle = '#52d68a';
     ctx.lineWidth = 3;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
@@ -259,7 +259,7 @@
     // Draw Robot Trail
     if (robot.trail.length > 1) {
       ctx.beginPath();
-      ctx.strokeStyle = 'rgba(0, 255, 135, 0.4)';
+      ctx.strokeStyle = 'rgba(245, 176, 65, 0.4)';
       ctx.lineWidth = 4;
       ctx.moveTo(robot.trail[0].x, robot.trail[0].y);
       for (let i = 1; i < robot.trail.length; i++) {
@@ -275,11 +275,11 @@
 
     // Glowing shadow
     ctx.shadowBlur = 15;
-    ctx.shadowColor = '#00ff87';
+    ctx.shadowColor = '#f5b041';
 
     // Chassis
     ctx.fillStyle = '#101524';
-    ctx.strokeStyle = '#00ff87';
+    ctx.strokeStyle = '#f5b041';
     ctx.lineWidth = 2.5;
     ctx.beginPath();
     ctx.arc(0, 0, robot.radius, 0, Math.PI * 2);
@@ -290,7 +290,7 @@
     ctx.shadowBlur = 0;
 
     // Heading indicator wheel
-    ctx.fillStyle = '#00f2fe';
+    ctx.fillStyle = '#52d68a';
     ctx.beginPath();
     ctx.rect(robot.radius - 6, -3, 8, 6);
     ctx.fill();

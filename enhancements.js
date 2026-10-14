@@ -714,8 +714,8 @@
         Object.entries({ Base: { x: 40, y: 75 }, Kitchen: { x: 220, y: 75 }, 'Table 1': { x: 140, y: 30 }, 'Table 2': { x: 140, y: 75 }, 'Table 3': { x: 140, y: 120 } }).forEach(([name, pos]) => {
           ctx.beginPath();
           ctx.arc(pos.x, pos.y, 8, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(0,242,254,0.1)';
-          ctx.strokeStyle = 'rgba(0,242,254,0.4)';
+          ctx.fillStyle = 'rgba(82,214,138,0.1)';
+          ctx.strokeStyle = 'rgba(82,214,138,0.4)';
           ctx.lineWidth = 1;
           ctx.fill(); ctx.stroke();
           ctx.fillStyle = 'rgba(148,163,184,0.8)';
@@ -729,9 +729,9 @@
         robotPos.y += (targetPos.y - robotPos.y) * 0.08;
         ctx.beginPath();
         ctx.arc(robotPos.x, robotPos.y, 7, 0, Math.PI * 2);
-        ctx.fillStyle = '#00f2fe';
+        ctx.fillStyle = '#52d68a';
         ctx.shadowBlur = 12;
-        ctx.shadowColor = '#00f2fe';
+        ctx.shadowColor = '#52d68a';
         ctx.fill();
         ctx.shadowBlur = 0;
 
@@ -815,12 +815,22 @@
     terminalInput.addEventListener('keydown', function (e) {
       if (e.key !== 'Tab') return;
       e.preventDefault();
-      const val = terminalInput.value.trim().toLowerCase();
+      const raw = terminalInput.value;
+      // Complete file paths for shell commands (e.g. 'cat proj' -> 'cat projects/')
+      const m = raw.match(/^(ls|cd|cat|tree|open)\s+(.*)$/);
+      if (m && window.TERMINAL_FS) {
+        const opts = window.TERMINAL_FS.complete(m[2]);
+        if (opts.length === 1) terminalInput.value = `${m[1]} ${opts[0]}`;
+        else if (opts.length > 1) terminalInput.value = `${m[1]} ${longestCommonPrefix(opts)}`;
+        return;
+      }
+      const val = raw.trim().toLowerCase();
       if (!val) return;
       const CMDS = ['help', 'whoami', 'ros2', 'cafe-launch', 'fsm', 'tf', 'metrics',
         'skills', 'projects', 'contact', 'about', 'diagnostics', 'clear', 'pid',
         'karthikesh', 'call', 'matrix', 'sudo', 'colcon build', 'ros2 node list',
-        'ros2 topic list', 'ros2 topic echo /scan', 'ros2 action list', 'ros2 pkg list', 'ros2 launch '];
+        'ros2 topic list', 'ros2 topic echo /scan', 'ros2 action list', 'ros2 pkg list', 'ros2 launch ',
+        'ls', 'cd ', 'pwd', 'cat ', 'tree', 'echo ', 'date', 'uname -a', 'hostname', 'uptime', 'history', 'neofetch', 'open '];
       const matches = CMDS.filter(c => c.startsWith(val));
       if (matches.length === 1) {
         terminalInput.value = matches[0];
@@ -864,13 +874,13 @@
     const chars = 'アイウエオカキクケコサシスセソABCDEFGH01234567ΩΔΨ∑∇∈';
 
     function draw() {
-      ctx.fillStyle = 'rgba(11,15,20,0.07)';
+      ctx.fillStyle = 'rgba(23,24,27,0.07)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#00f2fe';
+      ctx.fillStyle = '#52d68a';
       ctx.font = '13px Geist Mono, monospace';
       drops.forEach((y, i) => {
         const char = chars[Math.floor(Math.random() * chars.length)];
-        ctx.fillStyle = i % 3 === 0 ? '#00ff87' : '#00f2fe';
+        ctx.fillStyle = i % 3 === 0 ? '#f5b041' : '#52d68a';
         ctx.fillText(char, i * 14, y * 14);
         if (y * 14 > canvas.height && Math.random() > 0.975) drops[i] = 0;
         drops[i]++;
