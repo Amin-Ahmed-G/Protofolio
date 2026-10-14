@@ -463,7 +463,7 @@ Focuses on building control layers, autonomous navigation stacks, and real-time 
           'Sim:      Gazebo Harmonic',
           'Langs:    C++ · Python · Rust · C',
           'Focus:    Nav2 autonomy · DDS/ROS 2 security',
-          'Status:   open to robotics software roles'
+          'Work:     ROS 2 Developer @ Reddix Robotics (Sep 2026 - present)'
         ].join('\n'), 'cmd-out');
         return true;
       case 'mkdir': case 'touch': case 'rm': case 'mv': case 'cp': case 'nano': case 'vim': case 'vi':

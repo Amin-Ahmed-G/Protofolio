@@ -33,6 +33,7 @@
 
   /* Layout */
   --navbar-height: 70px;
+  --container-w: 1200px;
   --border-radius: 10px;
   --transition-speed: 0.3s;
 }
@@ -42,8 +43,9 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  scroll-behavior: smooth;
 }
+
+html { scroll-behavior: smooth; }
 
 body {
   font-family: 'Outfit', sans-serif;
@@ -201,7 +203,7 @@ a:hover {
 }
 
 .nav-container {
-  max-width: 1200px;
+  max-width: var(--container-w);
   height: 100%;
   margin: 0 auto;
   display: flex;
@@ -283,7 +285,7 @@ a:hover {
 }
 
 .hero-container {
-  max-width: 1200px;
+  max-width: var(--container-w);
   margin: 0 auto;
   width: 100%;
   padding: 0 2rem;
@@ -496,7 +498,7 @@ section {
 }
 
 .section-container {
-  max-width: 1200px;
+  max-width: var(--container-w);
   margin: 0 auto;
   padding: 0 2rem;
 }
@@ -1424,7 +1426,7 @@ section {
 }
 
 .footer-container {
-  max-width: 1200px;
+  max-width: var(--container-w);
   margin: 0 auto;
   padding: 0 2rem;
 }
@@ -2904,7 +2906,7 @@ body {
    ========================================================================== */
 .mission-rail {
   position: fixed;
-  left: 10px;
+  left: max(8px, calc((100vw - var(--container-w)) / 2 - 56px));
   top: calc(var(--navbar-height) + 16px);
   bottom: 84px;
   width: 52px;
@@ -2977,8 +2979,22 @@ body {
 .mission-hud .hud-item + .hud-item { padding-left: 1.4rem; border-left: 1px solid var(--border-color); }
 body { padding-bottom: 26px; }
 
-@media (min-width: 1280px) {
+/* Shown from tablet-landscape up, so it survives browser zoom-in (125-150%) */
+@media (min-width: 900px) {
   .mission-rail { display: block; }
+}
+/* Below 1280px the side gutter is too thin for the rail, so shift content right */
+@media (min-width: 900px) and (max-width: 1279px) {
+  main, .footer { padding-left: 56px; }
+}
+
+/* Wide viewports (large monitors or zoomed out): let content use the space */
+@media (min-width: 1600px) {
+  :root { --container-w: min(88vw, 1560px); }
+}
+@media (min-width: 2200px) {
+  :root { --container-w: 1680px; }
+  html { font-size: 17px; }
 }
 @media (max-width: 768px) {
   .mission-hud .hud-frame, .mission-hud .hud-odom { display: none; }
@@ -2987,3 +3003,67 @@ body { padding-bottom: 26px; }
 @media print { .mission-rail, .mission-hud { display: none; } }
 
 .terminal-body .term-dir { color: var(--accent-blue); font-weight: 600; }
+
+/* Mid widths (tablets, or desktop at 125-150% zoom): keep the nav on one line */
+@media (min-width: 769px) and (max-width: 1180px) {
+  .nav-menu { gap: 1.1rem; }
+  .nav-link { font-size: 0.86rem; white-space: nowrap; }
+}
+@media (min-width: 769px) and (max-width: 940px) {
+  .nav-menu { gap: 0.8rem; }
+  .nav-link { font-size: 0.8rem; }
+}
+
+/* ==========================================================================
+   About: RViz scene (replaces the old illustration)
+   ========================================================================== */
+.about-rviz { display: block; width: 100%; height: auto; font-family: 'Geist Mono', monospace; }
+.about-rviz .rv-bg { fill: #222326; }
+.about-rviz .rv-grid-line { stroke: rgba(160, 160, 164, 0.14); stroke-width: 1; }
+.about-rviz .rv-free { fill: rgba(205, 205, 205, 0.06); }
+.about-rviz .rv-occ { fill: #6b6e74; }
+.about-rviz .rv-inflate { fill: rgba(150, 90, 220, 0.12); stroke: rgba(150, 90, 220, 0.35); stroke-width: 1; }
+.about-rviz .rv-plan { fill: none; stroke: var(--accent-cyan); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 100; stroke-dashoffset: 0; }
+.about-rviz .rv-scan rect { fill: var(--laser-red); }
+.about-rviz .rv-goal path { fill: var(--accent-green); stroke: #1a1b1e; stroke-width: 1; }
+.about-rviz .rv-robot rect { fill: #2f3136; stroke: var(--text-primary); stroke-width: 1.6; }
+.about-rviz .rv-robot .rv-wheel { fill: #111; stroke: none; }
+.about-rviz .rv-robot .rv-lidar { fill: #111; stroke: var(--laser-red); stroke-width: 1.5; }
+.about-rviz .rv-tf line { stroke-width: 3; stroke-linecap: round; }
+.about-rviz .tf-x { stroke: var(--tf-x); }
+.about-rviz .tf-y { stroke: var(--tf-y); }
+.about-rviz .rv-label { fill: var(--text-secondary); font-size: 12px; }
+.about-rviz .rv-bar { fill: #1a1b1e; }
+.about-rviz .rv-dot { fill: var(--accent-cyan); }
+.about-rviz .rv-title { fill: var(--text-primary); font-size: 14px; font-weight: 600; }
+.about-rviz .rv-meta { fill: var(--text-muted); font-size: 11.5px; }
+
+/* Plan draws in once; the scan flickers like a live topic */
+@media (prefers-reduced-motion: no-preference) {
+  .about-rviz .rv-plan { animation: rv-plan-draw 2.4s ease-out 0.4s both; }
+  .about-rviz .rv-scan { animation: rv-scan-flicker 0.5s steps(2) infinite; }
+}
+@keyframes rv-plan-draw {
+  from { stroke-dashoffset: 100; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes rv-scan-flicker {
+  50% { opacity: 0.82; }
+}
+
+.timeline-now {
+  margin-left: 0.5rem;
+  padding: 0.05rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  color: var(--bg-primary);
+  background: var(--accent-cyan);
+  vertical-align: middle;
+}
+.timeline-current .timeline-dot { box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.25); }
+
+/* Top-align the About visual and keep it in view beside the longer text column */
+.about-grid { align-items: start; }
+@media (min-width: 993px) {
+  .about-image-wrapper { position: sticky; top: calc(var(--navbar-height) + 24px); }
+}

@@ -800,7 +800,7 @@
     // Expose whoami to terminal.js command handler
     window.TERMINAL_EXTRAS = {
       whoami: function () {
-        const bio = 'Amin Ahmed G — Robotics & Automation Engineer, Anna University.\nBuilding ROS 2 navigation stacks, DDS/RTPS security tooling, and IEC 61131-3 PLC programs. Open to robotics software and ICS security roles.';
+        const bio = 'Amin Ahmed G — ROS 2 Developer at Reddix Robotics (since Sep 2026), B.E. Robotics & Automation, Anna University.\nBuilding ROS 2 navigation stacks, ROS 2 security tooling (RoboShield), and IEC 61131-3 PLC programs.';
         typeWriter(bio, 'cmd-out typewriter-out');
       },
       matrix: function () {
