@@ -72,6 +72,8 @@
   let totalLen = 0;
   let waypointYs = [];
   let goalIndex = null;
+  let lastActive = -1;
+  const setText = (el, text) => { if (el.textContent !== text) el.textContent = text; };
 
   function sectionProgress(el) {
     const max = document.documentElement.scrollHeight - window.innerHeight;
@@ -129,6 +131,7 @@
     }
 
     wpGroup.innerHTML = '';
+    lastActive = -1;
     pts.forEach((p, i) => {
       const c = document.createElementNS(SVG_NS, 'circle');
       c.setAttribute('cx', p.x);
@@ -168,17 +171,20 @@
     robot.setAttribute('transform', `translate(${s.x},${s.y}) rotate(${(heading * 180) / Math.PI})`);
     travelled.style.strokeDashoffset = `${totalLen - s.len}`;
 
-    // Active waypoint = last one the robot has passed
+    // Active waypoint = last one the robot has passed; touch the DOM only when it changes
     let active = 0;
     waypointYs.forEach((y, i) => { if (s.y >= y - 2) active = i; });
-    wpGroup.querySelectorAll('.mission-wp').forEach((c, i) => {
-      c.classList.toggle('is-visited', i <= active);
-      c.classList.toggle('is-active', i === active);
-    });
-    links.querySelectorAll('.mission-link').forEach((a, i) => {
-      if (i === active) a.setAttribute('aria-current', 'location');
-      else a.removeAttribute('aria-current');
-    });
+    if (active !== lastActive) {
+      lastActive = active;
+      Array.prototype.forEach.call(wpGroup.children, (c, i) => {
+        c.classList.toggle('is-visited', i <= active);
+        c.classList.toggle('is-active', i === active);
+      });
+      Array.prototype.forEach.call(links.children, (li, i) => {
+        if (i === active) li.firstElementChild.setAttribute('aria-current', 'location');
+        else li.firstElementChild.removeAttribute('aria-current');
+      });
+    }
 
     if (goalIndex !== null && active === goalIndex) clearGoal();
 
@@ -186,10 +192,10 @@
     const x = ((s.x - cross / 2) / 10).toFixed(2);
     const y = (-window.scrollY / 100).toFixed(2);
     const theta = (-heading).toFixed(2);
-    hudPose.textContent = `x ${x}  y ${y}  θ ${theta}`;
+    setText(hudPose, `x ${x}  y ${y}  θ ${theta}`);
     const target = goalIndex !== null ? goalIndex : Math.min(active + 1, SECTIONS.length - 1);
     const label = goalIndex !== null ? 'navigating ▸' : (active === SECTIONS.length - 1 ? 'reached ✓' : 'next ▸');
-    hudGoal.textContent = `${active + 1}/${SECTIONS.length}  ${label} ${SECTIONS[target].topic}`;
+    setText(hudGoal, `${active + 1}/${SECTIONS.length}  ${label} ${SECTIONS[target].topic}`);
   }
 
   // ---- 2D Goal Pose: clicking a waypoint or nav link drops a goal marker --

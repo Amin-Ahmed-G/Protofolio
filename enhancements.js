@@ -520,15 +520,18 @@
         if (entry.isIntersecting) {
           const bars = entry.target.querySelectorAll('.skill-bar-fill');
           bars.forEach((bar, i) => {
-            setTimeout(() => {
-              bar.style.width = (bar.dataset.pct || '60') + '%';
-            }, i * 60);
+            setTimeout(() => bar.classList.add('is-filled'), i * 60);
           });
           obs.unobserve(entry.target);
         }
       });
     }, { threshold: 0.2 });
 
+    // Width is set once up front; the fill animates with transform only, so it
+    // stays smooth (no layout per frame) even while other scroll work runs
+    document.querySelectorAll('.skill-bar-fill').forEach(bar => {
+      bar.style.width = (bar.dataset.pct || '60') + '%';
+    });
     const skillsSection = document.getElementById('skills');
     if (skillsSection) barObserver.observe(skillsSection);
   }
