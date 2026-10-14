@@ -35,15 +35,15 @@
       name: 'Nav2 & Navigation Stack',
       level: 'Intermediate',
       what: 'The ROS 2 navigation framework — provides path planning (NavFn, Smac), local control (DWB), localization (AMCL), and costmap management. The standard stack for autonomous mobile robots.',
-      usedIn: ['amr-leader-follower', 'cafe-butler', 'mecanum-bot'],
+      usedIn: ['amr-leader-follower', 'cafe-butler', 'two-wheel-bot'],
       example: 'Configured keepout zone costmaps for the café butler to prevent the robot from attempting to navigate through table areas — required understanding how the inflation layer and keepout plugin interact at the costmap update frequency.'
     },
     slam: {
-      name: 'SLAM (Cartographer, Gmapping)',
+      name: 'SLAM (SLAM Toolbox)',
       level: 'Intermediate',
       what: 'Simultaneous Localization and Mapping — builds a map of the environment while tracking where the robot is within it, using sensor data like LiDAR scans.',
-      usedIn: ['amr-leader-follower', 'mecanum-bot'],
-      example: 'Discovered that Cartographer produced distorted maps with the mecanum bot because standard odometry assumed differential drive — had to rebuild the odometry model to account for holonomic lateral drift.'
+      usedIn: ['amr-leader-follower', 'mecanum-bot', 'two-wheel-bot'],
+      example: 'Discovered that SLAM produced distorted maps with the mecanum bot because standard odometry assumed differential drive — had to rebuild the odometry model to account for holonomic lateral drift.'
     },
     moveit: {
       name: 'MoveIt (Motion Planning)',
@@ -71,7 +71,7 @@
       level: 'Intermediate',
       what: 'Systems language with compile-time memory safety — used for building network-level tooling where both performance and reliability under concurrent access are required.',
       usedIn: ['roboshield'],
-      example: 'Built the RTPS packet capture and parsing engine in Rust — memory safety prevented the class of stale-read bugs that would have been silent data corruption in C, which mattered given the packet volume.'
+      example: 'Wrote the RoboShield v2 gateway and GUI console in Rust on rclrs: the rule engine checks a 6-joint command in 1.37 µs median, 7x faster than the Python version. Earlier, v1 used Rust for RTPS packet capture and parsing.'
     },
     bash: {
       name: 'Bash Scripting',
@@ -148,7 +148,7 @@
       level: 'Intermediate',
       what: 'Containerization (Docker) and version control (Git) — used to isolate ROS 2 environments, manage dependency conflicts between ROS distributions, and maintain reproducible builds.',
       usedIn: ['roboshield'],
-      example: 'Discovered that RoboShield packet capture broke in Docker bridge networking — the bridge MTU and shared-memory RTPS transport behaved differently from the host network, a silent failure that only appeared under container deployment.'
+      example: 'Discovered that RoboShield v1 packet capture broke in Docker bridge networking — the bridge MTU and shared-memory RTPS transport behaved differently from the host network, a silent failure that only appeared under container deployment.'
     },
     stm32ide: {
       name: 'STM32CubeIDE & CODESYS',
@@ -163,9 +163,9 @@
     'amr-leader-follower': {
       title: 'AMR Leader-Follower Robot System',
       badge: 'Swarm & AMRs',
-      summary: 'Multi-robot formation control with Nav2, AMCL, and a custom pure-pursuit controller.',
+      summary: 'Multi-robot formation control with Nav2, AMCL, and a custom C++ breadcrumb pure-pursuit follower with potential-field obstacle avoidance.',
       problem: 'Leader-follower AMR formation requires the follower to track a moving target whose position is estimated through sensor fusion — it breaks differently than single-robot navigation because the localization error compounds across two independent stacks.',
-      built: 'Leader robot runs the full Nav2 stack with SLAM. Follower tracks the leader\'s TF frame using AMCL localization and a custom pure-pursuit controller. EKF sensor fusion (robot_localization) combines odometry and LiDAR for both robots. Web dashboard provides live telemetry via rosbridge WebSocket.',
+      built: 'Leader robot runs the full Nav2 stack with SLAM. Follower localizes against the shared map with AMCL and runs a custom C++ controller: lookahead pure pursuit along a breadcrumb trail of the leader\'s TF poses, plus repulsive/tangential potential-field obstacle avoidance from its own LiDAR. EKF sensor fusion (robot_localization) smooths the follower\'s wheel odometry. Web dashboard provides live telemetry via rosbridge WebSocket.',
       broke: 'The follower kept losing localization on sharp turns — its AMCL particle filter was tuned too tight for the odometry drift it was actually seeing. Retuned the covariance model around real sensor noise instead of simulation defaults, and now validate localization tuning against physical drift patterns before any integration test.',
       skills: ['ros2', 'nav2', 'slam', 'cpp', 'python', 'sensors', 'linux'],
       repo: 'https://github.com/Amin-Ahmed-G/amr_leader_follower',
@@ -183,34 +183,40 @@
       video: 'videos/cafe_butler_robot.mp4'
     },
     'roboshield': {
-      title: 'RoboShield: RTPS NIDS & Firewall',
-      badge: 'Security',
-      summary: 'Passive RTPS traffic watchdog for ROS 2 — inspects DDS network traffic for anomalies without sitting inline.',
-      problem: 'ROS 2 systems assume the network they run on is trusted by default. As robots move into production environments, that assumption breaks — and there are very few tools that operate at the DDS/RTPS layer where the actual traffic lives.',
-      built: 'Parses wire-level RTPS submessages using a custom Rust parser. Tracks node publication frequencies and flags anomalies (unexpected topics, rate spikes, unauthorized publishers) in real time. Passive architecture means no added latency on the data path. Under 2μs per-packet overhead measured with libpcap.',
-      broke: 'Packet reads went stale under Docker\'s bridge networking — an assumption that held on the host network silently broke in a container. Rebuilt the capture logic to be network-topology-agnostic and now test containerised environments from the start, not as an afterthought.',
-      skills: ['rust', 'ros2', 'docker', 'linux'],
-      repo: 'https://github.com/Amin-Ahmed-G/robotshield'
+      title: 'RoboShield v2: ROS 2 Robot Command Firewall',
+      badge: 'Robot Security',
+      summary: 'Inline gateway that inspects every command before it reaches the robot, and clamps, drops, or locks down.',
+      problem: 'Most ROS 2 robots trust every message on the network: anything that can publish to /joint_commands can move the arm, whether it is a buggy script, a typo, or someone else on the WiFi. SROS2 controls who can talk, but nothing checks what they say before the robot acts on it.',
+      built: 'A gateway board (a NanoPi in my setup) joins two ROS 2 domains in one process: the laptop on domain 10 over WiFi with SROS2 enforced, the robot on domain 20 over its own Ethernet, with ip_forward off and a default-drop nftables ruleset. Each command is checked for schema and joint names, NaN/inf, per-joint position/velocity/effort limits (clamped), step jumps, token-bucket rate limits, and stale or replayed stamps. Repeated incidents trigger LOCKDOWN until an operator re-arms, and it boots locked. The Rust gateway checks each message\'s publisher and drops non-allowlisted nodes one by one, so the real operator keeps control during spoofing. Incidents are tagged with MITRE ATT&CK for ICS and can stream as CEF/JSON syslog to a SIEM. A Rust GUI console turns every debug command into a button and runs an 8-attack self-test. Measured on a laptop: 1.37 µs per 6-joint rule check, +0.5 ms median end-to-end, 8/8 attacks caught, flood to lockdown in about 10 ms. v1 was a passive RTPS packet watchdog in Rust (kept on the roboshield-v1-nids branch).',
+      broke: 'rclrs exposed no endpoint GID, so the gateway could not tell which node sent a given message and spoofed commands could not be dropped individually. I vendored rclrs 0.7.0 with a one-field patch to map publisher GIDs to node names. That exposed a discovery race: a message can arrive before its node info, showing up as _NODE_NAME_UNKNOWN_. The gateway now fails closed with a 2 s grace period before raising an alarm.',
+      skills: ['rust', 'ros2', 'python', 'linux'],
+      repo: 'https://github.com/Amin-Ahmed-G/robotshield',
+      gallery: [
+        { src: 'images/roboshield/attack_timeline.webp', alt: 'Attack timeline: an overreach attack is clamped at the joint limit, then a 600 msg/s flood triggers lockdown and zero messages reach the robot' },
+        { src: 'images/roboshield/v1_vs_v2.webp', alt: 'Comparison of RoboShield v1, a passive network tap, with v2, an inline firewall that clamps, drops or locks down' },
+        { src: 'images/roboshield/selftest.webp', alt: 'Console self-test: 8 of 8 attack types detected, maximum robot position 1.000 rad against a 1.0 rad limit' },
+        { src: 'images/roboshield/latency.webp', alt: 'Median command latency: 0.60 ms with no firewall, 1.12 ms through the Rust gateway, 1.56 ms through Python' }
+      ]
     },
     'two-wheel-bot': {
       title: 'Two-Wheel Differential Bot',
       badge: 'Simulation',
       summary: 'Autonomous differential drive robot with LiDAR and camera, built to validate navigation logic across drive kinematics.',
       problem: 'A navigation stack tuned for one robot platform often hides assumptions about kinematics, sensor placement, and TF frames that aren\'t obvious until you run it on a different platform.',
-      built: 'Differential drive robot in ROS 2 (Humble / Jazzy) / Gazebo Harmonic. Joint state broadcaster, diff_drive_controller via gz_ros2_control, 360° LiDAR plugin, and camera plugin. Python waypoint navigation node for automated testing of path following behaviour across different track layouts.',
+      built: 'Differential drive robot in ROS 2 (Humble / Jazzy) / Gazebo Harmonic. Joint state broadcaster, diff_drive_controller via gz_ros2_control, 360° LiDAR plugin, and camera plugin. SLAM Toolbox builds the map, Nav2 handles navigation, and a Python node republishes the map→base_footprint transform as a /robot_pose topic.',
       broke: 'The navigation stack lost position without any warning when the drive controller reset odometry without republishing the transform. Added a watchdog that flags stale transforms immediately instead of letting navigation fail silently — a small addition that prevents a very hard-to-diagnose bug.',
-      skills: ['ros2', 'gazebo', 'python', 'cpp', 'linux'],
+      skills: ['ros2', 'gazebo', 'nav2', 'slam', 'python', 'linux'],
       repo: 'https://github.com/Amin-Ahmed-G/two_wheel_robot',
       video: 'videos/two_wheel_robot.mp4'
     },
     'mecanum-bot': {
       title: 'Mecanum Bot Simulator',
       badge: 'Simulation',
-      summary: '4-wheel holonomic drive robot simulation with SLAM and Nav2.',
+      summary: '4-wheel holonomic drive robot simulation with SLAM Toolbox mapping and scripted waypoint driving.',
       problem: 'Holonomic drive kinematics (the ability to move laterally) introduces odometry drift patterns that standard differential-drive models don\'t capture — SLAM and localisation break if you ignore this.',
-      built: '4-wheel mecanum drive robot in ROS 2 (Humble / Jazzy) / Gazebo Harmonic. Custom gz_ros2_control nodes for the mecanum wheel kinematics. Cartographer SLAM for map building. Nav2 for autonomous navigation with a modified costmap configuration for holonomic platforms.',
+      built: '4-wheel mecanum drive robot in ROS 2 (Humble / Jazzy) / Gazebo Harmonic. The ros2_control mecanum_drive_controller (via gz_ros2_control) handles wheel kinematics. SLAM Toolbox builds the map, saved with nav2_map_server. A Python waypoint follower drives the robot through holonomic paths using the controller\'s odometry feedback.',
       broke: 'SLAM produced distorted maps because the odometry model didn\'t account for the sideways drift a holonomic drive introduces. Rebuilt the odometry around a model that actually reflects mecanum kinematics rather than treating it like a standard differential drive.',
-      skills: ['ros2', 'gazebo', 'nav2', 'slam', 'cpp', 'python'],
+      skills: ['ros2', 'gazebo', 'slam', 'python'],
       repo: 'https://github.com/Amin-Ahmed-G/mecanum_bot'
     },
     'stm32-line-follower': {
@@ -419,6 +425,8 @@
       ${brokeSection}
 
       ${rosGraphSection(p, id)}
+
+      ${gallerySection(p)}
 
       <div class="panel-section">
         <h3 class="panel-section-title"><i class="fa-solid fa-tags"></i> Skills used</h3>
@@ -1101,9 +1109,19 @@
       actions: []
     },
     'roboshield': {
-      kind: 'rust',
-      crates: ['roboshield-core', 'roboshield-simulator'],
-      launch: 'cargo build --release'
+      distro: 'Jazzy',
+      pkgs: ['monitor_py'],
+      launch: 'ros2 launch monitor_py bench.launch.py',
+      nodes: ['/attack_sim_node', '/firewall_node', '/robot_sim_node', '/firewall_dashboard'],
+      topics: [
+        { name: '/joint_commands (domain 10, WiFi)', type: 'sensor_msgs/msg/JointState', from: ['/attack_sim_node'], to: ['/firewall_node'] },
+        { name: '/joint_commands (domain 20, robot)', type: 'sensor_msgs/msg/JointState', from: ['/firewall_node'], to: ['/robot_sim_node'] },
+        { name: '/joint_states (domain 20, robot)', type: 'sensor_msgs/msg/JointState', from: ['/robot_sim_node'], to: ['/firewall_node'] },
+        { name: '/joint_states (domain 10, WiFi)', type: 'sensor_msgs/msg/JointState', from: ['/firewall_node'], to: ['/attack_sim_node'] },
+        { name: '/firewall/events', type: 'diagnostic_msgs/msg/DiagnosticStatus', from: ['/firewall_node'], to: ['/firewall_dashboard'] },
+        { name: '/firewall/status', type: 'std_msgs/msg/String', from: ['/firewall_node'], to: ['/firewall_dashboard'] }
+      ],
+      actions: []
     }
   };
   Object.keys(ROS).forEach(id => { if (PROJECTS[id]) PROJECTS[id].ros = ROS[id]; });
@@ -1252,6 +1270,18 @@
     });
   }
 
+  function gallerySection(p) {
+    if (!p.gallery || !p.gallery.length) return '';
+    const items = p.gallery.map(g =>
+      `<a class="panel-gallery-item" href="${g.src}" target="_blank" rel="noopener"><img src="${g.src}" alt="${escapeHtml(g.alt)}" loading="lazy" decoding="async" width="900" height="1125"></a>`).join('');
+    return `
+      <div class="panel-section">
+        <h3 class="panel-section-title"><i class="fa-solid fa-chart-line"></i> Results</h3>
+        <div class="panel-gallery">${items}</div>
+        <p class="ros-graph-info">Click an image to open it full size.</p>
+      </div>`;
+  }
+
   function rosGraphSection(p, id) {
     const ros = p.ros;
     if (!ros || !ros.nodes) return '';
@@ -1265,9 +1295,7 @@
 
   /* --- Package metadata strip on project cards --- */
   function rosMetaHtml(ros) {
-    const counts = ros.kind === 'rust'
-      ? `<span class="ros-meta-chip">Rust</span><span class="ros-meta-counts">${ros.crates.length} crates &middot; passive RTPS capture</span>`
-      : `<span class="ros-meta-chip">ROS 2 ${ros.distro}</span><span class="ros-meta-counts">${ros.pkgs.length} pkg${ros.pkgs.length > 1 ? 's' : ''} &middot; ${ros.nodes.length} nodes &middot; ${ros.topics.length} topics${ros.actions.length ? ` &middot; ${ros.actions.length} action${ros.actions.length > 1 ? 's' : ''}` : ''}</span>`;
+    const counts = `<span class="ros-meta-chip">ROS 2 ${ros.distro}</span><span class="ros-meta-counts">${ros.pkgs.length} pkg${ros.pkgs.length > 1 ? 's' : ''} &middot; ${ros.nodes.length} nodes &middot; ${ros.topics.length} topics${ros.actions.length ? ` &middot; ${ros.actions.length} action${ros.actions.length > 1 ? 's' : ''}` : ''}</span>`;
     return `<div class="ros-meta">${counts}
       <div class="ros-launch"><code>${escapeHtml(ros.launch)}</code>
         <button type="button" class="ros-copy-btn" aria-label="Copy launch command" title="Copy command"><i class="fa-regular fa-copy"></i></button>

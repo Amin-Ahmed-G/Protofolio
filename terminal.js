@@ -168,19 +168,19 @@ Completed an intensive 20-day robotics training program. Built the Café Butler 
 Special thanks to mentor Sundar sir for providing the base simulation environment reference.`;
 
   const skillsText = `=== TECHNICAL SKILLS MATRIX ===
-* Robotics Middleware: ROS 2 (Humble / Jazzy), Nav2, MoveIt 2, SLAM Cartographer, AMCL
+* Robotics Middleware: ROS 2 (Humble / Jazzy), Nav2, MoveIt 2, SLAM Toolbox, AMCL
 * Simulation Tools:    Gazebo Harmonic, RViz2, URDF/Xacro, SDF, ros2_control
 * Languages:           Python 3.12, C++17, C, Bash Scripting
 * Embedded Systems:    STM32 (ARM Cortex-M), ESP32, PID Motor Control, UART/I2C/SPI
-* Network & Security:  rosbridge WebSocket, RTPS/DDS Intrusion Detection (RoboShield)
+* Network & Security:  rosbridge WebSocket, SROS2, ROS 2 Command Firewall (RoboShield v2)
 * CAD & Hardware:      SolidWorks, EasyEDA PCB Design, EasyEDA, KiCad`;
 
   const projectsText = `=== FEATURED GITHUB PROJECTS ===
 <a href="#projects" class="text-green" style="text-decoration:underline" onclick="document.getElementById('amr-leader-follower').scrollIntoView({behavior:'smooth'});return false;">1. AMR Leader-Follower</a>    ROS 2 · Nav2 · EKF · Web Dashboard
 <a href="#projects" class="text-green" style="text-decoration:underline" onclick="document.getElementById('cafe-butler').scrollIntoView({behavior:'smooth'});return false;">2. Café Butler Robot</a>      Autonomous Delivery · Python FSM · WebSocket
-<a href="#projects" class="text-green" style="text-decoration:underline" onclick="document.getElementById('mecanum-bot').scrollIntoView({behavior:'smooth'});return false;">3. Mecanum Bot</a>            4-Wheel Holonomic · Cartographer SLAM · Nav2
-<a href="#projects" class="text-green" style="text-decoration:underline" onclick="document.getElementById('two-wheel-bot').scrollIntoView({behavior:'smooth'});return false;">4. Two-Wheel Differential</a> LiDAR · Waypoint Navigation
-<a href="#projects" class="text-green" style="text-decoration:underline" onclick="document.getElementById('roboshield').scrollIntoView({behavior:'smooth'});return false;">5. RoboShield</a>             Rust · RTPS NIDS · DDS Security
+<a href="#projects" class="text-green" style="text-decoration:underline" onclick="document.getElementById('mecanum-bot').scrollIntoView({behavior:'smooth'});return false;">3. Mecanum Bot</a>            4-Wheel Holonomic · SLAM Toolbox · ros2_control
+<a href="#projects" class="text-green" style="text-decoration:underline" onclick="document.getElementById('two-wheel-bot').scrollIntoView({behavior:'smooth'});return false;">4. Two-Wheel Differential</a> LiDAR · SLAM Toolbox · Nav2
+<a href="#projects" class="text-green" style="text-decoration:underline" onclick="document.getElementById('roboshield').scrollIntoView({behavior:'smooth'});return false;">5. RoboShield v2</a>          Rust · ROS 2 Command Firewall · SROS2
 <span style="color: var(--text-muted, #64748b)">Click any name above to scroll to the project card.</span>`;
 
   const contactText = `=== CONTACT TELEMETRY & DIRECT ACTIONS ===

@@ -2846,3 +2846,15 @@ td.ContributionCalendar-corner { width: 32px; }
 }
 
 .terminal-body .text-muted-term { color: var(--text-muted); }
+
+/* Detail panel image gallery (e.g. RoboShield results) */
+.panel-gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
+.panel-gallery-item {
+  display: block;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.panel-gallery-item:hover, .panel-gallery-item:focus-visible { border-color: var(--accent-cyan); transform: translateY(-2px); outline: none; }
+.panel-gallery-item img { display: block; width: 100%; height: auto; }

@@ -146,7 +146,7 @@
               I am a fourth-year B.E. Robotics & Automation student at Anna University (Expected 2027). I build ROS 2 autonomous mobile robot systems — from Nav2 navigation stacks and AMCL localization to multi-robot coordination and Gazebo Harmonic simulations.
             </p>
             <p>
-              Alongside autonomous systems, I am developing a technical specialization in the communication layer underneath ROS 2 — investigating DDS/RTPS packet flow, building a real-time intrusion detection system for ROS 2 networks in Rust (RoboShield), and working toward a deeper understanding of how robotics software and network security intersect.
+              Alongside autonomous systems, I am developing a technical specialization in the communication layer underneath ROS 2 — investigating DDS/RTPS packet flow, building RoboShield, an inline command firewall for ROS 2 robots written in Rust, and working toward a deeper understanding of how robotics software and network security intersect.
             </p>
 
             <div class="about-highlights-grid">
@@ -199,7 +199,7 @@
               <li data-tooltip="Middleware, Pub/Sub, Actions & Services — primarily ROS 2 Jazzy" data-skill-id="ros2"><div class="skill-name-wrap"><div class="skill-icon-wrap"><i class="fa-solid fa-robot skill-icon"></i></div><span>ROS 2 (Humble / Jazzy)</span></div><span class="skill-level">Intermediate</span><div class="skill-bar-wrap"><div class="skill-bar-fill" data-pct="72"></div></div></li>
               <li data-tooltip="Nav2 Stack, AMCL & Costmaps" data-skill-id="nav2"><div class="skill-name-wrap"><div class="skill-icon-wrap"><i class="fa-solid fa-route skill-icon"></i></div><span>Nav2 & Navigation Stack</span></div><span class="skill-level">Intermediate</span><div class="skill-bar-wrap"><div class="skill-bar-fill" data-pct="65"></div></div></li>
               <li data-tooltip="Physics World Modeling & SDF Robots" data-skill-id="gazebo"><div class="skill-name-wrap"><div class="skill-icon-wrap"><i class="fa-solid fa-globe skill-icon"></i></div><span>Gazebo (Harmonic, Classic)</span></div><span class="skill-level">Intermediate</span><div class="skill-bar-wrap"><div class="skill-bar-fill" data-pct="68"></div></div></li>
-              <li data-tooltip="Cartographer 2D SLAM Mapping" data-skill-id="slam"><div class="skill-name-wrap"><div class="skill-icon-wrap"><i class="fa-solid fa-map skill-icon"></i></div><span>SLAM (Cartographer)</span></div><span class="skill-level">Intermediate</span><div class="skill-bar-wrap"><div class="skill-bar-fill" data-pct="62"></div></div></li>
+              <li data-tooltip="SLAM Toolbox 2D Mapping" data-skill-id="slam"><div class="skill-name-wrap"><div class="skill-icon-wrap"><i class="fa-solid fa-map skill-icon"></i></div><span>SLAM (SLAM Toolbox)</span></div><span class="skill-level">Intermediate</span><div class="skill-bar-wrap"><div class="skill-bar-fill" data-pct="62"></div></div></li>
               <li data-tooltip="AMCL Particle Filter Localisation" data-skill-id="amcl"><div class="skill-name-wrap"><div class="skill-icon-wrap"><i class="fa-solid fa-crosshairs skill-icon"></i></div><span>AMCL Localisation</span></div><span class="skill-level">Intermediate</span><div class="skill-bar-wrap"><div class="skill-bar-fill" data-pct="65"></div></div></li>
               <li data-tooltip="ROS2 Nodes, FSM & Python Automation" data-skill-id="python"><div class="skill-name-wrap"><div class="skill-icon-wrap"><i class="fa-brands fa-python skill-icon"></i></div><span>Python (ROS 2 nodes, FSM)</span></div><span class="skill-level">Intermediate</span><div class="skill-bar-wrap"><div class="skill-bar-fill" data-pct="75"></div></div></li>
               <li data-tooltip="Modern C++17/20 & Firmware C" data-skill-id="cpp"><div class="skill-name-wrap"><div class="skill-icon-wrap"><i class="fa-solid fa-c skill-icon"></i></div><span>C / C++ (ROS 2 & Embedded)</span></div><span class="skill-level">Intermediate</span><div class="skill-bar-wrap"><div class="skill-bar-fill" data-pct="70"></div></div></li>
@@ -302,8 +302,8 @@
           <aside class="arch-rail" aria-label="Transport layer">
             <div class="arch-rail-inner">
               <i class="fa-solid fa-tower-broadcast"></i>
-              <h3>DDS / RTPS transport</h3>
-              <p>Every ROS 2 message between these layers crosses the DDS wire protocol. I build tooling that inspects it.</p>
+              <h3>DDS transport &amp; security</h3>
+              <p>Every ROS 2 command crosses DDS before it reaches the robot. RoboShield v2 sits inline on that path: SROS2 on the network side, a rule check on every command, and lockdown when something is wrong.</p>
               <button type="button" class="arch-chip" data-open-project="roboshield">RoboShield</button>
             </div>
           </aside>
@@ -478,13 +478,13 @@
             <div class="project-badge">Simulation</div>
             <div class="project-info">
               <h3>Mecanum Bot Simulator</h3>
-              <p class="project-desc">A 4-wheel kinematic mecanum drive robot simulation running in ROS 2 (Humble / Jazzy) and Gazebo Harmonic. Integrates LiDAR, SLAM (Cartographer), Nav2, and custom gz_ros2_control nodes.</p>
+              <p class="project-desc">A 4-wheel kinematic mecanum drive robot simulation running in ROS 2 (Humble / Jazzy) and Gazebo Harmonic. Integrates LiDAR, SLAM Toolbox mapping, the ros2_control mecanum drive controller via gz_ros2_control, and a Python waypoint follower.</p>
               <div class="project-tech">
                 <span>ROS 2 (Humble / Jazzy)</span>
                 <span>Gazebo Harmonic</span>
                 <span>Python</span>
-                <span>C++</span>
-                <span>Nav2</span>
+                <span>ros2_control</span>
+                <span>SLAM Toolbox</span>
               </div>
               <div class="project-links">
                 <a href="https://github.com/Amin-Ahmed-G/mecanum_bot" class="project-link" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub Repo</a>
@@ -505,7 +505,7 @@
             <div class="project-badge">Simulation</div>
             <div class="project-info">
               <h3>Two-Wheel Differential Bot</h3>
-              <p class="project-desc">Autonomous differential drive mobile robot simulated in ROS 2 (Humble / Jazzy) and Gazebo Harmonic. Features LiDAR sensor plugins, joint state broad-casters, Gazebo diff-drive controllers, and Python waypoint navigation.</p>
+              <p class="project-desc">Autonomous differential drive mobile robot simulated in ROS 2 (Humble / Jazzy) and Gazebo Harmonic. Features LiDAR sensor plugins, joint state broadcasters, Gazebo diff-drive controllers, SLAM Toolbox mapping, Nav2 navigation, and a Python TF-to-pose publisher.</p>
               <div class="project-tech">
                 <span>ROS 2 (Humble / Jazzy)</span>
                 <span>Gazebo Harmonic</span>
@@ -525,17 +525,20 @@
 
           <!-- RoboShield — Featured (bridges robotics → networking/security) -->
           <div class="project-card" id="roboshield" data-project-id="roboshield">
-            <div class="project-badge">Security &amp; Networking</div>
+            <div class="project-image-container">
+              <img src="images/roboshield/console.webp" width="1200" height="657" loading="lazy" decoding="async" alt="RoboShield v2 firewall console in lockdown, showing joint positions held inside limits and an incident feed of dropped attacks">
+            </div>
+            <div class="project-badge">Robot Security</div>
             <div class="project-info">
-              <h3>RoboShield: RTPS NIDS &amp; Firewall</h3>
-              <p class="project-desc">Built as an investigation into the communication layer underneath ROS 2. RoboShield is a lightweight, real-time intrusion detection system and inline packet filter for ROS 2 networks. Parses wire-level RTPS submessages (the DDS transport protocol ROS 2 runs on), tracks node publication frequencies, and blocks anomalous traffic using NFQUEUE. Developed in Rust to explore how robotics software and network security intersect at the protocol level.</p>
+              <h3>RoboShield v2: ROS 2 Robot Command Firewall</h3>
+              <p class="project-desc">An inline gateway that sits between the operator's network and the robot and is the only path to it. Every command is checked against joint limits, step jumps, NaN values, rate limits and replayed stamps, then forwarded, clamped, dropped, or the robot is locked down at its last safe pose. Bridges two ROS 2 domains with SROS2 on the WiFi side, drops spoofed publishers message by message, and streams incidents to a SIEM tagged with MITRE ATT&amp;CK for ICS. v1 was a passive RTPS packet watchdog; v2 moves from detecting to preventing.</p>
               <div class="project-tech">
-                <span>ROS 2 (Humble / Jazzy)</span>
-                <span>Rust</span>
-                <span>DDS / RTPS</span>
-                <span>libpcap</span>
-                <span>NFQUEUE</span>
-                <span>Network Security</span>
+                <span>ROS 2 Jazzy</span>
+                <span>Rust (rclrs)</span>
+                <span>Python</span>
+                <span>SROS2</span>
+                <span>nftables</span>
+                <span>MITRE ATT&amp;CK for ICS</span>
               </div>
               <div class="project-links">
                 <a href="https://github.com/Amin-Ahmed-G/robotshield" class="project-link" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub Repo</a>
@@ -543,7 +546,7 @@
             </div>
             <div class="project-debug-drawer">
               <div class="drawer-broke-label">Engineering Challenge</div>
-              <p class="drawer-broke-text">Packet reads went stale under Docker's bridge networking — an assumption that held on the host network silently broke in a container. Rebuilt capture logic to be network-topology-agnostic.</p>
+              <p class="drawer-broke-text">rclrs had no way to tell which node sent a message, so spoofed commands couldn't be dropped individually. Vendored a one-field rclrs patch to map publisher GIDs to node names, with a fail-closed grace period for the discovery race.</p>
               <button class="drawer-detail-link" data-open-project="roboshield">Full breakdown →</button>
             </div>
           </div>
@@ -849,7 +852,7 @@
             <div class="gh-stat-icon"><i class="fa-solid fa-shield-halved"></i></div>
             <div class="gh-stat-val">1</div>
             <div class="gh-stat-lbl">Robotics Security System</div>
-            <div class="gh-stat-sub">DDS / RTPS &middot; Rust &middot; libpcap &middot; NFQUEUE</div>
+            <div class="gh-stat-sub">ROS 2 &middot; Rust &middot; SROS2 &middot; MITRE ATT&amp;CK for ICS</div>
           </div>
           <div class="gh-stat-box">
             <div class="gh-stat-icon"><i class="fa-solid fa-microchip"></i></div>
