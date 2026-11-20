@@ -186,6 +186,7 @@ Special thanks to mentor Sundar sir for providing the base simulation environmen
 <a href="#projects" class="text-green" style="text-decoration:underline" onclick="document.getElementById('mecanum-bot').scrollIntoView({behavior:'smooth'});return false;">3. Mecanum Bot</a>            4-Wheel Holonomic · SLAM Toolbox · ros2_control
 <a href="#projects" class="text-green" style="text-decoration:underline" onclick="document.getElementById('two-wheel-bot').scrollIntoView({behavior:'smooth'});return false;">4. Two-Wheel Differential</a> LiDAR · SLAM Toolbox · Nav2
 <a href="#projects" class="text-green" style="text-decoration:underline" onclick="document.getElementById('roboshield').scrollIntoView({behavior:'smooth'});return false;">5. RoboShield v2</a>          Rust · ROS 2 Command Firewall · SROS2
+<a href="#projects" class="text-green" style="text-decoration:underline" onclick="document.getElementById('vision-sorting-cell').scrollIntoView({behavior:'smooth'});return false;">6. Vision Sorting Cell</a>   Anomaly Detection · Visual Servoing · Digital Twin
 <span style="color: var(--text-muted, #64748b)">Click any name above to scroll to the project card.</span>`;
 
   const contactText = `=== CONTACT TELEMETRY & DIRECT ACTIONS ===

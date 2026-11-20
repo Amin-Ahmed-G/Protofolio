@@ -483,6 +483,35 @@
           <span class="section-label-line"></span>
         </div>
         <div class="projects-grid">
+          <!-- 0. Vision-Guided Sorting Cell — final-year project -->
+          <div class="project-card" id="vision-sorting-cell" data-project-id="vision-sorting-cell">
+            <div class="project-image-container">
+              <img src="images/sortcell/card.webp" width="1200" height="642" loading="lazy" decoding="async" alt="Overhead camera view of a rusted hex nut outlined in red and labelled DEFECT with its anomaly score, next to the anomaly heatmap highlighting the rust spots">
+            </div>
+            <div class="project-badge">Vision &amp; Manipulation</div>
+            <div class="project-info">
+              <h3>Vision-Guided Robotic Sorting Cell with Digital Twin</h3>
+              <p class="project-desc">Final-year project (team of 2): a low-cost quality-inspection cell where one USB camera and a hobby servo arm inspect metal nuts and sort them into accept and reject bins. Anomaly detection (PaDiM / PatchCore) is trained only on good parts, image-based visual servoing corrects the cheap arm's position error, and the same ROS 2 nodes drive a Gazebo Harmonic digital twin and an ESP32 + PCA9685 arm through a custom ros2_control driver. In 60 simulated cycles servoing raised first-attempt picks from 27% to 100% at an 8.6 s mean cycle time.</p>
+              <div class="project-tech">
+                <span>ROS 2 Jazzy</span>
+                <span>Gazebo Harmonic</span>
+                <span>PyTorch</span>
+                <span>OpenCV / ArUco</span>
+                <span>Visual Servoing</span>
+                <span>ros2_control (C++)</span>
+                <span>ESP32</span>
+              </div>
+              <div class="project-links">
+                <a href="https://github.com/Amin-Ahmed-G/vision-sorting-cell" class="project-link" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub Repo</a>
+              </div>
+            </div>
+            <div class="project-debug-drawer">
+              <div class="drawer-broke-label">Engineering Challenge</div>
+              <p class="drawer-broke-text">Good nuts were being rejected: glare from the ring light looked like a defect to the model. Modelled the paper diffuser the real cell uses and rejected images with two touching nuts, and false rejects dropped to zero.</p>
+              <button class="drawer-detail-link" data-open-project="vision-sorting-cell">Full breakdown →</button>
+            </div>
+          </div>
+
           <!-- 1. AMR Leader Follower — FIRST -->
           <div class="project-card" id="amr-leader-follower" data-project-id="amr-leader-follower">
             <div class="project-video-container">
@@ -1068,9 +1097,9 @@
 
   <!-- Scripts -->
   <script src="pid_sim.js?v=fd46e2fe" defer></script>
-  <script src="terminal.js?v=4fbc8878" defer></script>
+  <script src="terminal.js?v=3830fea3" defer></script>
   <script src="app.js?v=86cffd09" defer></script>
-  <script src="enhancements.js?v=46035c08" defer></script>
+  <script src="enhancements.js?v=6ace0641" defer></script>
   <script src="mission.js?v=ef0789b6" defer></script>
 </body>
 </html>

@@ -21,14 +21,14 @@
       name: 'ROS 2 (Humble / Jazzy)',
       level: 'Intermediate',
       what: 'The middleware framework used in almost all modern robotics software — manages communication between nodes (sensors, planners, controllers) over a publish-subscribe network built on DDS.',
-      usedIn: ['amr-leader-follower', 'cafe-butler', 'roboshield', 'mecanum-bot', 'two-wheel-bot'],
+      usedIn: ['vision-sorting-cell', 'amr-leader-follower', 'cafe-butler', 'roboshield', 'mecanum-bot', 'two-wheel-bot'],
       example: 'Debugged a stale TF transform that caused the follower robot to silently lose position — traced the race condition between the diff_drive_controller odometry reset and the AMCL re-initialization sequence.'
     },
     gazebo: {
       name: 'Gazebo (Harmonic, Classic)',
       level: 'Intermediate',
       what: 'Physics-accurate robot simulator — used to model world environments, robot kinematics (URDF/SDF), and sensor plugins (LiDAR, IMU, cameras) before deploying to real hardware.',
-      usedIn: ['amr-leader-follower', 'cafe-butler', 'mecanum-bot', 'two-wheel-bot'],
+      usedIn: ['vision-sorting-cell', 'amr-leader-follower', 'cafe-butler', 'mecanum-bot', 'two-wheel-bot'],
       example: 'Built a 10m × 10m café world with custom keepout zone costmaps, dual GPU LiDAR plugins, and waypoint markers — then validated the Nav2 stack against it before any physical deployment.'
     },
     nav2: {
@@ -49,21 +49,21 @@
       name: 'MoveIt (Motion Planning)',
       level: 'Familiar',
       what: 'Robot arm motion planning framework for ROS 2 — handles inverse kinematics, collision checking, and trajectory execution for manipulator arms.',
-      usedIn: [],
-      example: 'Studied MoveIt 2 joint trajectory planning for coursework — primarily familiar with the planning pipeline and URDF joint configuration, not production deployment.'
+      usedIn: ['vision-sorting-cell'],
+      example: 'Wrote the MoveIt 2 config for the 5-DOF sorting-cell arm by hand (SRDF, KDL position-only IK, OMPL, planning scene of table and bins); it plans collision-free moves in about 15 ms. The pick cycle itself uses closed-form IK, so MoveIt is kept for crowded layouts.'
     },
     cpp: {
       name: 'C / C++ (Embedded Focus)',
       level: 'Intermediate',
       what: 'Primary systems language for embedded firmware and ROS 2 nodes — used for low-latency control loops, hardware register access, and performance-critical robotics algorithms.',
-      usedIn: ['amr-leader-follower', 'stm32-line-follower'],
+      usedIn: ['vision-sorting-cell', 'amr-leader-follower', 'stm32-line-follower'],
       example: 'Wrote a sub-1ms PID control loop in embedded C on STM32 — required careful loop timing and interrupt-driven ADC reads to maintain stability at high speeds.'
     },
     python: {
       name: 'Python',
       level: 'Intermediate',
       what: 'Primary scripting and ROS 2 node language — used for state machines, data pipelines, WebSocket servers, and rapid prototyping of control logic.',
-      usedIn: ['cafe-butler', 'amr-leader-follower', 'mecanum-bot', 'two-wheel-bot'],
+      usedIn: ['vision-sorting-cell', 'cafe-butler', 'amr-leader-follower', 'mecanum-bot', 'two-wheel-bot'],
       example: 'Implemented a 7-state FSM with action clients for the café butler — each state handles Nav2 goal sending, waiting on feedback, and branching on success/failure/timeout.'
     },
     rust: {
@@ -98,7 +98,7 @@
       name: 'ESP32 & Raspberry Pi',
       level: 'Intermediate',
       what: 'IoT microcontroller (ESP32) and Linux SBC (Raspberry Pi) — used for sensor integration, wireless communication, and lightweight compute at the edge.',
-      usedIn: ['temp-sensor-pcb'],
+      usedIn: ['vision-sorting-cell', 'temp-sensor-pcb'],
       example: 'Designed the ESP32 footprint and UART programming header on the temperature sensor PCB — routed power and signal traces separately to avoid noise coupling from the switching regulator.'
     },
     pid: {
@@ -112,7 +112,7 @@
       name: 'UART, I2C, SPI, CAN',
       level: 'Intermediate',
       what: 'Embedded serial communication protocols — used to interface microcontrollers with sensors, motor drivers, displays, and other peripherals at the hardware level.',
-      usedIn: ['stm32-line-follower', 'temp-sensor-pcb'],
+      usedIn: ['vision-sorting-cell', 'stm32-line-follower', 'temp-sensor-pcb'],
       example: 'Used I2C to read a 6-DOF IMU on the STM32 platform — had to handle clock stretching and address conflicts before the sensor data was reliable enough for control input.'
     },
     sensors: {
@@ -140,7 +140,7 @@
       name: 'Linux (Ubuntu / Hyprland)',
       level: 'Intermediate',
       what: 'Primary development OS — Ubuntu 24.04 with a custom Hyprland tiling WM configuration optimized for low idle RAM overhead during heavy ROS 2 and Gazebo workloads.',
-      usedIn: ['amr-leader-follower', 'cafe-butler', 'roboshield'],
+      usedIn: ['vision-sorting-cell', 'amr-leader-follower', 'cafe-butler', 'roboshield'],
       example: 'Tuned the workstation to ~600MB idle RAM — necessary to leave enough headroom for Gazebo Harmonic simulations that routinely push 8GB+ under full nav stack load.'
     },
     docker: {
@@ -160,6 +160,22 @@
   };
 
   const PROJECTS = {
+    'vision-sorting-cell': {
+      title: 'Vision-Guided Robotic Sorting Cell with Digital Twin',
+      badge: 'Vision & Manipulation',
+      summary: 'One USB camera and a hobby servo arm inspect and sort metal nuts: anomaly detection trained on good parts only, visual servoing to correct the arm, and a Gazebo digital twin running the same ROS 2 nodes.',
+      problem: 'Small manufacturers still inspect parts by eye. Industrial vision cells are too expensive for them, supervised defect detectors need thousands of labelled defect images they do not have, and a cheap hobby arm is too imprecise to pick reliably open-loop. The final-year project (with Abdul Aejas) asks whether software can make cheap hardware good enough.',
+      built: 'A fixed overhead camera calibrates itself from four ArUco markers on the table, finds the nut, and estimates its position and hex orientation in the robot frame. A rotation-normalised, metric top-view crop goes to PaDiM or PatchCore on a ResNet-18 backbone, trained only on good nuts, with the threshold set from held-out good images. The 5-DOF arm uses closed-form top-down IK; image-based visual servoing on an ArUco tag on a gripper flag corrects the error before the grasp. The same nodes run against a Gazebo Harmonic twin (with the arm deliberately built wrong, like a real hobby arm) and against an ESP32 + PCA9685 servo bridge through a custom C++ ros2_control hardware interface, tested with a software ESP32 on a pseudo-terminal. Also: MoveIt 2 config, Streamlit operator dashboard, twin-mirror mode, and 23 unit tests. In 60 simulated cycles: first-attempt picks 27% open-loop vs 100% servoed, 8.6 s mean cycle, all defects caught. Real-hardware trials are next.',
+      broke: 'The first models rejected good nuts. The heatmaps showed why: a specular highlight from the ring light, and one training image with two nuts in it. Modelling the paper diffuser the real cell uses, and making segmentation reject touching parts, brought false rejects to zero. Gazebo also stopped answering service calls mid-run: the Python bindings deadlocked between a blocking request and the pose callback, so spawning and moving parts now goes through ros_gz_bridge.',
+      skills: ['ros2', 'gazebo', 'moveit', 'python', 'cpp', 'esp32', 'protocols', 'linux'],
+      repo: 'https://github.com/Amin-Ahmed-G/vision-sorting-cell',
+      gallery: [
+        { src: 'images/sortcell/servo.webp', alt: 'Visual servoing view: the gripper tag outlined in blue with its target circle; the arm corrects until the error is under a millimetre' },
+        { src: 'images/sortcell/results.webp', alt: 'Results of 60 simulated cycles: first-attempt pick success 27% open loop vs 100% with visual servoing; grasp error median 5.4 mm vs 2.5 mm; anomaly scores of good parts well below the threshold and all defects above it' },
+        { src: 'images/sortcell/heatmaps.webp', alt: 'Anomaly heatmaps on the test set: rust, paint, dents, chips, cracks and scratches each lit up where the defect is' },
+        { src: 'images/sortcell/nut_variants.webp', alt: 'The simulated nut set: six good instances and two of each defect type' }
+      ]
+    },
     'amr-leader-follower': {
       title: 'AMR Leader-Follower Robot System',
       badge: 'Swarm & AMRs',
@@ -1053,6 +1069,23 @@
      Node/topic names are taken from each repo's launch files and source.
      ========================================================================= */
   const ROS = {
+    'vision-sorting-cell': {
+      distro: 'Jazzy',
+      pkgs: ['sortcell_bringup', 'sortcell_description', 'sortcell_perception', 'sortcell_control', 'sortcell_gazebo', 'sortcell_hardware', 'sortcell_interfaces', 'sortcell_moveit_config', 'sortcell_dashboard'],
+      launch: 'ros2 launch sortcell_bringup sim.launch.py dashboard:=true',
+      nodes: ['/gz_bridge', '/inspection', '/sort_task', '/cell_sim', '/controller_manager', '/arm_controller', '/gripper_controller', '/robot_state_publisher'],
+      topics: [
+        { name: '/overhead_camera/image', type: 'sensor_msgs/msg/Image', from: ['/gz_bridge'], to: ['/inspection', '/sort_task'] },
+        { name: '/inspection/result', type: 'sortcell_interfaces/msg/InspectionResult', from: ['/inspection'], to: [] },
+        { name: '/sort_task/report', type: 'sortcell_interfaces/msg/CycleReport', from: ['/sort_task'], to: [] },
+        { name: '/gripper_controller/commands', type: 'std_msgs/msg/Float64MultiArray', from: ['/sort_task'], to: ['/gripper_controller'] },
+        { name: '/joint_states', type: 'sensor_msgs/msg/JointState', from: ['/controller_manager'], to: ['/sort_task', '/cell_sim', '/robot_state_publisher'] },
+        { name: '/tf', type: 'tf2_msgs/msg/TFMessage', from: ['/robot_state_publisher'], to: ['/cell_sim'] }
+      ],
+      actions: [
+        { name: '/arm_controller/follow_joint_trajectory', type: 'control_msgs/action/FollowJointTrajectory', from: ['/sort_task'], to: ['/arm_controller'] }
+      ]
+    },
     'amr-leader-follower': {
       distro: 'Jazzy',
       pkgs: ['amr_leader_follower'],
